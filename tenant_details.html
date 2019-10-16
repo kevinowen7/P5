@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Title here -->
+		<title>Tenant Details - GOKOST</title>
+		<!-- Description, Keywords and Author -->
+		<meta name="description" content="Your description">
+		<meta name="keywords" content="Your,Keywords">
+		<meta name="author" content="ResponsiveWebInc">
+		<script src="js/firebase.js"></script> <!-- version 5.3.1 -->
+			<script src="js/firebase_config.js"></script>
+			<script type="text/javascript" src="js/date.js"></script>
+			<script type="text/javascript" src="js/date-en-US.js"></script>
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<!-- Styles -->
+		<!-- Bootstrap CSS -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<!-- Bootstrap Date-Time Picker CSS -->
+		<link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+		<link href="css/bootstrap-datepicker3.min.css" rel="stylesheet">
+		<!-- jQuery prettyPhoto -->
+		<link href="css/prettyPhoto.css" rel="stylesheet">
+		<!-- jQuery Datatables -->
+		<link href="css/jquery.dataTables.css" rel="stylesheet">
+		<!-- jQuery UI -->
+		<link href="css/jquery-ui.css" rel="stylesheet">
+		<!-- Font awesome CSS -->
+		<link href="css/font-awesome.min.css" rel="stylesheet">		
+		<!-- jQuery gritter -->
+		<link href="css/jquery.gritter.css" rel="stylesheet">
+		<!-- Custom Color CSS -->
+		<link href="css/less-style.css" rel="stylesheet">	
+		<!-- Custom CSS -->
+		<link href="css/style.css" rel="stylesheet">
+		<link href="css/custom_tenant_details.css" rel="stylesheet">
+		<style>
+		.dataTables_wrapper .dataTables_length {
+			float: right;
+		}
+		.dataTables_wrapper .dataTables_filter {
+			float: left;
+			text-align: left;
+		}
+		.nav-tabs li a:hover {
+			background-color: #aaa;
+			border-color: #aaa;
+		}
+		.nav-tabs li a:focus {
+			background-color: #aaa;
+			border-color: #aaa;
+		}
+		.nav-tabs li.active a {
+			background-color: #aaa;
+			border-color: #aaa;
+		}
+		.nav-tabs li.active a:hover {
+			background-color: #aaa;
+			border-color: #aaa;
+		}
+		.nav-tabs li.active a:focus {
+			background-color: #aaa;
+			border-color: #aaa;
+		}
+		tbody tr.odd td {
+			background-color: #f7f7f7;
+		}
+		h4.edtt {
+			color:#002663;
+		}
+		h4.edtt:hover {
+			color:#0450cc;
+		}
+		.fixed {position:fixed; top:0; z-index:2}
+		</style>
+		
+		<!-- Favicon -->
+		<link rel="shortcut icon" href="img/favicon-96x96.png">
+	</head>
+	
+	<body>
+		<div id="cover-spin" style="background-color:rgba(0,0,0,0.85);"></div>
+		<div class="outer">
+			<!-- Sidebar starts -->
+			<div class="sidebar">
+			
+				<div class="sidey">
+			
+					<!-- Logo -->
+					<div class="logo">
+						<h1><a href="home.html"><i class="fa fa-globe br-red"></i> GOKOST <span>Prototype</span></a></h1>
+					</div>
+					
+					<!-- Sidebar navigation starts -->
+					
+					<!-- Responsive dropdown -->
+					<div class="sidebar-dropdown"><a href="#" class="br-red"><i class="fa fa-bars"></i></a></div>
+					
+					<div class="side-nav">
+					
+						<div class="side-nav-block">
+							<!-- Sidebar heading -->
+							<h4>Main</h4>
+							<!-- Sidebar links -->
+							<ul class="list-unstyled">
+								<li><a href="home.html"><i class="fa fa-home"></i> Home</a></li>
+								<li><a href="building_list.html"><i class="fa fa-building"></i> Building</a></li>
+								<li><a href="tenant_main.html"><i class="fa fa-user-circle"></i> Tenant</a></li>
+								<li><a href="report_main.html"><i class="fa fa-clipboard"></i> Report</a></li>
+							</ul>
+							<!-- Presence System -->
+							<h4>Users</h4>
+							<ul id="presenceList" class="list-unstyled"></ul>
+						</div>
+						
+					</div>
+					
+					<!-- Sidebar navigation ends -->
+					
+				</div>
+			</div>
+			<!-- Sidebar ends -->
+			
+			<!-- Mainbar starts -->
+			<div class="mainbar">
+			
+				<!-- Mainbar head starts -->
+				<div class="main-head">
+					<div class="container">
+						<div class="row">
+							<div class="col-md-7 col-sm-6 col-xs-4">
+								<!-- Search block -->
+								<div class="head-search pull-left">
+									<div id="loadingSearchBlock" style="display: none;">
+										<i class="fa fa-circle-o-notch fa-spin fa-lg fa-fw red"></i>
+										<span class="sr-only">Loading...</span>
+									</div>
+									<div id="searchBlock" style="display: none;">
+										<form class="form" role="form" autocomplete="off">
+											<div class="input-group">
+												<input id="searchbar" type="text" class="form-control" placeholder="Search...">
+												<span class="input-group-btn">
+													<button id="bsearch" class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+												</span>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>	
+							<div class="col-md-2 col-sm-2 col-xs-2">
+								<div class="pull-right" >
+									<a href="#" data-toggle="dropdown" id="notifToggle">
+									<big><i class="fa fa-bell"></i></big>
+									</a>
+									<!-- Dropdown -->
+									<ul class="dropdown-menu pull-left" aria-labelledby="notifToggle">
+										<li>
+										<!-- Notifikasi -->
+										<div id="notifList">
+											
+										</div>
+										</li>
+										<li><a href="#" onClick="addNotif()" id="add_notif" class="hidden" style="margin-right:15px"><big><i class="fa fa-plus"></i></big>Add New</a></li>
+									</ul>
+								</div>	
+							</div>	
+							<div class="col-md-3 col-sm-4 col-xs-6">
+								<!-- Head user -->
+								<div class="head-user dropdown pull-right">
+									
+									<div id="loadingUserHead" style="display: none;">
+										<i class="fa fa-circle-o-notch fa-spin fa-lg fa-fw red"></i>
+										<span class="sr-only">Loading...</span>
+									</div>
+									<div id="userHead" class="row" style="display: none;">
+										<div >
+											<img id="imgcircle" src="img/empty-photo-square.jpg" alt="" width="30px" height="30px" class="img-circle"/>
+											<a href="#" data-toggle="dropdown" id="profile">
+												<!-- User name -->
+												<span id="nama"></span> 
+												<i class="fa fa-caret-down fa-fw"></i> 
+											</a>
+											<!-- Dropdown -->
+											<ul class="dropdown-menu" aria-labelledby="profile">
+												<li><a href="adm_profile.html">My Profile</a></li>
+												<li id="admManage" class="hidden"><a href="adm_manage.html">Manage Users</a></li>
+												<li><a href="javaScript:void(0);" onClick="logout()">Sign Out</a></li>
+											</ul>
+										</div>
+									</div>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+						</div>	
+					</div>
+					
+				</div>
+				<!-- Mainbar head ends -->
+				
+				<div class="main-content">
+					<div class="container">
+										
+						<div class="page-content">
+						
+							<!-- Heading -->
+							<div class="single-head">
+								<!-- Heading -->
+								<h3 class="pull-left"><i class="fa fa-user-circle black"></i> Tenant Details</h3>
+								<!-- Bread crumbs -->
+								<div class="breads pull-right">
+									<strong>Nav</strong> : GOKOST
+								</div>
+								<div class="clearfix"></div>
+							</div>
+							<div class="page-grid">
+								<div id="content" class="container">
+									<div class="row" style="margin-bottom:8px;">
+										<div class="col-lg-6 pull-left">
+											<h2><span id="tenant_name"></span> (<span id="tenant_id"></span>) <label id="contract_details" style="color: crimson"></label></h2>
+											
+										</div>
+										<div class="col-lg-1 pull-right">
+											<a href="img/tenant.jpg" class="prettyphoto"><img src="img/tenant_thumb.jpg" class="img-thumbnail" alt="tenant image" height="200%"/></a>
+										</div>
+									</div>
+									<!-- tab -->
+									<ul id="myTab" class="nav nav-tabs" style="font-size:14px;">
+										<li id="tabtenant" class="active"><a href="#tenant" data-toggle="tab">Tenant</a></li>
+										<li id="tabledger" ><a href="#ledger" data-toggle="tab">Ledger</a></li>
+									</ul>
+									<!-- tab content-->
+									<div id="myTabContent" class="tab-content">
+										<!-- isi tab 1 -->
+										<div class="tab-pane fade in active" id="tenant">
+											<div class="page-form" style="width:50%;float:left;border-style:none solid none none;border-width:1px;border-color:#DDDDDD;">
+												<div id="historyTenant" class="form-horizontal" role="form" method="get" action="" autocomplete="off">
+													<!-- <a href="javascript:void(0)"><h4 class="edtt"><u>Edit Tenant</u></h4></a> -->
+													<div class="form-group" style="margin:0px -15px;">
+														<div class="col-lg-offset-3 col-lg-9">
+															<button type="button" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i> Edit</button>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="afname" class="control-label col-lg-3">Name</label>
+														<div class="col-lg-9">
+															<div class="checkbox">
+																<span id="afname" name="afname"></span>
+															</div>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="aphome" class="control-label col-lg-3">Phone</label>
+														<div class="col-lg-9">
+															<div class="checkbox">
+																<span id="aphome" name="aphome">(022) 2738293</span>
+															</div>
+															<div class="checkbox">
+																<span id="apmobile" name="apmobile">0823-7529-9894</span>
+															</div>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="address" class="control-label col-lg-3">Address</label>
+														<div class="col-lg-9">
+															<div class="checkbox">
+																<span id="aadstreet" name="aadstreet">Jl. Dipatiukur No. 30</span>
+															</div>
+															<div class="checkbox">
+																<span id="aadcity" name="address">Bandung, </span>
+																<span id="aadprov" name="address">Jawa Barat, </span>
+																<span id="aadzip" name="aadzip">35123</span>
+															</div>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="bdate" class="control-label col-lg-3">Birth date</label>
+														<div class="col-lg-9">
+															<div class="checkbox">
+																<span id="bdate" name="bdate">02/18/1999</span>
+															</div>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="IDtype" class="control-label col-lg-3">ID</label>
+														<div class="col-lg-9">
+															<div class="checkbox">
+																<span id="idtype1" name="IDtype">KTP #49293929393</span>
+																<button id="id1" type="button" class="btn btn-xs btn-primary"><i class="fa fa-share-square-o "></i></button>
+																<a id="id1img" href="img/tenant_id1.jpg" class="prettyphoto"></a>
+															</div>
+															<div class="checkbox">
+																<span id="idtype2" name="IDtype">KTM #1372939</span>
+																<button id="id2" type="button" class="btn btn-xs btn-primary"><i class="fa fa-share-square-o "></i></button>
+																<a id="id2img" href="img/tenant_id2.jpg" class="prettyphoto"></a>
+															</div>
+															<button id="id3" type="button" class="btn btn-xs btn-primary"><i class="fa fa-share-square-o "></i> Show KK</button>
+															<a id="id3img" href="img/tenant_kk.jpg" class="prettyphoto"></a>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="occupy" class="control-label col-lg-3">Occupation</label>
+														<div class="col-lg-9">
+															<div class="checkbox">
+																<span id="occupy" name="bdate">Student</span>
+															</div>
+														</div>
+													</div>
+													<h4 style="margin-top:15px;margin-bottom:0px;">REFERENCES</h4>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="r1fname" class="control-label col-lg-3">Name</label>
+														<div class="col-lg-9">
+															<div class="checkbox">
+																<span id="r1fname" name="r1fname">Bobo</span>
+															</div>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="r1rel" class="control-label col-lg-3">Relation</label>
+														<div class="col-lg-9">
+															<div class="checkbox">
+																<span id="r1rel" name="r1rel">Parent</span>
+															</div>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="r1adstreet" class="control-label col-lg-3">Address</label>
+														<div class="col-lg-9">
+															<div class="checkbox">
+																<span id="r1adstreet" name="r1adstreet">Jl BKR no 1 Kec abc Kab XYZ</span>
+															</div>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="r1p" class="control-label col-lg-3">Contact Number</label>
+														<div class="col-lg-9">
+															<div class="checkbox">
+																<span id="r1p" name="r1p">08234 - 22839293</span>
+															</div>
+														</div>
+													</div>
+													
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="r2fname" class="control-label col-lg-3">Name</label>
+														<div class="col-lg-9">
+															<div class="checkbox">
+																<span id="r2fname" name="r2fname">Bombai</span>
+															</div>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="r2rel" class="control-label col-lg-3">Relation</label>
+														<div class="col-lg-9">
+															<div class="checkbox">
+																<span id="r2rel" name="r2rel">Relative</span>
+															</div>
+														</div>
+													</div>
+													
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="r2adstreet" class="control-label col-lg-3">Address</label>
+														<div class="col-lg-9">
+															<div class="checkbox">
+																<span id="r2adstreet" name="r2adstreet">Jl BKR no 100 Kec abc Kab XYZ</span>
+															</div>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="r2p" class="control-label col-lg-3">Contact Number</label>
+														<div class="col-lg-9">
+															<div class="checkbox">
+																<span id="r2p" name="r2p">08231 - 27392023</span>
+															</div>
+														</div>
+													</div>
+											   </div>
+										   </div>
+										   <div class="page-form" style="width:50%;float:right;border-right:1px;">
+												<div class="form-horizontal">
+													<div id="tenanthistory">
+													
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<div class="col-lg-offset-5 col-lg-8">
+															<button id="extender" type="button" class="btn btn-xs btn-success"><i class="fa fa-plus"></i> Extend</button>
+															<button id="end" type="button" class="btn btn-xs btn-danger" onclick="endContractModal()"><i class="fa fa-times"></i> End Contract</button>
+															<button id="nonactive" type="button" class="btn btn-xs btn-warning" onclick="nonactiveModal()"><i class="fa fa-minus"></i> Non-Active</button>
+														</div>
+														
+													</div>
+												</div>
+										   </div>
+										</div>
+										<!-- end isi tab 1 -->
+										<!-- isi tab 2 -->
+										<div class="tab-pane fade" id="ledger">
+											<div class="row">
+											<div class="col-lg-4">
+												<div id="btnpayin" style="margin-top:5px;margin-bottom:5px;">
+													<button id="invoiceb" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Invoice</button>
+													<button id="paymentb" type="button" class="btn btn-success"><i class="fa fa-plus"></i> Transaction</button>
+												</div>
+											</div>
+											<div class="col-lg-4">
+												<select id="filter" name="filter" class="form-control">
+													<option value="All">All</option>
+													<option value="Credit">Credit</option>
+													<option value="Debit">Debit</option>
+												</select>
+											</div>
+											<h4><a class="pull-right" style="margin-top:10px;" onclick="recurringPage()"><u>Recurring invoice</u></a></h4>
+											</div>
+											<h3 style="margin-bottom:20px;">Bond Money Ledger</h3>
+											<div class="page-tables" style="margin-bottom:5px;">
+												<!-- Table -->
+												<div class="table-responsive">
+													<table cellpadding="0" class="table" cellspacing="0" border="0" id="bledger" width="100%">
+														<thead>
+															<tr>
+																<th>Date</th>
+																<th>Description</th>
+																<th>Amount Due</th>
+																<th>Amount Received</th>
+																<th>Balance</th>
+															</tr>
+														</thead>
+														<tbody>
+															
+														</tbody>
+														<tfoot>
+															<tr>
+																<th>Total</th>
+																<th>&nbsp;</th>
+																<th id="bDueTot" style="padding:10px;font-weight:normal;"></th>
+																<th id="bReceivedTot" style="padding:10px;font-weight:normal;"></th>
+																<th id="bBalanceTot" style="padding:10px;font-weight:normal;"></th>
+															</tr>
+														</tfoot>
+													</table>
+													<div class="clearfix"></div>
+												</div>
+											</div>
+											<br></br>
+											<h3 style="margin-bottom:20px;">Ledger</h3>
+											<div class="page-tables">
+												<!-- Table -->
+												<div class="table-responsive">
+													<table cellpadding="0" class="table" cellspacing="0" border="0" id="sledger" width="100%">
+														<thead>
+															<tr>
+																<th>Date</th>
+																<th>Description</th>
+																<th>Amount Due</th>
+																<th>Amount Received</th>
+																<th>Balance</th>
+															</tr>
+														</thead>
+														<tbody>
+															
+														</tbody>
+														<tfoot>
+															<tr>
+																<th>Total</th>
+																<th>&nbsp;</th>
+																<th id="lDueTot" style="padding:10px;font-weight:normal;"></th>
+																<th id="lReceivedTot" style="padding:10px;font-weight:normal;"></th>
+																<th id="lBalanceTot" style="padding:10px;font-weight:normal;"></th>
+															</tr>
+														</tfoot>
+													</table>
+													<div class="clearfix"></div>
+												</div>
+											</div>
+										</div>
+										<!-- end isi tab 2 -->
+									</div>
+									<!-- content end -->
+								</div>
+							</div>
+							
+						</div>
+						
+					</div>
+				</div>
+				
+			</div>
+			<!-- Mainbar ends -->
+			<div class="clearfix"></div>
+		</div>
+		<!-- Invoice Modal -->
+		<div id="addInvoiceModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color:#528FE2">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title" style="color:#FFF"><b>Add Invoice Form</b></h4>
+					</div>
+					<div class="modal-body">
+						<form id="addInvoiceForm" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
+							<div class="form-group">
+								<label for="invoiceDate" class="control-label col-lg-3">Date</label>
+								<div class="col-lg-5">
+									<div id="invoiceDatePicker" class="input-group date">
+										<input id="invoiceDate" name="invoiceDate" type="text" class="form-control" placeholder="Pick Date" readonly required>
+										<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="invoiceAmount" class="control-label col-lg-3">Amount</label>
+								<div class="col-lg-5">
+									<input id="invoiceAmount" name="invoiceAmount" class="form-control" type="text" maxlength="20" required/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="invoiceDetails" class="control-label col-lg-3">Details</label>
+								<div class="col-lg-5">
+									<select id="invoiceDetails" name="invoiceDetails" class="form-control" required>
+										<option value="">Select Details</option>
+										<option value="rentdue">Rental Due</option>
+										<option value="finedue">Fine Due</option>
+										<option value="otherdue">Other Due</option>
+									</select>
+								</div>
+							</div>
+							<div id="invoiceDetailsOtherBlock" class="form-group" style="display:none;">
+								<label for="invoiceDetailsOther" class="control-label col-lg-3">Other</label>
+								<div class="col-lg-5">
+									<input id="invoiceDetailsOther" name="invoiceDetailsOther" class="form-control" type="text" required/>
+								</div>
+							</div>
+							<div id="invoiceRecurrentBlock" class="form-group">
+								<label for="invoiceRecurrent" class="control-label col-lg-3">One of Recurrent</label>
+								<div class="col-lg-5">
+									<select id="invoiceRecurrent" name="invoiceRecurrent" class="form-control" required>
+										<option value="">Select Details</option>
+										<option value="onetime">One Time Only</option>
+										<option value="monthly">Monthly</option>
+										<option value="semi-annually">Semi Annually</option>
+										<option value="annually">Annually</option>
+									</select>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="addInvoiceButton" type="button" class="btn btn-primary btn-sm">Add Invoice</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Payment Modal -->
+		<div id="addPaymentModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color:#42C557">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title" style="color:#FFF"><b>Add Transaction Form</b></h4>
+					</div>
+					<div class="modal-body">
+						<form id="addPaymentForm" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
+							<div class="form-group">
+								<label for="paymentDate" class="control-label col-lg-3">Date</label>
+								<div class="col-lg-5">
+									<div id="paymentDatePicker" class="input-group date">
+										<input id="paymentDate" name="paymentDate" type="text" class="form-control" placeholder="Pick Date" readonly required>
+										<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+									</div>
+								</div>
+								<div class="col-lg-4">
+									<div class="checkbox">
+										<label>
+											<input id="paymentBond" name="paymentBond" type="checkbox"> Bond 
+										</label>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="paymentAmount" class="control-label col-lg-3">Amount</label>
+								<div class="col-lg-5">
+									<input id="paymentAmount" name="paymentAmount" class="form-control" type="text" maxlength="20" required/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="paymentDetails" class="control-label col-lg-3">Details</label>
+								<div class="col-lg-5">
+									<select id="paymentDetails" name="paymentDetails" class="form-control" required>
+										<option value="">Select Details</option>
+										<option value="rentpay">Rental Payment</option>
+										<option value="finepay">Fine Payment</option>
+										<option value="bondpay">Bond Money Payment</option>
+										<option value="otherpay">Other Payment</option>
+									</select>
+								</div>
+							</div>
+							<div id="paymentDetailsOtherBlock" class="form-group" style="display:none;">
+								<label for="paymentDetailsOther" class="control-label col-lg-3">Other</label>
+								<div class="col-lg-5">
+									<input id="paymentDetailsOther" name="paymentDetailsOther" class="form-control" type="text" required/>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="addPaymentButton" type="button" class="btn btn-success btn-sm">Add Payment</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--End contract Modal-->
+		<div id="endModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title">End Contract</h4>
+					</div>
+					<div class="modal-body">
+					<!-- body -->
+						<span id="endM"></span>
+						<span id="tenantM"></span>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="submitEnd" type="button" class="btn btn-danger btn-sm" data-dismiss="modal" aria-hidden="true">End Contract</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--NonActive contract Modal-->
+		<div id="nonActiveModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title">Non-Active</h4>
+					</div>
+					<div class="modal-body">
+					<!-- body -->
+						<span id="nonactiveM"></span>
+						<span id="tenantM"></span>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="submitNonActive" type="button" class="btn btn-danger btn-sm" data-dismiss="modal" aria-hidden="true">Non Active</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Extend Modal -->
+		<div id="extendModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color:#42C557">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title" style="color:#FFF"><b>Extend Form</b></h4>
+					</div>
+					<div class="modal-body">
+						<form id="extendForm" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
+							<div class="form-group" style="margin:0px -10px;">
+								<label for="extendPropAddr" class="control-label col-lg-3">Property Address</label>
+								<div class="col-lg-8">
+									<div class="checkbox">
+										<span id="extendPropAddr" name="extendPropAddr"></span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group" style="margin:0px -10px;">
+								<label for="extendBuildNo" class="control-label col-lg-3">Building Number</label>
+								<div class="col-lg-2">
+									<div class="checkbox">
+										<span id="extendBuildNo" name="extendBuildNo">-</span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group" style="margin:0px -10px;">
+								<label for="extendFloorNo" class="control-label col-lg-3">Floor Number</label>
+								<div class="col-lg-2">
+									<div class="checkbox">
+										<span id="extendFloorNo" name="extendFloorNo">-</span>
+									</div>
+								</div>
+								<label for="extendRoomNo" class="control-label col-lg-3">Room Number</label>
+								<div class="col-lg-2">
+									<div class="checkbox">
+										<span id="extendRoomNo" name="extendRoomNo">-</span>
+									</div>
+								</div>
+							</div>
+						
+							<div class="form-group" style="margin:0px -10px;">
+								<label for="extendIntend" class="control-label col-lg-3">Intended Length of Stay</label>
+								<div class="intendedLength">
+								<div class="col-md-2 angka" >
+									<input type="text" style="width: 100%" name="inputAngka" maxlength="2" type="number" id="ExtendIntendAngka">
+								</div>
+								<div class="col-md-4 jenis">
+									<select id="extendIntend" name="extendIntend" class="form-control" required>
+										<option value="">Select Contract Option</option>
+										<option value="Days">Days</option>
+										<option value="Months">Months</option>
+										<option value="Years">Years</option>
+										
+									</select>
+								</div>
+								<div class="col-md-2 checklist">
+									<input id="ongoing" name="ongoing" type="checkbox"> Ongoing
+								</div>
+							</div>
+							</div>
+							<div class="form-group" style="margin:0px -10px;" >
+								<label for="startDate" class="control-label col-lg-3">Starting Date</label>
+								<div class="col-lg-2">
+									<div class="checkbox">
+										<span id="ExtendstartDate" name="period"></span>
+									</div>
+								</div>
+								<label for="endDate" class="control-label col-lg-3">End Date</label>
+								<div class="col-lg-2">
+									<div class="checkbox">
+										<span id="ExtendendDate" name="period">-</span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group" style="margin:0px -10px;">
+								<label for="extendPayPlan" class="control-label col-lg-3">Payment Plan</label>
+								<div class="col-lg-5">
+									<select id="extendPayPlan" name="extendPayPlan" class="form-control" required>
+										<option value="">Select Payment Plan</option>
+										<option value="annually">Annually</option>
+										<option value="semiannually">Semiannually</option>
+										<option value="monthly">Monthly</option>
+									</select>
+								</div>
+							</div>
+							<div id="roompricing" style="display:none;">
+								<div class="form-group" style="margin:0px -10px;">
+									<label for="rprice" class="control-label col-lg-3">Price</label>
+									<div class="col-lg-3">
+										<div class="checkbox">
+											<span id="rprice" name="rprice">-</span>
+											<input id="yearp" name="yearp" type="hidden" value="" readonly>
+											<input id="cprice" name="cprice" type="hidden" value="" readonly>
+										</div>
+										<button id="padj" type="button" class="btn btn-xs btn-primary" style="display:none;"><img src="img/icons/plusminus.svg" width="12px"></button>
+									</div>
+									<label for="bmoney" class="control-label col-lg-3">Bond Money</label>
+									<div class="col-lg-3">
+										<div class="checkbox">
+											<span id="bmoney" name="bmoney">-</span>
+											<input id="cbond" name="cbond" type="hidden" value="" readonly>
+										</div>
+										<button id="badj" type="button" class="btn btn-xs btn-primary" style="display:none;"><img src="img/icons/plusminus.svg" width="12px"></button>
+									</div>
+								</div>
+								<div class="form-group" style="margin:0px -10px;">
+									<label for="fprice" class="control-label col-lg-3">Final Price</label>
+									<div class="col-lg-3">
+										<div class="checkbox">
+											<span id="fprice" name="fprice">-</span>
+											<input id="cfprice" name="cfprice" type="hidden" value="" readonly>
+										</div>
+									</div>
+									<label for="fbond" class="control-label col-lg-3">Final Bond Money</label>
+									<div class="col-lg-3">
+										<div class="checkbox">
+											<span id="fbond" name="fbond">-</span>
+											<input id="cfbond" name="cfbond" type="hidden" value="" readonly>
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="extendButton" type="button" class="btn btn-success btn-sm">Extend</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- modal Notif-->
+		<div id="notifModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title">Add Notification</h4>
+					</div>
+					<div class="modal-body">
+					<!-- body -->
+						<form id="notifForm" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
+							<div class="form-group">
+								<label for="notifTitleMessage" class="control-label col-lg-3">Title</label>
+								<div class="col-lg-5">
+									<input id="notifTitleMessage" name="notifTitleMessage" type="text" class="form-control" placeholder="Title" required></input>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="notifMessage" class="control-label col-lg-3">Message</label>
+								<div class="col-lg-5">
+									<textarea id="notifMessage" name="notifMessage" type="text" class="form-control" placeholder="Message" style="width: 370px; height: 105px;" required></textarea>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="addNotifButton" type="button" class="btn btn-danger btn-sm" aria-hidden="true" onClick="addNotifButton()">Add</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Javascript files -->
+		<!-- jQuery -->
+		<script src="js/jquery.js"></script>
+		<!-- Bootstrap JS -->
+		<script src="js/bootstrap.min.js"></script>
+		<!-- jQuery UI -->
+		<script src="js/jquery-ui.min.js"></script>
+		<!-- Date Time Picker JS -->
+		<script src="js/bootstrap-datetimepicker.min.js"></script>
+		<script src="js/bootstrap-datetimepicker.id.js"></script>
+		<script src="js/bootstrap-datepicker.min.js"></script>
+		<!-- Bootstrap wysihtml5 JS -->		
+		<script src="js/wysihtml5-0.3.0.js"></script>
+		<script src="js/prettify.js"></script>
+		<script src="js/bootstrap-wysihtml5.min.js"></script>
+		<!-- jQuery gritter -->
+		<script src="js/jquery.gritter.min.js"></script>
+		<!-- Validate JS -->
+		<script src="js/jquery.validate.js"></script>
+		<!-- Form wizard steps  JS -->
+		<script src="js/jquery.steps.min.js"></script>
+		<!-- jQuery Knob -->
+		<script src="js/jquery.knob.js"></script>
+		<!-- jQuery slim scroll -->
+		<script src="js/jquery.slimscroll.min.js"></script>
+		<!-- Data Tables JS -->
+		<script src="js/jquery.dataTables.min.js"></script>	
+		<script src="js/dataTables.date-us.js"></script>
+		<!-- Pretty Photo JS -->
+		<script src="js/jquery.prettyPhoto.js"></script>	
+		<!-- Rate It JS -->
+		<script src="js/jquery.rateit.min.js"></script>	
+		<!-- jQuery full calendar -->
+		<script src="js/moment.min.js"></script>
+		<script src="js/fullcalendar.min.js"></script>
+		<!-- Respond JS for IE8 -->
+		<script src="js/respond.min.js"></script>
+		<!-- HTML5 Support for IE -->
+		<script src="js/html5shiv.js"></script>
+		<!-- Idle JS -->
+		<script src="js/idle.min.js"></script>
+		<!-- SHA256 Encryption -->
+		<script src="js/sha256.min.js"></script>
+		<!-- Custom JS -->
+		<script src="js/custom.js"></script>
+		<script src="js/custom_logincheck.js"></script>
+		<script src="js/custom_tenant_details.js"></script>
+		<script src="js/get_data_overdue.js"></script>
+		<script>
+		$('#invoiceDatePicker').datepicker({
+			format: "dd-M-yy",
+			autoclose: true
+		});
+		$('#paymentDatePicker').datepicker({
+			format: "dd-M-yy",
+			autoclose: true
+		})
+		</script>
+		<!-- Javascript for this page -->        
+    </body>	
+</html>

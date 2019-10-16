@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Title here -->
+		<title>Tenant - GOKOST</title>
+		<!-- Description, Keywords and Author -->
+		<meta name="description" content="Your description">
+		<meta name="keywords" content="Your,Keywords">
+		<meta name="author" content="ResponsiveWebInc">
+		<script src="js/firebase.js"></script> <!-- version 5.3.1 -->
+    	<script src="js/firebase_config.js"></script>
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<!-- Styles -->
+		<!-- Bootstrap CSS -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<!-- jQuery Datatables -->
+		<link href="css/jquery.dataTables.css" rel="stylesheet">
+		<!-- jQuery UI -->
+		<link href="css/jquery-ui.css" rel="stylesheet">
+		<!-- Font awesome CSS -->
+		<link href="css/font-awesome.min.css" rel="stylesheet">		
+		<!-- jQuery gritter -->
+		<link href="css/jquery.gritter.css" rel="stylesheet">
+		<!-- Custom Color CSS -->
+		<link href="css/less-style.css" rel="stylesheet">	
+		<!-- Custom CSS -->
+		<link href="css/style.css" rel="stylesheet">
+		<style>
+		.dataTables_wrapper .dataTables_length {
+			float: right;
+		}
+		.dataTables_wrapper .dataTables_filter {
+			float: left;
+			text-align: left;
+		}
+		</style>
+		<!-- Favicon -->
+		<link rel="shortcut icon" href="img/favicon-96x96.png">
+	</head>
+	
+	<body>
+		
+		<div id="cover-spin" style="background-color:rgba(0,0,0,0.85);"></div>
+		<div class="outer">
+			
+			<!-- Sidebar starts -->
+			<div class="sidebar">
+			
+				<div class="sidey">
+			
+					<!-- Logo -->
+					<div class="logo">
+						<h1><a href="home.html"><i class="fa fa-globe br-red"></i> GOKOST <span>Prototype</span></a></h1>
+					</div>
+					
+					<!-- Sidebar navigation starts -->
+					
+					<!-- Responsive dropdown -->
+					<div class="sidebar-dropdown"><a href="#" class="br-red"><i class="fa fa-bars"></i></a></div>
+					
+					<div class="side-nav">
+					
+						<div class="side-nav-block">
+							<!-- Sidebar heading -->
+							<h4>Main</h4>
+							<!-- Sidebar links -->
+							<ul class="list-unstyled">
+								<li><a href="home.html"><i class="fa fa-home"></i> Home</a></li>
+                                <li><a href="building_list.html"><i class="fa fa-building"></i> Building</a></li>
+								<li><a href="javaScript:void(0);"  class="active"><i class="fa fa-user-circle"></i> Tenant</a></li>
+								<li><a href="report_main.html"><i class="fa fa-clipboard"></i> Report</a></li>
+							</ul>
+							<!-- Presence System -->
+							<h4>Users</h4>
+							<ul id="presenceList" class="list-unstyled"></ul>
+						</div>
+						
+					</div>
+					
+					<!-- Sidebar navigation ends -->
+					
+				</div>
+			</div>
+			<!-- Sidebar ends -->
+			
+			<!-- Mainbar starts -->
+			<div class="mainbar">
+			
+				<!-- Mainbar head starts -->
+				<div class="main-head">
+					<div class="container">
+						<div class="row">
+							<div class="col-md-7 col-sm-6 col-xs-4">
+								<!-- Search block -->
+								<div class="head-search pull-left">
+									<div id="loadingSearchBlock" style="display: none;">
+										<i class="fa fa-circle-o-notch fa-spin fa-lg fa-fw red"></i>
+										<span class="sr-only">Loading...</span>
+									</div>
+									<div id="searchBlock" style="display: none;">
+										<form class="form" role="form" autocomplete="off">
+											<div class="input-group">
+												<input id="searchbar" type="text" class="form-control" placeholder="Search...">
+												<span class="input-group-btn">
+													<button id="bsearch" class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+												</span>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>	
+							<div class="col-md-2 col-sm-2 col-xs-2">
+								<div class="pull-right" >
+									<a href="#" data-toggle="dropdown" id="notifToggle">
+									<big><i class="fa fa-bell"></i></big>
+									</a>
+									<!-- Dropdown -->
+									<ul class="dropdown-menu pull-left" aria-labelledby="notifToggle">
+										<li>
+										<!-- Notifikasi -->
+										<div id="notifList">
+											
+										</div>
+										</li>
+										<li><a href="#" onClick="addNotif()" id="add_notif" class="hidden" style="margin-right:15px"><big><i class="fa fa-plus"></i></big>Add New</a></li>
+									</ul>
+								</div>	
+							</div>	
+							<div class="col-md-3 col-sm-4 col-xs-6">
+								<!-- Head user -->
+								<div class="head-user dropdown pull-right">
+									
+									<div id="loadingUserHead" style="display: none;">
+										<i class="fa fa-circle-o-notch fa-spin fa-lg fa-fw red"></i>
+										<span class="sr-only">Loading...</span>
+									</div>
+									<div id="userHead" class="row" style="display: none;">
+										<div >
+											<img id="imgcircle" src="img/empty-photo-square.jpg" alt="" width="30px" height="30px" class="img-circle"/>
+											<a href="#" data-toggle="dropdown" id="profile">
+												<!-- User name -->
+												<span id="nama"></span> 
+												<i class="fa fa-caret-down fa-fw"></i> 
+											</a>
+											<!-- Dropdown -->
+											<ul class="dropdown-menu" aria-labelledby="profile">
+												<li><a href="adm_profile.html">My Profile</a></li>
+												<li id="admManage" class="hidden"><a href="adm_manage.html">Manage Users</a></li>
+												<li><a href="javaScript:void(0);" onClick="logout()">Sign Out</a></li>
+											</ul>
+										</div>
+									</div>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+						</div>	
+					</div>
+					
+				</div>
+				<!-- Mainbar head ends -->
+				
+				<div class="main-content">
+					<div class="container">
+										
+						<div class="page-content">
+						
+							<!-- Heading -->
+							<div class="single-head">
+								<!-- Heading -->
+								<h3 class="pull-left"><i class="fa fa-users black"></i>Booking</h3>
+								<!-- Bread crumbs -->
+								<div class="breads pull-right">
+									<strong>Nav</strong> : <a href="home.html">GOKOST</a> / Booking
+								</div>
+								<div class="clearfix"></div>
+							</div>
+							<!-- Table Page -->
+                            <div class="row">
+								<div class="col-lg-offset-9 col-lg-3">
+									<button id="baddt" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Booking</button>
+								</div>
+							</div>
+							
+                            <div class="row">
+								<div class="col-lg-3">
+									<h2>Booking List</h2>
+								</div>
+							</div> 
+                            <div class="page-tables">
+								<!-- Table -->
+								<div class="table-responsive">
+									<table cellpadding="0" cellspacing="0" class="row-border hover stripe" id="data-table" width="100%">
+										<thead>
+											<tr>
+												<th>Ref #</th>
+												<th>Starting Date</th>
+												<th>Building Address</th>
+												<th>BNO</th>
+												<th>FNO</th>
+												<th>RNO</th>
+                                                <th>Name</th>
+												<th>Phone</th>
+												<th>Control</th>
+											</tr>
+										</thead>
+                                        
+										<tbody>
+											
+										</tbody>
+									</table>
+                                    </a>
+									<div class="clearfix"></div>
+								</div>
+							</div>
+							
+							
+							
+						</div>
+						
+					</div>
+				</div>
+				
+			</div>
+			<!-- Mainbar ends -->
+			
+			<div class="clearfix"></div>
+		</div>
+		<!-- Modal -->
+		<div id="modalConfirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title">Warning</h4>
+					</div>
+					<div class="modal-body">
+						<p>Are you sure you want to remove this building?</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="confirmYes" type="button" class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Remove</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- modal Notif-->
+		<div id="notifModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title">Add Notification</h4>
+					</div>
+					<div class="modal-body">
+					<!-- body -->
+						<form id="notifForm" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
+							<div class="form-group">
+								<label for="notifTitleMessage" class="control-label col-lg-3">Title</label>
+								<div class="col-lg-5">
+									<input id="notifTitleMessage" name="notifTitleMessage" type="text" class="form-control" placeholder="Title" required></input>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="notifMessage" class="control-label col-lg-3">Message</label>
+								<div class="col-lg-5">
+									<textarea id="notifMessage" name="notifMessage" type="text" class="form-control" placeholder="Message" style="width: 370px; height: 105px;" required></textarea>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="addNotifButton" type="button" class="btn btn-danger btn-sm" aria-hidden="true" onClick="addNotifButton()">Add</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Javascript files -->
+		<!-- jQuery -->
+		<script src="js/jquery.js"></script>
+		<!-- Bootstrap JS -->
+		<script src="js/bootstrap.min.js"></script>
+		<!-- jQuery UI -->
+		<script src="js/jquery-ui.min.js"></script>
+		<!-- Date Time Picker JS -->
+		<script src="js/bootstrap-datetimepicker.min.js"></script>	
+		<!-- Bootstrap wysihtml5 JS -->		
+		<script src="js/wysihtml5-0.3.0.js"></script>
+		<script src="js/prettify.js"></script>
+		<script src="js/bootstrap-wysihtml5.min.js"></script>
+		<!-- jQuery gritter -->
+		<script src="js/jquery.gritter.min.js"></script>
+		<!-- Validate JS -->
+		<script src="js/jquery.validate.js"></script>
+		<!-- Form wizard steps  JS -->
+		<script src="js/jquery.steps.min.js"></script>
+		<!-- jQuery Knob -->
+		<script src="js/jquery.knob.js"></script>
+		<!-- jQuery slim scroll -->
+		<script src="js/jquery.slimscroll.min.js"></script>
+		<!-- Data Tables JS -->
+		<script src="js/jquery.dataTables.min.js"></script>	
+		<!-- Pretty Photo JS -->
+		<script src="js/jquery.prettyPhoto.js"></script>	
+		<!-- Rate It JS -->
+		<script src="js/jquery.rateit.min.js"></script>	
+		<!-- Full calendar -->
+	    <script src="js/moment.min.js"></script>
+	    <script src="js/fullcalendar.min.js"></script>
+		<!-- Respond JS for IE8 -->
+		<script src="js/respond.min.js"></script>
+		<!-- HTML5 Support for IE -->
+		<script src="js/html5shiv.js"></script>
+		<!-- Idle JS -->
+		<script src="js/idle.min.js"></script>
+		<!-- SHA256 Encryption -->
+		<script src="js/sha256.min.js"></script>
+		<!-- Custom JS -->
+		<script src="js/custom.js"></script>
+		<script src="js/custom_logincheck.js"></script>
+		<script src="js/custom_tenant_main.js"></script>
+		
+	</body>	
+</html>

@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Title here -->
+		<title>Add Booking - GOKOST</title>
+		<!-- Description, Keywords and Author -->
+		<meta name="description" content="Your description">
+		<meta name="keywords" content="Your,Keywords">
+		<meta name="author" content="ResponsiveWebInc">
+		<script src="js/firebase.js"></script> <!-- version 5.3.1 -->
+		<script src="js/firebase_config.js"></script>
+		<script type="text/javascript" src="js/date.js"></script>
+			<script type="text/javascript" src="js/date-en-US.js"></script>
+        
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<!-- Styles -->
+		<!-- Bootstrap CSS -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<!-- Bootstrap Date-Time Picker CSS -->
+		<link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+		<link href="css/bootstrap-datepicker3.min.css" rel="stylesheet">
+		<!-- jQuery mobiscroll CSS -->
+		<link href="https://cdn.jsdelivr.net/npm/jtsage-datebox-bootstrap3@4.4.2/jtsage-datebox.min.css" rel="stylesheet">
+		<!-- jQuery Date Select -->
+		<link href="css/jquery.dateselect.css" rel="stylesheet">
+		<!-- jQuery UI -->
+		<link href="css/jquery-ui.css" rel="stylesheet">
+		<!-- jQuery gritter -->
+		<link href="css/jquery.gritter.css" rel="stylesheet">
+		<!-- Font awesome CSS -->
+		<link href="css/font-awesome.min.css" rel="stylesheet">	
+		<!-- Custom Color CSS -->
+		<link href="css/less-style.css" rel="stylesheet">	
+		<!-- Custom CSS -->
+		<link href="css/style.css" rel="stylesheet">
+		
+		<!-- Favicon -->
+		<link rel="shortcut icon" href="img/favicon-96x96.png">
+	</head>
+	
+	<body>
+		
+		<div id="cover-spin" style="background-color:rgba(0,0,0,0.85);"></div>
+		<div class="outer">
+			
+			<!-- Sidebar starts -->
+			<div class="sidebar">
+			
+				<div class="sidey">
+			
+					<!-- Logo -->
+					<div class="logo">
+						<h1><a href="home.html"><i class="fa fa-globe br-red"></i> GOKOST <span>Prototype</span></a></h1>
+					</div>
+					
+					<!-- Sidebar navigation starts -->
+					
+					<!-- Responsive dropdown -->
+					<div class="sidebar-dropdown"><a href="#" class="br-red"><i class="fa fa-bars"></i></a></div>
+					
+					<div class="side-nav">
+					
+						<div class="side-nav-block">
+							<!-- Sidebar heading -->
+							<h4>Main</h4>
+							<!-- Sidebar links -->
+							<ul class="list-unstyled">
+								<li><a href="home.html"><i class="fa fa-home"></i> Home</a></li>
+                                <li><a href="building_list.html"><i class="fa fa-building"></i> Building</a></li>
+								<li><a href="tenant_main.html"><i class="fa fa-user-circle"></i> Tenant</a></li>
+								<li><a href="report_main.html"><i class="fa fa-clipboard"></i> Report</a></li>
+							</ul>
+							<!-- Presence System -->
+							<h4>Users</h4>
+							<ul id="presenceList" class="list-unstyled"></ul>
+						</div>
+						
+					</div>
+					
+					<!-- Sidebar navigation ends -->
+					
+				</div>
+			</div>
+			<!-- Sidebar ends -->
+			
+			<!-- Mainbar starts -->
+			<div class="mainbar">
+			
+				<!-- Mainbar head starts -->
+				<div class="main-head">
+					<div class="container">
+						<div class="row">
+							<div class="col-md-7 col-sm-6 col-xs-4">
+								<!-- Search block -->
+								<div class="head-search pull-left">
+									<div id="loadingSearchBlock" style="display: none;">
+										<i class="fa fa-circle-o-notch fa-spin fa-lg fa-fw red"></i>
+										<span class="sr-only">Loading...</span>
+									</div>
+									<div id="searchBlock" style="display: none;">
+										<form class="form" role="form" autocomplete="off">
+											<div class="input-group">
+												<input id="searchbar" type="text" class="form-control" placeholder="Search...">
+												<span class="input-group-btn">
+													<button id="bsearch" class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+												</span>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>	
+							<div class="col-md-2 col-sm-2 col-xs-2">
+								<div class="pull-right" >
+									<a href="#" data-toggle="dropdown" id="notifToggle">
+									<big><i class="fa fa-bell"></i></big>
+									</a>
+									<!-- Dropdown -->
+									<ul class="dropdown-menu pull-left" aria-labelledby="notifToggle">
+										<li>
+										<!-- Notifikasi -->
+										<div id="notifList">
+											
+										</div>
+										</li>
+										<li><a href="#" onClick="addNotif()" id="add_notif" class="hidden" style="margin-right:15px"><big><i class="fa fa-plus"></i></big>Add New</a></li>
+									</ul>
+								</div>	
+							</div>	
+							<div class="col-md-3 col-sm-4 col-xs-6">
+								<!-- Head user -->
+								<div class="head-user dropdown pull-right">
+									
+									<div id="loadingUserHead" style="display: none;">
+										<i class="fa fa-circle-o-notch fa-spin fa-lg fa-fw red"></i>
+										<span class="sr-only">Loading...</span>
+									</div>
+									<div id="userHead" class="row" style="display: none;">
+										<div >
+											<img id="imgcircle" src="img/empty-photo-square.jpg" alt="" width="30px" height="30px" class="img-circle"/>
+											<a href="#" data-toggle="dropdown" id="profile">
+												<!-- User name -->
+												<span id="nama"></span> 
+												<i class="fa fa-caret-down fa-fw"></i> 
+											</a>
+											<!-- Dropdown -->
+											<ul class="dropdown-menu" aria-labelledby="profile">
+												<li><a href="adm_profile.html">My Profile</a></li>
+												<li id="admManage" class="hidden"><a href="adm_manage.html">Manage Users</a></li>
+												<li><a href="javaScript:void(0);" onClick="logout()">Sign Out</a></li>
+											</ul>
+										</div>
+									</div>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+						</div>	
+					</div>
+					
+				</div>
+				<!-- Mainbar head ends -->
+				
+				<div class="main-content">
+					<div class="container">
+										
+						<div class="page-content">
+						
+							<!-- Heading -->
+							<div class="single-head">
+								<!-- Heading -->
+								<h3 class="pull-left"><i class="fa fa-clipboard black"></i> Add Booking Form</h3>
+								<!-- Bread crumbs -->
+								<div class="breads pull-right">
+									<strong>Nav</strong> : <a href="home.html">GOKOST</a> / <a href="building_list.html">Building</a> / <a href="room_list.html">Room</a> / <a href="tenant_main.html">Tenant</a> / Add
+								</div>
+								<div class="clearfix"></div>
+							</div>
+							
+							<!-- Form page -->
+							<div class="page-form">
+								<form id="getTenant" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
+									<div class="row" style="margin-bottom:10px;">
+										<div class="col-lg-2">
+											<button id="specialcase" type="button" class="btn btn-success pull-left hidden">SPECIAL CASE</button>
+										</div>
+										<div class="col-lg-offset-8 col-lg-2">
+											<button id="startcam" type="button" class="btn btn-primary pull-right"><i class="fa fa-camera"></i> Start Camera</button>
+											<video id="video" width="1280" height="960" class="img-responsive hidden" autoplay></video>
+											<canvas id="canvas" width="1280" height="960" class="img-responsive hidden"></canvas>
+											<img id="pready" width="1280" height="960" class="img-responsive hidden" src="" />
+											<div id="progBarDiv" class="progress hidden" style="100%">
+												<div id="progBar" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+											</div>
+											<button id="snap" type="button" class="btn btn-xs btn-warning hidden" style="width: 100%">Snap Photo</button>
+											<button id="resetp" type="button" class="btn btn-xs btn-default hidden">Reset Photo</button>
+											<button id="finishp" type="button" class="btn btn-xs btn-success hidden">Finish</button>
+										</div>
+									</div>
+									<h4>ROOM</h4>
+									<div id="refblock" class="form-group">
+										<label for="refnumb" class="control-label col-lg-2">Reference Number</label>
+										<div class="col-lg-2">
+											<div class="checkbox">
+												<span id="roomid"></span><span id="tenantno">00</span>
+											</div>
+										</div>
+										<label for="refnumb" class="control-label col-lg-1">Start at</label>
+										<div class="col-lg-1">
+											<input id="refnumb" name="refnumb" class="form-control" type="number" min="0" max="99"/>
+										</div>
+										<button id="refchg" type="button" class="btn btn-primary">OK</button>
+									</div>
+									<div class="form-group">
+										<label for="propaddr" class="control-label col-lg-2">Property Address</label>
+										<div class="col-lg-7">
+											<input id="propaddr_s" name="propaddr_s" type="text" class="form-control" style="display:none;" required>
+											<input id="buildnumber" name="buildnumber" type="hidden" value="" readonly>
+											<div id="propshow">
+												<div class="checkbox">
+													<span id="propaddr_st" name="propaddr_st"></span>
+													<button id="resetaddr" type="button" class="btn btn-xs btn-danger" style="display:none;"><i class="fa fa-times"></i></button>
+												</div>
+												<div class="checkbox">
+													<span id="propaddr_ct" name="propaddr_ct"></span>
+													<span id="propaddr_pv" name="propaddr_pv"></span>
+													<span id="propaddr_zp" name="propaddr_zp"></span>
+													<span id="propnumb" name="propnumb"></span>
+												</div>
+											</div>
+										</div>
+									</div>
+                                	<div class="form-group">
+										<label for="floornumb" class="control-label col-lg-2">Floor Number</label>
+										<div class="col-lg-2">
+											<div id="boxfloor" class="checkbox">
+												<span id="floornumb" name="floornumb"></span>
+											</div>
+										</div>
+										<label for="roomnumb" class="control-label col-lg-3">Room Number</label>
+										<div class="col-lg-2">
+											<div id="boxroom" class="checkbox">
+												<span id="roomnumb" name="roomnumb"></span>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="payplan" class="control-label col-lg-2">Payment Plan</label>
+										<div class="col-lg-3">
+											<select id="payplan" name="payplan" class="form-control" required>
+												<option value="">Select Payment Plan</option>
+												<option value="annually">Annually</option>
+												<option value="semiannually">Semiannually</option>
+												<option value="monthly">Monthly</option>
+											</select>
+										</div>
+									</div>
+									<div id="roompricing" style="display:none;">
+										<div class="form-group">
+											<label for="rprice" class="control-label col-lg-2">Price</label>
+											<div class="col-lg-3">
+												<div class="checkbox">
+													<span id="rprice" name="rprice">Rp. -</span>
+													<input id="yearp" name="yearp" type="hidden" value="" readonly>
+													<input id="cprice" name="cprice" type="hidden" value="" readonly>
+													<span>&nbsp;</span>
+													<button id="padj" type="button" class="btn btn-xs btn-primary" style="display:none;"><img src="img/icons/plusminus.svg" width="12px"></button>
+												</div>
+											</div>
+											<label for="bmoney" class="control-label col-lg-2">Bond Money</label>
+											<div class="col-lg-3">
+												<div class="checkbox">
+													<span id="bmoney" name="bmoney">Rp. -</span>
+													<input id="cbond" name="cbond" type="hidden" value="" readonly>
+													<span>&nbsp;</span>
+													<button id="badj" type="button" class="btn btn-xs btn-primary" style="display:none;"><img src="img/icons/plusminus.svg" width="12px"></button>
+												</div>
+											</div>
+										</div>
+										<div class="form-group">
+											<label for="fprice" class="control-label col-lg-2">Final Price</label>
+											<div class="col-lg-3">
+												<div class="checkbox">
+													<span id="fprice" name="fprice">Rp. -</span>
+													<input id="cfprice" name="cfprice" type="hidden" value="" readonly>
+													<input id="payadjt" name="payadjt" type="hidden" value="0" readonly>
+												</div>
+											</div>
+											<label for="fbond" class="control-label col-lg-2">Final Bond Money</label>
+											<div class="col-lg-3">
+												<div class="checkbox">
+													<span id="fbond" name="fbond">Rp. -</span>
+													<input id="cfbond" name="cfbond" type="hidden" value="" readonly>
+													<input id="bondadjt" name="bondadjt" type="hidden" value="0" readonly>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="ctoption" class="control-label col-lg-2">Intended length of stay</label>
+										<div class="col-lg-3">
+											<select id="ctoption" name="ctoption" class="form-control" required>
+												<option value="">Select Contract Option</option>
+												<option value="1">1 Months</option>
+												<option value="6">6 Months</option>
+												<option value="12">12 Months</option>
+												<option value="18">18 Months</option>
+												<option value="24">24 Months</option>
+												<option value="30">30 Months</option>
+												<option value="36">36 Months</option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="edate" class="control-label col-lg-2">Starting date</label>
+										<div class="col-lg-3">
+											<div id="edatepicker" class="input-group date">
+												<input id="edate" name="edate" type="text" class="form-control" placeholder="Pick Date" readonly required>
+												<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>
+										<label for="adate" class="control-label col-lg-2">Available Date</label>
+										<div class="col-lg-3">
+											<div class="checkbox">
+												<span id="adate" name="adate"></span>
+											</div>
+										</div>
+									</div>
+									<!-- <div class="form-group">
+										<label for="occupystat" class="control-label col-lg-2">Occupancy Status</label>
+										<div class="col-lg-10">
+											<select id="occupystat" name="occupystat" class="form-control">
+												<option value="">Select Occupancy Status</option>
+												<option value="active">Active</option>
+												<option value="vacate">Vacate</option>
+												<option value="off">Off</option>
+											</select>
+										</div>
+									</div> -->
+									<h4>APPLICANT</h4>
+									<div class="form-group">
+										<label for="afname" class="control-label col-lg-2">Full Name</label>
+										<div class="col-lg-4">
+											<input id="afname" name="afname" class="form-control" type="text" maxlength="60" required/>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="bdate" class="control-label col-lg-2">Birth date</label>
+										<div class="col-lg-3">
+											<div mbsc-page class="demo-mobile-desktop-usage">
+												<div class="col-lg-6">
+													<div>
+														<div class="row">
+															<label>
+																<input id="bdate" class="form-control" placeholder="Please Select..."  required type="text" data-role="datebox" data-options='{"mode":"flipbox"}'>
+															</label>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="occupy" class="control-label col-lg-2">Occupation</label>
+										<div class="col-lg-3">
+											<select id="occupy" name="occupy" class="form-control" required>
+												<option value="">Select Occupation</option>
+												<option value="pelajar-mahasiswa">Student</option>
+												<option value="dosen-guru">Lecturer</option>
+												<option value="pns">Government Employees</option>
+												<option value="wiraswasta">Businessman</option>
+												<option value="pegawai-swasta">Pegawai Swasta</option>
+												<option value="other">Other</option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="idtype1" class="control-label col-lg-2">ID Type</label>
+										<div class="col-lg-2">
+											<select id="idtype1" name="idtype1" class="form-control" required>
+												<option value="">Select ID Type</option>
+												<option value="ktm">KTM/Kartu Pelajar</option>
+												<option value="ktp">KTP</option>
+												<option value="sim">SIM</option>
+												<option value="pass">Passport</option>
+											</select>
+											<select id="idtype2" name="idtype2" class="form-control" required>
+												<option value="">Select ID Type</option>
+												<option value="ktm">KTM/Kartu Pelajar</option>
+												<option value="ktp">KTP</option>
+												<option value="sim">SIM</option>
+												<option value="pass">Passport</option>
+											</select>
+										</div>
+										<div class="col-lg-3">
+											<input id="idno1" name="idno1" class="form-control" type="number" maxlength="40" placeholder="ID Number" required/>
+											<input id="idno2" name="idno2" class="form-control" type="number" maxlength="40" placeholder="ID Number" required/>
+										</div>
+										<div class="col-lg-2">
+											<button id="bupload1" type="button" class="btn btn-primary"><i class="fa fa-upload"></i> Upload ID</button>
+											<input id="upBox1" name="upBox1" type="file" accept=".jpg,.jpeg,.png" style="display: none" />
+											<button id="bupload2" type="button" class="btn btn-primary"><i class="fa fa-upload"></i> Upload ID</button>
+											<input id="upBox2" name="upBox2" type="file" accept=".jpg,.jpeg,.png" style="display: none" />
+										</div>
+										<div class="col-lg-2">
+											<div class="checkbox">
+												<span id="up1val" name="up1val" style="display:none;"></span>
+											</div>
+											<div class="checkbox">
+												<span id="up2val" name="up2val" style="display:none;"></span>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-lg-offset-2 col-lg-2">
+											<button id="bupload3" type="button" class="btn btn-primary"><i class="fa fa-upload"></i> Upload KK</button>
+											<input id="upBox3" name="upBox3" type="file" accept=".jpg,.jpeg,.png" style="display: none" />
+										</div>
+										<div class="col-lg-2">
+											<div class="checkbox">
+												<span id="up3val" name="up1val" style="display:none;"></span>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="aadstreet" class="control-label col-lg-2">Permanent Address</label>
+										<div class="col-lg-4">
+											<input id="aadstreet" name="aadstreet" class="form-control" type="text" maxlength="75" placeholder="Street" required/>
+											<input id="aadcity" name="aadcity" class="form-control" type="text" maxlength="30" placeholder="City" required/>
+										</div>
+										<div class="col-lg-3">
+											<input id="aadprov" name="aadprov" class="form-control" type="text" maxlength="30" placeholder="Province" required/>
+											<input id="aadzip" name="aadzip" class="form-control" type="number" maxlength="5" placeholder="Zipcode" required/>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="email" class="control-label col-lg-2">Email</label>
+										<div class="col-lg-3">
+											<input id="email" name="email" class="form-control" type="email" maxlength="40" required/>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="aphome" class="control-label col-lg-2">Contact Number</label>
+										<div class="col-lg-3">
+											<input id="aphome" name="aphome" class="form-control" type="number" maxlength="20" placeholder="Home" required/>
+										</div>
+										<div class="col-lg-3">
+											<input id="apmobile" name="apmobile" class="form-control" type="number" maxlength="13" placeholder="Mobile" required/>
+										</div>
+									</div>
+									<h4>REFERENCES</h4>
+									<div class="form-group">
+										<label for="r1fname" class="control-label col-lg-2">Full Name</label>
+										<div class="col-lg-4">
+											<input id="r1fname" name="r1fname" class="form-control" type="text" maxlength="60" required/>
+										</div>
+										<label for="r1rel" class="control-label col-lg-1">Relation</label>
+										<div class="col-lg-2">
+											<select id="r1rel" name="r1rel" class="form-control" required>
+												<option value="">Select Relation</option>
+												<option value="parent">Parent</option>
+												<option value="guardian">Guardian</option>
+												<option value="relative">Relative</option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="r1adstreet" class="control-label col-lg-2">Address</label>
+										<div class="col-lg-4">
+											<input id="r1adstreet" name="r1adstreet" class="form-control" type="text" maxlength="75" placeholder="Street" required/>
+											<input id="r1adcity" name="r1adcity" class="form-control" type="text" maxlength="30" placeholder="City" required/>
+										</div>
+										<div class="col-lg-3">
+											<input id="r1adprov" name="r1adprov" class="form-control" type="text" maxlength="30" placeholder="Province" required/>
+											<input id="r1adzip" name="r1adzip" class="form-control" type="number" maxlength="5" placeholder="Zipcode" required/>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="r1p" class="control-label col-lg-2">Contact Number</label>
+										<div class="col-lg-3">
+											<input id="r1p" name="r1p" class="form-control" type="number" maxlength="20" required/>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="r2fname" class="control-label col-lg-2">Full Name</label>
+										<div class="col-lg-4">
+											<input id="r2fname" name="r2fname" class="form-control" type="text" maxlength="60" required/>
+										</div>
+										<label for="r2rel" class="control-label col-lg-1">Relation</label>
+										<div class="col-lg-2">
+											<input id="r2rel" name="r2rel" class="form-control" type="text" maxlength="60" required/>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="address" class="control-label col-lg-2">Address</label>
+										<div class="col-lg-4">
+											<input id="r2adstreet" name="r2adstreet" class="form-control" type="text" maxlength="75" placeholder="Street" required/>
+											<input id="r2adcity" name="r2adcity" class="form-control" type="text" maxlength="30" placeholder="City" required/>
+										</div>
+										<div class="col-lg-3">
+											<input id="r2adprov" name="r2adprov" class="form-control" type="text" maxlength="30" placeholder="Province" required/>
+											<input id="r2adzip" name="r2adzip" class="form-control" type="number" maxlength="5" placeholder="Zipcode" required/>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="r2p" class="control-label col-lg-2">Contact Number</label>
+										<div class="col-lg-3">
+											<input id="r2p" name="r2p" class="form-control" type="number" maxlength="20" required/>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="paddress" class="control-label col-lg-2">Previous Address</label>
+										<div class="col-lg-5">
+											<div class="radio">
+												<label>
+													<input type="radio" name="paddressrad" id="paddress1" value="same" required>
+													Same as permanent address
+												</label>
+											</div>
+											<div class="radio">
+												<label>
+													<input type="radio" name="paddressrad" id="paddress2" value="other" required>
+													Other
+												</label>
+											</div>
+											<input id="paddress" name="paddress" class="form-control" type="text" maxlength="100" placeholder="Previous Address" readonly required/>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="rlosy" class="control-label col-lg-2">Length of stay</label>
+										<div class="col-lg-2">
+											<input id="rlosy" name="rlosy" class="form-control" type="number" min="0" max="999" placeholder="Year" required/>
+										</div>
+										<div class="col-lg-2">
+											<input id="rlosm" name="rlosm" class="form-control" type="number" min="0" max="999" placeholder="Months" required/>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="rreason" class="control-label col-lg-2">Reason for leaving</label>
+										<div class="col-lg-6">
+											<input id="rreason" name="rreason" class="form-control" type="text" maxlength="100" required/>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-lg-offset-2 col-lg-10">
+											<input id="thresholdCounter" name="tresholdCounter" type="hidden" value="0">
+											<input id="myRoomID" name="myRoomID" type="hidden" value="">
+											<button id="bfinish" type="submit" class="btn btn-danger">Submit</button>
+											<span>&nbsp;</span>
+											<span id="loadingUpload" style="display: none;">
+												<i class="fa fa-circle-o-notch fa-spin fa-lg fa-fw red"></i>
+												<span class="sr-only">Loading...</span>
+											</span>
+										</div>	
+									</div>
+								</form>
+							</div> <!-- Form page end -->
+							
+						</div> <!-- Page content end -->
+						
+					</div>
+				</div>
+				
+			</div>
+			<!-- Mainbar ends -->
+			
+			<div class="clearfix"></div>
+		</div>
+		<!-- Modal -->
+		<div id="modalConfirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color:#ED4747">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title" style="color:#FFF"><b>Confirmation Dialog</b></h4>
+					</div>
+					<div class="modal-body">
+						<p>Are you sure you want to book this room?</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="confirmYes" type="button" class="btn btn-danger btn-sm" data-dismiss="modal" aria-hidden="true">Save</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="modalPriceAdjt" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color:#528FE2">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title" style="color:#FFF"><b>Adjustment</b></h4>
+					</div>
+					<div class="modal-body">
+						<form id="adjustmentPriceForm" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
+							<div class="form-group">
+								<label for="priceAdjustment" class="control-label col-lg-3">Price Adjustment</label>
+								<div class="col-lg-5">
+									<input id="priceAdjustment" name="priceAdjustment" class="form-control" type="text" required/>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="confirmPriceAdjt" type="button" class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Adjust</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="modalBondAdjt" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color:#528FE2">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title" style="color:#FFF"><b>Adjustment</b></h4>
+					</div>
+					<div class="modal-body">
+						<form id="adjustmentBondForm" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
+							<div class="form-group">
+								<label for="bondAdjustment" class="control-label col-lg-4">Bond Money Adjustment</label>
+								<div class="col-lg-5">
+									<input id="bondAdjustment" name="bondAdjustment" class="form-control" type="text" required/>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="confirmBondAdjt" type="button" class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Adjust</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- modal Notif-->
+		<div id="notifModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title">Add Notification</h4>
+					</div>
+					<div class="modal-body">
+					<!-- body -->
+						<form id="notifForm" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
+							<div class="form-group">
+								<label for="notifTitleMessage" class="control-label col-lg-3">Title</label>
+								<div class="col-lg-5">
+									<input id="notifTitleMessage" name="notifTitleMessage" type="text" class="form-control" placeholder="Title" required></input>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="notifMessage" class="control-label col-lg-3">Message</label>
+								<div class="col-lg-5">
+									<textarea id="notifMessage" name="notifMessage" type="text" class="form-control" placeholder="Message" style="width: 370px; height: 105px;" required></textarea>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="addNotifButton" type="button" class="btn btn-danger btn-sm" aria-hidden="true" onClick="addNotifButton()">Add</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Javascript files -->
+		<!-- jQuery -->
+		<script src="js/jquery.js"></script>
+		<!-- Bootstrap JS -->
+		<script src="js/bootstrap.min.js"></script>
+		<!-- jQuery UI -->
+		<script src="js/jquery-ui.min.js"></script>
+		<!-- Date Time Picker JS -->
+		<script src="js/bootstrap-datetimepicker.min.js"></script>
+		<script src="js/bootstrap-datetimepicker.id.js"></script>
+		<script src="js/bootstrap-datepicker.min.js"></script>
+		<!-- Bootstrap wysihtml5 JS -->		
+		<script src="js/wysihtml5-0.3.0.js"></script>
+		<script src="js/prettify.js"></script>
+		<script src="js/bootstrap-wysihtml5.min.js"></script>
+		<!-- jQuery Mouse Wheel -->
+		<script src="js/jquery.mousewheel.min.js"></script>
+		<!-- jQuery Date Select -->
+		<script src="js/jquery.dateselect.min.js"></script>
+		<!-- jQuery gritter -->
+		<script src="js/jquery.gritter.min.js"></script>
+		<!-- Validate JS -->
+		<script src="js/jquery.validate.js"></script>
+		<!-- Form wizard steps  JS -->
+		<script src="js/jquery.steps.min.js"></script>
+		<!-- jQuery Knob -->
+		<script src="js/jquery.knob.js"></script>
+		<!-- jQuery slim scroll -->
+		<script src="js/jquery.slimscroll.min.js"></script>
+		<!-- Data Tables JS -->
+		<script src="js/jquery.dataTables.min.js"></script>	
+		<!-- Pretty Photo JS -->
+		<script src="js/jquery.prettyPhoto.js"></script>	
+		<!-- Rate It JS -->
+		<script src="js/jquery.rateit.min.js"></script>	
+	    <!-- jQuery full calendar -->
+	    <script src="js/moment.min.js"></script>
+	    <script src="js/fullcalendar.min.js"></script>
+		<!-- mobiscroll -->
+		<script src="https://cdn.jsdelivr.net/npm/jtsage-datebox-bootstrap3@4.4.2/jtsage-datebox.min.js" type="text/javascript"></script>
+		<!-- Respond JS for IE8 -->
+		<script src="js/respond.min.js"></script>
+		<!-- HTML5 Support for IE -->
+		<script src="js/html5shiv.js"></script>
+		<!-- Idle JS -->
+		<script src="js/idle.min.js"></script>
+		<!-- SHA256 Encryption -->
+		<script src="js/sha256.min.js"></script>
+		<!-- Custom JS -->
+		<script src="js/custom.js"></script>
+		<script src="js/custom_logincheck.js"></script>
+        <script src="js/custom_tenant_add.js"></script>
+		<!-- Javascript for this page -->
+		<script>
+		/*$('#bdatepicker').datepicker({
+			format: "d-M-yy",
+			autoclose: true
+		});*/
+		</script>
+
+	</body>	
+</html>

@@ -1,0 +1,9 @@
+.intendedLength{
+    width: 100%;
+    display: block;
+    margin-top: 10px;
+}
+
+.angka input{
+    padding: 3px 15px 3px 15px;
+}

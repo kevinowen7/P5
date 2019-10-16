@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Title here -->
+		<title>List Room - GOKOST</title>
+		<!-- Description, Keywords and Author -->
+		<meta name="description" content="Your description">
+		<meta name="keywords" content="Your,Keywords">
+		<meta name="author" content="ResponsiveWebInc">
+		<script src="js/firebase.js"></script> <!-- version 5.3.1 -->
+    	<script src="js/firebase_config.js"></script>
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<!-- Styles -->
+		<!-- Bootstrap CSS -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<!-- Bootstrap Date-Time Picker CSS -->
+		<link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+		<link href="css/bootstrap-datepicker3.min.css" rel="stylesheet">
+		<!-- jQuery prettyPhoto -->
+		<link href="css/prettyPhoto.css" rel="stylesheet">
+		<!-- jQuery Datatables -->
+		<link href="css/jquery.dataTables.css" rel="stylesheet">
+		<!-- jQuery UI -->
+		<link href="css/jquery-ui.css" rel="stylesheet">
+		<!-- Font awesome CSS -->
+		<link href="css/font-awesome.min.css" rel="stylesheet">		
+		<!-- jQuery gritter -->
+		<link href="css/jquery.gritter.css" rel="stylesheet">
+		<!-- Custom Color CSS -->
+		<link href="css/less-style.css" rel="stylesheet">	
+		<!-- Custom CSS -->
+		<link href="css/style.css" rel="stylesheet">
+        <style>
+		.dataTables_filter{ display: none; }
+		.dataTables_wrapper .dataTables_length {
+			float: right;
+		}
+		.dataTables_wrapper .dataTables_filter {
+			float: left;
+			text-align: left;
+		}
+		.nav-tabs li a:hover {
+			background-color: #aaa;
+			border-color: #aaa;
+		}
+		.nav-tabs li a:focus {
+			background-color: #aaa;
+			border-color: #aaa;
+		}
+		.nav-tabs li.active a {
+			background-color: #aaa;
+			border-color: #aaa;
+		}
+		.nav-tabs li.active a:hover {
+			background-color: #aaa;
+			border-color: #aaa;
+		}
+		.nav-tabs li.active a:focus {
+			background-color: #aaa;
+			border-color: #aaa;
+		}
+		</style>
+		
+		<!-- Favicon -->
+		<link rel="shortcut icon" href="img/favicon-96x96.png">
+	</head>
+	
+	<body>
+		
+		<div id="cover-spin" style="background-color:rgba(0,0,0,0.85);"></div>
+		<div class="outer">
+			
+			<!-- Sidebar starts -->
+			<div class="sidebar">
+			
+				<div class="sidey">
+			
+					<!-- Logo -->
+					<div class="logo">
+						<h1><a href="home.html"><i class="fa fa-globe br-red"></i> GOKOST <span>Prototype</span></a></h1>
+					</div>
+					
+					<!-- Sidebar navigation starts -->
+					
+					<!-- Responsive dropdown -->
+					<div class="sidebar-dropdown"><a href="#" class="br-red"><i class="fa fa-bars"></i></a></div>
+					
+					<div class="side-nav">
+					
+						<div class="side-nav-block">
+							<!-- Sidebar heading -->
+							<h4>Main</h4>
+							<!-- Sidebar links -->
+							<ul class="list-unstyled">
+								<li><a href="home.html"><i class="fa fa-home"></i> Home</a></li>
+                                <li><a href="building_list.html"><i class="fa fa-building"></i> Building</a></li>
+								<li><a href="tenant_main.html"><i class="fa fa-user-circle"></i> Tenant</a></li>
+								<li><a href="report_main.html"><i class="fa fa-clipboard"></i> Report</a></li>
+							</ul>
+							<!-- Presence System -->
+							<h4>Users</h4>
+							<ul id="presenceList" class="list-unstyled"></ul>
+						</div>
+						
+					</div>
+					
+					<!-- Sidebar navigation ends -->
+					
+				</div>
+			</div>
+			<!-- Sidebar ends -->
+			
+			<!-- Mainbar starts -->
+			<div class="mainbar">
+			
+				<!-- Mainbar head starts -->
+				<div class="main-head">
+					<div class="container">
+						<div class="row">
+							<div class="col-md-7 col-sm-6 col-xs-4">
+								<!-- Search block -->
+								<div class="head-search pull-left">
+									<div id="loadingSearchBlock" style="display: none;">
+										<i class="fa fa-circle-o-notch fa-spin fa-lg fa-fw red"></i>
+										<span class="sr-only">Loading...</span>
+									</div>
+									<div id="searchBlock" style="display: none;">
+										<form class="form" role="form" autocomplete="off">
+											<div class="input-group">
+												<input id="searchbar" type="text" class="form-control" placeholder="Search...">
+												<span class="input-group-btn">
+													<button id="bsearch" class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+												</span>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>	
+							<div class="col-md-2 col-sm-2 col-xs-2">
+								<div class="pull-right" >
+									<a href="#" data-toggle="dropdown" id="notifToggle">
+									<big><i class="fa fa-bell"></i></big>
+									</a>
+									<!-- Dropdown -->
+									<ul class="dropdown-menu pull-left" aria-labelledby="notifToggle">
+										<li>
+										<!-- Notifikasi -->
+										<div id="notifList">
+											
+										</div>
+										</li>
+										<li><a href="#" onClick="addNotif()" id="add_notif" class="hidden" style="margin-right:15px"><big><i class="fa fa-plus"></i></big>Add New</a></li>
+									</ul>
+								</div>	
+							</div>	
+							<div class="col-md-3 col-sm-4 col-xs-6">
+								<!-- Head user -->
+								<div class="head-user dropdown pull-right">
+									
+									<div id="loadingUserHead" style="display: none;">
+										<i class="fa fa-circle-o-notch fa-spin fa-lg fa-fw red"></i>
+										<span class="sr-only">Loading...</span>
+									</div>
+									<div id="userHead" class="row" style="display: none;">
+										<div >
+											<img id="imgcircle" src="img/empty-photo-square.jpg" alt="" width="30px" height="30px" class="img-circle"/>
+											<a href="#" data-toggle="dropdown" id="profile">
+												<!-- User name -->
+												<span id="nama"></span> 
+												<i class="fa fa-caret-down fa-fw"></i> 
+											</a>
+											<!-- Dropdown -->
+											<ul class="dropdown-menu" aria-labelledby="profile">
+												<li><a href="adm_profile.html">My Profile</a></li>
+												<li id="admManage" class="hidden"><a href="adm_manage.html">Manage Users</a></li>
+												<li><a href="javaScript:void(0);" onClick="logout()">Sign Out</a></li>
+											</ul>
+										</div>
+									</div>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+						</div>		
+					</div>
+					
+				</div>
+				<!-- Mainbar head ends -->
+				
+				<div class="main-content">
+					<div class="container">
+										
+						<div class="page-content">
+						
+							<!-- Heading -->
+							<div class="single-head">
+								<!-- Heading -->
+								<h3 class="pull-left"><i class="fa fa-table black"></i>Room List</h3>
+								<!-- Bread crumbs -->
+								<div class="breads pull-right">
+									<strong>Nav</strong> : <a href="home.html">GOKOST</a> / <a href="building_list.html">Building</a> / Room
+								</div>
+								<div class="clearfix"></div>
+							</div>
+							<!-- Table Page -->
+                            <div class="row">
+  								<div class="col-lg-3 pull-left" style="width:18%">
+									<div class="input-group">
+										<span class="input-group-addon ">Building Number</span>
+										<input id="buildNo" type="text" class="form-control" value="">
+									</div>
+                                  
+                                </div>
+                                <div class="col-lg-5">
+                                <div class="input-group">
+                                    <span class="input-group-addon ">Building Address</span>
+                                        <input id="propaddr_s" name="propaddr_s" type="text" class="form-control" style="display:none;" required>
+                                        <input id="buildnumber" name="buildnumber" type="hidden" value="" readonly>
+                                        <div id="propshow">
+                                            <div class="checkbox">
+                                                <span id="propaddr_ct" name="propaddr_ct"></span>
+                                                <span id="propaddr_pv" name="propaddr_pv"></span>
+                                                <span id="propaddr_zp" name="propaddr_zp"></span>
+                                                <span id="propnumb" name="propnumb"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </div>
+								 <div class="pull-right">
+									<button id="expenseButton" class="btn btn-primary pull-right" style="margin-right:5px"><i class="fa fa-plus"></i> Expense</button>
+								</div>
+                                <div class="pull-right">
+                                    <button id="adder" class="btn btn-success pull-right" onClick="addRoom(document.getElementById('buildNo').value)" style="margin-right:5px"><i class="fa fa-plus"></i> Room</button>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <!-- tab -->
+                           	<ul id="myTab" class="nav nav-tabs" style="font-size:14px;">
+                                <li id="tabroomi" class="active " ><a href="#roomi" data-toggle="tab">Room Info</a></li>
+                                <li id="tabtenanti"><a href="#tenanti" data-toggle="tab">Summary</a></li>
+								<li id="tabexpensei"><a href="#expensei" data-toggle="tab">Expense</a></li>
+                            </ul>
+                            <!-- content-->
+                            <div id="myTabContent" class="tab-content">
+                                <!-- isi tab room info -->
+                                <div class="tab-pane fade in active" id="roomi">
+									<div class="row">
+										<div style="margin-bottom:10px" class="col-lg-2 pull-left">
+											<label for="totalR" class="control-label" style="margin-top:15px">Total Room: </label>
+											<span id="totalR" name="totalR" /></span>
+										</div>
+										<div style="margin-bottom:10px" class="pull-left">
+											<label for="totalF" class="control-label" style="margin-top:15px">Total Floor: </label>
+											<span id="totalF" name="totalF" /></span>
+										</div>
+										<div class="col-lg-3 pull-right">
+											<select id="froom" name="froom" class="form-control">
+												<option value="">Filter</option>
+												<option value="Last Edited">Last Edited</option>
+												<option value="Available">Available</option>
+											</select>
+										</div>
+									</div>
+									<div class="row">
+										<div id="floorPlan">
+											<!-- floor plan yang nanti akan di append-->
+										</div>
+									</div>
+                                    <div class="col">
+                                        <div class="page-tables">
+                                            <!-- Table Room Info-->
+                                            <div class="table-responsive">
+                                                <table cellpadding="0" cellspacing="0" border="0" id="data-table1" width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Floor</th>
+                                                            <th>Number</th>
+                                                            <th>Facilities</th>
+                                                            <th>Price (Annually)</th>
+                                                            <th>Bond Money (Annually)</th>
+                                                            <th>Available Date</th>
+                                                            <th>Control</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody><div id="body">
+                                                        
+                                                    </div></tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <th>Floor</th>
+                                                            <th>Number</th>
+                                                            <th>Facilities</th>
+                                                            <th>Price (Annually)</th>
+                                                            <th>Bond Money (Annually)</th>
+                                                            <th>Available Date</th>
+                                                            <th>Control</th>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                                <div class="clearfix"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end tab room info--> 
+                                <!-- isi tab summary -->
+                                <div class="tab-pane fade in" id="tenanti">
+									<div class="page-grid">
+										<div class="row">
+											<div style="margin-bottom:25px" class="col-lg-2 pull-left">
+												<label for="totalR" class="control-label" style="margin-top:15px">Total Room: </label>
+												<span id="totalR1" name="totalR1" /></span>
+											</div>
+											<div style="margin-bottom:10px" class="pull-left">
+												<label for="totalF1" class="control-label" style="margin-top:15px">Total Floor: </label>
+												<span id="totalF1" name="totalF1" /></span>
+											</div>
+											<div style="margin-bottom:25px;margin-left:50px" class="pull-left col-lg-3">
+												<label for="sdate" class="control-label"></label>
+												<div id="sdatepicker" class="input-group date">
+													<input id="sdate" name="sdate" type="text" class="form-control" placeholder="Pick Starting Date" readonly required>
+													<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+												</div>
+											</div>
+											<div style="margin-bottom:25px" class="col-lg-3">
+												<label for="edate" class="control-label"></label>
+												<div id="edatepicker" class="input-group date">
+													<input id="edate" name="edate" type="text" class="form-control" placeholder="Pick End Date" readonly required>
+													<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="page-tables">
+                                        <!-- Table -->
+                                        <div class="table-responsive">
+											<table cellpadding="0" class="table table-striped stripe row-border" cellspacing="0" border="0" id="data-table3" width="100%">
+												<thead>
+													<tr>
+														<th>FL#</th>
+														<th>RM#</th>
+														<th>RATE Per Annually</th>
+														<th>Name</th>
+														<th>Start Date</th>
+														<th>End Date</th>
+														<th>Ref#</th>
+														<th>Plan</th>
+														<th>Due</th>
+														<th>Received</th>
+														<th>Balance</th>
+													</tr>
+												</thead>
+												<tbody></tbody>
+												<tfoot>
+													<tr>
+														<th>Total</th>
+														<th>&nbsp;</th>
+														<th>&nbsp;</th>
+														<th>&nbsp;</th>
+														<th>&nbsp;</th>
+														<th>&nbsp;</th>
+														<th>&nbsp;</th>
+														<th>&nbsp;</th>
+														<th id="DueTot" style="padding:10px;font-weight:normal;"></th>
+														<th id="ReceivedTot" style="padding:10px;font-weight:normal;"></th>
+														<th id="BalanceTot" style="padding:10px;font-weight:normal;"></th>
+													</tr>
+												</tfoot>
+											</table>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                    </div>
+								</div>
+								<!-- isi tab expense -->
+								<div class="tab-pane fade in" id="expensei">
+									<div class="page-grid">
+										<div class="row">
+											<div style="margin-bottom:25px;margin-left:275px" class="pull-left col-lg-3">
+												<label for="sdate" class="control-label"></label>
+												<div id="sdatepickerEx" class="input-group date">
+													<input id="sdate" name="sdate" type="text" class="form-control" placeholder="Pick Starting Date" readonly required>
+													<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+												</div>
+											</div>
+											<div style="margin-bottom:25px" class="col-lg-3">
+												<label for="edate" class="control-label"></label>
+												<div id="edatepickerEx" class="input-group date">
+													<input id="edate" name="edate" type="text" class="form-control" placeholder="Pick End Date" readonly required>
+													<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="page-tables">
+                                        <!-- Table -->
+                                        <div class="table-responsive">
+											<table cellpadding="0" class="table table-striped stripe row-border display nowrap" cellspacing="0" border="0" id="data-table5" width="100%">
+												<thead>
+													<tr>
+														<th>ID Expense</th>
+														<th>Date</th>
+														<th>Details</th>
+														<th>Amount</th>
+													</tr>
+												</thead>
+												<tbody></tbody>
+												<tfoot>
+													<tr>
+														<th>Total</th>
+														<th>&nbsp;</th>
+														<th>&nbsp;</th>
+														<th id="AmountTot" style="padding:10px;font-weight:normal;"></th>
+													</tr>
+												</tfoot>
+											</table>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                    </div>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+				
+			</div>
+			<!-- Mainbar ends -->
+			
+			<div class="clearfix"></div>
+		</div>
+		<!-- Modal -->
+		<div id="modalConfirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title">Warning</h4>
+					</div>
+					<div class="modal-body">
+						<p>Are you sure you want to remove this room?</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="confirmYes" type="button" class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Remove</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--room price adjustment-->
+		<div id="modalRoomPrice" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color:#528FE2">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title" style="color:#FFF"><b>Room Price</b></h4>
+					</div>
+					<div class="modal-body">
+						<form id="adjustmentPriceForm" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
+							<div class="form-group">
+								<div class="col-lg-5">
+									<input id="priceAdjustment" name="priceAdjustment" class="form-control" type="text" required/>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="confirmPriceAdjt" type="button" class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Adjust</button>
+					</div>
+				</div>
+			</div>
+		</div>
+        <!-- modal payment-->
+		<div id="modalPayment" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title">Add Payment</h4>
+					</div>
+					<div class="modal-body">
+						 <!-- tab payment -->
+                        <div id="tabpayment">
+                            <div class="page-form">
+                                <form id="getTenant" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
+                                    <div class="form-group">
+                                        <label for="edatepay" class="control-label col-lg-3">Date</label>
+                                        <div class="col-lg-4">
+                                            <div id="edatepicker" class="input-append input-group dtpicker">
+                                                <input id="edatepay" name="edate" data-format="MM/dd/yyyy" type="text" class="form-control" placeholder="Pick Date" readonly required>
+                                                <span id="picker2" class="input-group-addon add-on btn btn-default" style="cursor: pointer;">
+                                                    <i data-time-icon="fa fa-times" data-date-icon="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="amountpay" class="control-label col-lg-3">Amount</label>
+                                        <div class="col-lg-4">
+                                            <input id="amountpay" name="amountpay" class="form-control" type="number" maxlength="20" required/>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="detailspay" class="control-label col-lg-3">Details</label>
+                                        <div class="col-lg-4">
+                                            <select id="detailspay" name="detailspay" class="form-control" required>
+                                                <option value="">Select Details</option>
+                                                <option value="rent">Rental Payment</option>
+                                                <option value="fine">Fine Payment</option>
+                                                <option value="other">Other Payment</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group hide" id="optpay">
+                                        <label for="otherpay" class="control-label col-lg-3">Other</label>
+                                        <div class="col-lg-4">
+                                            <input id="otherpay" name="otherpay" class="form-control" type="text" required/>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                </form>
+                            </div>
+                        </div>
+                        <!-- end tab payment -->
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="confirmPayment" type="button" class="btn btn-danger btn-sm" data-dismiss="modal" aria-hidden="true">Add Payment</button>
+					</div>
+				</div>
+			</div>
+		</div>
+        <!-- modal invoice -->
+        <div id="modalInvoice" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title">Add Invoice</h4>
+					</div>
+					<div class="modal-body">
+						<!-- tab in voice -->
+                        <div id="tabvoice">
+                            <div class="page-form">
+                                <form id="getTenant" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
+                                    <div class="form-group">
+                                        <label for="edatevoice" class="control-label col-lg-3">Date</label>
+                                        <div class="col-lg-4">
+                                            <div id="edatepickerv" class="input-append input-group dtpicker">
+                                                <input id="edatevoice" name="edate" data-format="MM/dd/yyyy" type="text" class="form-control" placeholder="Pick Date" readonly required>
+                                                <span id="picker2" class="input-group-addon add-on btn btn-default" style="cursor: pointer;">
+                                                    <i data-time-icon="fa fa-times" data-date-icon="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="amountvoice" class="control-label col-lg-3">Amount</label>
+                                        <div class="col-lg-4">
+                                            <input id="amountvoice" name="amountvoice" class="form-control" type="number" maxlength="20" required/>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="detailsvoice" class="control-label col-lg-3">Details</label>
+                                        <div class="col-lg-4">
+                                            <select id="detailsvoice" name="detailsvoice" class="form-control" required>
+                                                <option value="">Select Details</option>
+                                                <option value="rent">Rental Due</option>
+                                                <option value="fine">Fine Due</option>
+                                                <option value="other">Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group hide" id="optvoice">
+                                        <label for="othervoice" class="control-label col-lg-3">Other</label>
+                                        <div class="col-lg-4">
+                                            <input id="othervoice" name="othervoice" class="form-control" type="text" required/>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="rcurrent" class="control-label col-lg-3">One of Recurrent</label>
+                                        <div class="col-lg-4">
+                                            <select id="rcurrent" name="rcurrent" class="form-control" required>
+                                                <option value="">Select Details</option>
+                                                <option value="monthly">Monthly</option>
+                                                <option value="semi-annually">Semi Annually</option>
+                                                <option value="annually">Annually</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                </form>
+                            </div>
+                        </div>
+                        <!-- end tab in voice -->
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="confirmInvoice" type="button" class="btn btn-danger btn-sm" data-dismiss="modal" aria-hidden="true">Add Invoice</button>
+					</div>
+				</div>
+			</div>
+		</div>
+        <!-- end modal-->
+        <!-- modal expense -->
+        <div id="modalExpense" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color:#528FE2">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title" style="color:#FFF"><b>Add Expense</b></h4>
+					</div>
+					<div class="modal-body">
+ 						<!-- tab expense -->
+                        <div id="tabexpense">
+                            <div class="page-form">
+                                <form id="expenseForm" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
+                                    
+                                    <div class="form-group">
+                                        <label for="edateex" class="control-label col-lg-3">Date</label>
+                                        <div class="col-lg-4">
+											<div id="edatepickerex" class="input-group date">
+												<input id="edateex" name="edateex" type="text" class="form-control" placeholder="Pick Date" readonly required>
+												<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+											</div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="amountex" class="control-label col-lg-3">Amount</label>
+                                        <div class="col-lg-4">
+                                            <input id="amountex" name="amountex" class="form-control" type="text" maxlength="20" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="detailsex" class="control-label col-lg-3">Details</label>
+                                        <div class="col-lg-4">
+                                            <select id="detailsex" name="detailsex" class="form-control" required>
+                                                <option value="">Select Details</option>
+                                                <option value="rtrw fee">RT/RW fee</option>
+                                                <option value="tvcable">TV Cable</option>
+                                                <option value="internet">Internet</option>
+                                                <option value="electricity">Electricity</option>
+                                                <option value="laundry">Laundry</option>
+                                                <option value="other">Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" id="optex" style="display:none;">
+                                        <label for="otherex" class="control-label col-lg-3">Other</label>
+                                        <div class="col-lg-4">
+                                            <input id="otherex" name="otherex" class="form-control" type="text" required/>
+                                        </div>
+                                    </div>
+                                    
+                                </form>
+                            </div>
+                        </div>
+                        <!-- end tab expense -->
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="confirmExpense" type="button" class="btn btn-primary btn-sm" >Add Expense</button>
+					</div>
+				</div>
+			</div>
+		</div>
+        <!-- end modal-->
+		<!-- modal Notif-->
+		<div id="notifModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title">Add Notification</h4>
+					</div>
+					<div class="modal-body">
+					<!-- body -->
+						<form id="notifForm" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
+							<div class="form-group">
+								<label for="notifTitleMessage" class="control-label col-lg-3">Title</label>
+								<div class="col-lg-5">
+									<input id="notifTitleMessage" name="notifTitleMessage" type="text" class="form-control" placeholder="Title" required></input>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="notifMessage" class="control-label col-lg-3">Message</label>
+								<div class="col-lg-5">
+									<textarea id="notifMessage" name="notifMessage" type="text" class="form-control" placeholder="Message" style="width: 370px; height: 105px;" required></textarea>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="addNotifButton" type="button" class="btn btn-danger btn-sm" aria-hidden="true" onClick="addNotifButton()">Add</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Javascript files -->
+		<!-- jQuery -->
+		<script src="js/jquery.js"></script>
+		<!-- Bootstrap JS -->
+		<script src="js/bootstrap.min.js"></script>
+		<!-- jQuery UI -->
+		<script src="js/jquery-ui.min.js"></script>
+		<!-- Date Time Picker JS -->
+		<script src="js/bootstrap-datetimepicker.min.js"></script>
+		<script src="js/bootstrap-datepicker.min.js"></script>
+		<!-- Bootstrap wysihtml5 JS -->		
+		<script src="js/wysihtml5-0.3.0.js"></script>
+		<script src="js/prettify.js"></script>
+		<script src="js/bootstrap-wysihtml5.min.js"></script>
+		<!-- jQuery gritter -->
+		<script src="js/jquery.gritter.min.js"></script>
+		<!-- Validate JS -->
+		<script src="js/jquery.validate.js"></script>
+		<!-- Form wizard steps  JS -->
+		<script src="js/jquery.steps.min.js"></script>
+		<!-- jQuery Knob -->
+		<script src="js/jquery.knob.js"></script>
+		<!-- jQuery slim scroll -->
+		<script src="js/jquery.slimscroll.min.js"></script>
+		<!-- Data Tables JS -->
+		<script src="js/jquery.dataTables.min.js"></script>	
+		<!-- Pretty Photo JS -->
+		<script src="js/jquery.prettyPhoto.js"></script>	
+		<!-- Rate It JS -->
+		<script src="js/jquery.rateit.min.js"></script>	
+		<!-- Full calendar -->
+	    <script src="js/moment.min.js"></script>
+	    <script src="js/fullcalendar.min.js"></script>
+		<!-- Respond JS for IE8 -->
+		<script src="js/respond.min.js"></script>
+		<!-- HTML5 Support for IE -->
+		<script src="js/html5shiv.js"></script>
+		<!-- Idle JS -->
+		<script src="js/idle.min.js"></script>
+		<!-- SHA256 Encryption -->
+		<script src="js/sha256.min.js"></script>
+		<!-- Custom JS -->
+		<script src="js/custom.js"></script>
+		<script src="js/custom_logincheck.js"></script>
+		<script src="js/custom_room_list.js"></script>
+		<script>
+		$('#sdatepicker').datepicker({
+			format: "dd-M-yy",
+			autoclose: true
+		});
+		$('#edatepicker').datepicker({
+			format: "dd-M-yy",
+			autoclose: true
+		});
+		$('#sdatepickerEx').datepicker({
+			format: "dd-M-yy",
+			autoclose: true
+		});
+		$('#edatepickerEx').datepicker({
+			format: "dd-M-yy",
+			autoclose: true
+		});
+		$('#edatepickerex').datepicker({
+			format: "dd-M-yy",
+			autoclose: true
+		});
+		$('#edatepickerv').datetimepicker({
+			language:  'id',
+			weekStart: 1,
+			pickTime: false
+		})
+		</script>
+	</body>	
+</html>

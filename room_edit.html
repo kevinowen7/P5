@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Title here -->
+		<title>Edit Room - GOKOST</title>
+		<!-- Description, Keywords and Author -->
+		<meta name="description" content="Your description">
+		<meta name="keywords" content="Your,Keywords">
+		<meta name="author" content="ResponsiveWebInc">
+		<script src="js/firebase.js"></script> <!-- version 5.3.1 -->
+    	<script src="js/firebase_config.js"></script>
+        
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<!-- Styles -->
+		<!-- Bootstrap CSS -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<!-- Bootstrap Date-Time Picker CSS -->
+		<link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+		<link href="css/bootstrap-datepicker3.min.css" rel="stylesheet">
+		<!-- jQuery UI -->
+		<link href="css/jquery-ui.css" rel="stylesheet">
+		<!-- jQuery gritter -->
+		<link href="css/jquery.gritter.css" rel="stylesheet">
+		<!-- JQuery Rateit CSS -->
+		<link href="css/rateit.css" rel="stylesheet">
+		<!-- Font awesome CSS -->
+		<link href="css/font-awesome.min.css" rel="stylesheet">	
+		<!-- Custom Color CSS -->
+		<link href="css/less-style.css" rel="stylesheet">	
+		<!-- Custom CSS -->
+		<link href="css/style.css" rel="stylesheet">
+		
+		<!-- Favicon -->
+		<link rel="shortcut icon" href="img/favicon-96x96.png">
+	</head>
+	
+	<body>
+		
+		<div id="cover-spin" style="background-color:rgba(0,0,0,0.85);"></div>
+		<div class="outer">
+			
+			<!-- Sidebar starts -->
+			<div class="sidebar">
+			
+				<div class="sidey">
+			
+					<!-- Logo -->
+					<div class="logo">
+						<h1><a href="home.html"><i class="fa fa-globe br-red"></i> GOKOST <span>Prototype</span></a></h1>
+					</div>
+					
+					<!-- Sidebar navigation starts -->
+					
+					<!-- Responsive dropdown -->
+					<div class="sidebar-dropdown"><a href="#" class="br-red"><i class="fa fa-bars"></i></a></div>
+					
+					<div class="side-nav">
+					
+						<div class="side-nav-block">
+							<!-- Sidebar heading -->
+							<h4>Main</h4>
+							<!-- Sidebar links -->
+							<ul class="list-unstyled">
+								<li><a href="home.html"><i class="fa fa-home"></i> Home</a></li>
+                                <li><a href="building_list.html"><i class="fa fa-building"></i> Building</a></li>
+								<li><a href="tenant_main.html"><i class="fa fa-user-circle"></i> Tenant</a></li>
+								<li><a href="report_main.html"><i class="fa fa-clipboard"></i> Report</a></li>
+							</ul>
+							<!-- Presence System -->
+							<h4>Users</h4>
+							<ul id="presenceList" class="list-unstyled"></ul>
+						</div>
+						
+					</div>
+					
+					<!-- Sidebar navigation ends -->
+					
+				</div>
+			</div>
+			<!-- Sidebar ends -->
+			
+			<!-- Mainbar starts -->
+			<div class="mainbar">
+			
+				<!-- Mainbar head starts -->
+				<div class="main-head">
+					<div class="container">
+						<div class="row">
+							<div class="col-md-7 col-sm-6 col-xs-4">
+								<!-- Search block -->
+								<div class="head-search pull-left">
+									<div id="loadingSearchBlock" style="display: none;">
+										<i class="fa fa-circle-o-notch fa-spin fa-lg fa-fw red"></i>
+										<span class="sr-only">Loading...</span>
+									</div>
+									<div id="searchBlock" style="display: none;">
+										<form class="form" role="form" autocomplete="off">
+											<div class="input-group">
+												<input id="searchbar" type="text" class="form-control" placeholder="Search...">
+												<span class="input-group-btn">
+													<button id="bsearch" class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+												</span>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>	
+							<div class="col-md-2 col-sm-2 col-xs-2">
+								<div class="pull-right" >
+									<a href="#" data-toggle="dropdown" id="notifToggle">
+									<big><i class="fa fa-bell"></i></big>
+									</a>
+									<!-- Dropdown -->
+									<ul class="dropdown-menu pull-left" aria-labelledby="notifToggle">
+										<li>
+										<!-- Notifikasi -->
+										<div id="notifList">
+											
+										</div>
+										</li>
+										<li><a href="#" onClick="addNotif()" id="add_notif" class="hidden" style="margin-right:15px"><big><i class="fa fa-plus"></i></big>Add New</a></li>
+									</ul>
+								</div>	
+							</div>	
+							<div class="col-md-3 col-sm-4 col-xs-6">
+								<!-- Head user -->
+								<div class="head-user dropdown pull-right">
+									
+									<div id="loadingUserHead" style="display: none;">
+										<i class="fa fa-circle-o-notch fa-spin fa-lg fa-fw red"></i>
+										<span class="sr-only">Loading...</span>
+									</div>
+									<div id="userHead" class="row" style="display: none;">
+										<div >
+											<img id="imgcircle" src="img/empty-photo-square.jpg" alt="" width="30px" height="30px" class="img-circle"/>
+											<a href="#" data-toggle="dropdown" id="profile">
+												<!-- User name -->
+												<span id="nama"></span> 
+												<i class="fa fa-caret-down fa-fw"></i> 
+											</a>
+											<!-- Dropdown -->
+											<ul class="dropdown-menu" aria-labelledby="profile">
+												<li><a href="adm_profile.html">My Profile</a></li>
+												<li id="admManage" class="hidden"><a href="adm_manage.html">Manage Users</a></li>
+												<li><a href="javaScript:void(0);" onClick="logout()">Sign Out</a></li>
+											</ul>
+										</div>
+									</div>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+						</div>	
+					</div>
+					
+				</div>
+				<!-- Mainbar head ends -->
+				
+				<div class="main-content">
+					<div class="container">
+										
+						<div class="page-content">
+						
+							<!-- Heading -->
+							<div class="single-head">
+								<!-- Heading -->
+								<h3 class="pull-left"><i class="fa fa-clipboard orange"></i> Edit Room Form</h3>
+								<!-- Bread crumbs -->
+								<div class="breads pull-right">
+									<strong>Nav</strong> : <a href="home.html">GOKOST</a> / <a href="building_list.html">Building</a> / <a href="room_list.html">Room</a> / Edit
+								</div>
+								<div class="clearfix"></div>
+							</div>
+							
+							<!-- Form page -->
+							<div class="page-form">
+								<form id="inpRoom" class="form-horizontal" role="form" method="post" action="">
+									<div class="form-group">
+										<label for="roomid" class="control-label col-lg-2">Room ID</label>
+										<div class="col-lg-2">
+											<div class="checkbox">
+												<span id="roomid" name="roomid"></span>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<label class="col-lg-offset-2 col-lg-2">Price</label>
+										<label class="col-lg-2">Bond Money</label>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-lg-2">Annually</label>
+										<div class="col-lg-2">
+											<div class="checkbox">
+												<input id="pyear" name="pyear" class="form-control" type="text" required/>
+											</div>
+										</div>
+										<div class="col-lg-2">
+											<div class="checkbox">
+												<span id="byear" name="byear"></span>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-lg-2">Semiannually</label>
+										<div class="col-lg-2">
+											<div class="checkbox">
+												<span id="psix" name="pyear"></span>
+											</div>
+										</div>
+										<div class="col-lg-2">
+											<div class="checkbox">
+												<span id="bsix" name="byear"></span>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-lg-2">Monthly</label>
+										<div class="col-lg-2">
+											<div class="checkbox">
+												<span id="pmonth" name="pyear"></span>
+											</div>
+										</div>
+										<div class="col-lg-2">
+											<div class="checkbox">
+												<span id="bmonth" name="byear"></span>
+											</div>
+										</div>
+									</div>
+                                    <div class="form-group">
+										<label for="rmsize" class="control-label col-lg-2">Room Size</label>
+										<div class="col-lg-2">
+											<input id="rmsize" name="rmsize" class="form-control" maxlength="5" type="text" />
+											<p class="help-block">Example: 2x4</p>
+										</div>
+										<label for="adate" class="control-label col-lg-2">Available Date</label>
+										<div class="col-lg-2">
+											<div id="adatepicker" class="input-group date">
+												<input id="adate" name="adate" type="text" class="form-control" placeholder="Pick Date" readonly required>
+												<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-lg-2 control-label">Facilities</label>
+										<div class="col-lg-2">
+											<div id="checktdr" class="checkbox">
+												<label>
+													<input type="checkbox" name="facilities" id="bed"><img src="img/icons/bed.svg" width="16px"> Tempat Tidur 
+												</label>
+											</div>
+											<div id="checklem" class="checkbox">
+												<label>
+													<input type="checkbox" name="facilities" id="wardrb"><img src="img/icons/wardrobe.svg" width="16px"> Lemari 
+												</label>
+											</div>
+											<div id="checkmej" class="checkbox">
+												<label>
+													<input type="checkbox" name="facilities" id="table"><img src="img/icons/table.svg" width="16px"> Meja 
+												</label>
+											</div>
+											<div id="checkkmd" class="checkbox">
+												<label>
+													<input type="checkbox" name="facilities" id="bthins"><img src="img/icons/bathtub.svg" width="16px"> Kamar Mandi Dalam 
+												</label>
+											</div>
+										</div>
+										<div class="col-lg-2">
+											<div id="checkwif" class="checkbox">
+												<label>
+													<input type="checkbox" name="facilities" id="wifi"><img src="img/icons/wifi.svg" width="16px"> Wi-Fi 
+												</label>
+											</div>
+											<div id="checktvk" class="checkbox">
+												<label>
+													<input type="checkbox" name="facilities" id="ctv"><img src="img/icons/tv.svg" width="16px"> TV Kabel 
+												</label>
+											</div>
+											<div id="checkair" class="checkbox">
+												<label>
+													<input type="checkbox" name="facilities" id="hwater"><img src="img/icons/hotwater.svg" width="16px"> Air Panas 
+												</label>
+											</div>
+											<div id="checkpar" class="checkbox">
+												<label>
+													<input type="checkbox" name="facilities" id="parker"><img src="img/icons/parking.svg" width="16px"> Parkir 
+												</label>
+											</div>
+										</div>
+										<div class="col-lg-2">
+											<div id="checklau" class="checkbox">
+												<label>
+													<input type="checkbox" name="facilities" id="laundy"><img src="img/icons/laundry.svg" width="16px"> Laundry 
+												</label>
+											</div>
+											<div id="checklis" class="checkbox">
+												<label>
+													<input type="checkbox" name="facilities" id="pwrtkn"><img src="img/icons/power.svg" width="16px"> Listrik Token 
+												</label>
+											</div>
+											<div id="checkac" class="checkbox">
+												<label>
+													<input type="checkbox" name="facilities" id="ac"><img src="img/icons/ac.svg" width="16px"> AC 
+												</label>
+											</div>
+											<div id="checkbed" class="checkbox">
+												<label>
+													<input type="checkbox" name="facilities" id="bedcvr"><img src="img/icons/bedcover.svg" width="16px"> Bed Cover + Sprei 
+												</label>
+											</div>
+										</div>
+										<div class="col-lg-2">
+											<div id="checksec" class="checkbox">
+												<label>
+													<input type="checkbox" name="facilities" id="secury"><img src="img/icons/security.svg" width="16px"> 24-Hour Security 
+												</label>
+											</div>
+											<div id="checkdap" class="checkbox">
+												<label>
+													<input type="checkbox" name="facilities" id="kitchn"><img src="img/icons/kitchen.svg" width="16px"> Dapur Bersama 
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="fileButton" class="control-label col-lg-2">Photos</label>
+										<div id="gambar1" class="col-lg-2" style="display:none;">
+											<a id="jump1" href="javascript:void(0);" onclick="getFileName(1)"><img id="prepiew1" src="img/empty-photo.jpg" class="img-responsive" alt="empty image" /></a>
+											<div id="progBared1" class="progress hidden" style="width:100%px;">
+												<div id="progBar1" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+											</div>
+											<button id='removep1' type="button" onclick="removePhoto(1)" class='btn btn-xs btn-danger' title='remove picture' style="display:none;position:absolute;top:0;"><i class='fa fa-times'></i></button>
+											<input id="fileName1" name="fileName1" type="hidden" value="">
+										</div>
+										<div id="gambar2" class="col-lg-2" style="display:none;">
+											<a id="jump2" href="javascript:void(0);" onclick="getFileName(2)"><img id="prepiew2" src="img/empty-photo.jpg" class="img-responsive" alt="empty image" /></a>
+											<div id="progBared2" class="progress hidden" style="width:100%px;">
+												<div id="progBar2" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+											</div>
+											<button id='removep2' type="button" onclick="removePhoto(2)" class='btn btn-xs btn-danger' title='remove picture' style="display:none;position:absolute;top:0;"><i class='fa fa-times'></i></button>
+											<input id="fileName2" name="fileName2" type="hidden" value="">
+										</div>
+										<div id="gambar3" class="col-lg-2" style="display:none;">
+											<a id="jump3" href="javascript:void(0);" onclick="getFileName(3)"><img id="prepiew3" src="img/empty-photo.jpg" class="img-responsive" alt="empty image" /></a>
+											<div id="progBared3" class="progress hidden" style="width:100%px;">
+												<div id="progBar3" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+											</div>
+											<button id='removep3' type="button" onclick="removePhoto(3)" class='btn btn-xs btn-danger' title='remove picture' style="display:none;position:absolute;top:0;"><i class='fa fa-times'></i></button>
+											<input id="fileName3" name="fileName3" type="hidden" value="">
+										</div>
+									</div>
+									<div class="form-group">
+										<div id="gambar4" class="col-lg-offset-2 col-lg-2" style="display:none;">
+											<a id="jump4" href="javascript:void(0);" onclick="getFileName(4)"><img id="prepiew4" src="img/empty-photo.jpg" class="img-responsive" alt="empty image" /></a>
+											<div id="progBared4" class="progress hidden" style="width:100%px;">
+												<div id="progBar4" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+											</div>
+											<button id='removep4' type="button" onclick="removePhoto(4)" class='btn btn-xs btn-danger' title='remove picture' style="display:none;position:absolute;top:0;"><i class='fa fa-times'></i></button>
+											<input id="fileName4" name="fileName4" type="hidden" value="">
+										</div>
+										<div id="gambar5" class="col-lg-2" style="display:none;">											
+											<a id="jump5" href="javascript:void(0);" onclick="getFileName(5)"><img id="prepiew5" src="img/empty-photo.jpg" class="img-responsive" alt="empty image" /></a>
+											<div id="progBared5" class="progress hidden" style="width:100%px;">
+												<div id="progBar5" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+											</div>
+											<button id='removep5' type="button" onclick="removePhoto(5)" class='btn btn-xs btn-danger' title='remove picture' style="display:none;position:absolute;top:0;"><i class='fa fa-times'></i></button>
+											<input id="fileName5" name="fileName5" type="hidden" value="">
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-lg-offset-2 col-lg-9">
+											<input id="fileButton" name="fileButton" type="file" accept=".jpg,.jpeg" style="display: none" />
+											<input id="picCount" name="picCount" type="hidden" value="" />
+											<input id="maxPic" name="maxPic" type="hidden" value="0" />
+											<input id="maxPicLama" name="maxPicLama" type="hidden" value="0">
+											<input id="photoChange" name="photoChange" type="hidden" value="false">
+                                        	<button id="bfinish" type="submit" class="btn btn-danger">Update</button>
+                                            <span>&nbsp;</span>
+											<span id="loadingUpload" style="display: none;">
+												<i class="fa fa-circle-o-notch fa-spin fa-lg fa-fw red"></i>
+												<span class="sr-only">Loading...</span>
+											</span>
+										</div>	
+									</div>
+								</form>
+							</div> <!-- Form page end -->
+							
+						</div> <!-- Page content end -->
+						
+					</div>
+				</div>
+				
+			</div>
+			<!-- Mainbar ends -->
+			
+			<div class="clearfix"></div>
+		</div>
+		<!-- Modal -->
+		<div id="modalConfirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title">Warning</h4>
+					</div>
+					<div class="modal-body">
+						<p>Are you sure you want to update this room?</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="confirmYes" type="button" class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Save changes</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- modal Notif-->
+		<div id="notifModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title">Add Notification</h4>
+					</div>
+					<div class="modal-body">
+					<!-- body -->
+						<form id="notifForm" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
+							<div class="form-group">
+								<label for="notifTitleMessage" class="control-label col-lg-3">Title</label>
+								<div class="col-lg-5">
+									<input id="notifTitleMessage" name="notifTitleMessage" type="text" class="form-control" placeholder="Title" required></input>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="notifMessage" class="control-label col-lg-3">Message</label>
+								<div class="col-lg-5">
+									<textarea id="notifMessage" name="notifMessage" type="text" class="form-control" placeholder="Message" style="width: 370px; height: 105px;" required></textarea>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="addNotifButton" type="button" class="btn btn-danger btn-sm" aria-hidden="true" onClick="addNotifButton()">Add</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Javascript files -->
+		<!-- jQuery -->
+		<script src="js/jquery.js"></script>
+		<!-- Bootstrap JS -->
+		<script src="js/bootstrap.min.js"></script>
+		<!-- jQuery UI -->
+		<script src="js/jquery-ui.min.js"></script>
+		<!-- Date Time Picker JS -->
+		<script src="js/bootstrap-datetimepicker.min.js"></script>
+		<script src="js/bootstrap-datepicker.min.js"></script>
+		<!-- Bootstrap wysihtml5 JS -->		
+		<script src="js/wysihtml5-0.3.0.js"></script>
+		<script src="js/prettify.js"></script>
+		<script src="js/bootstrap-wysihtml5.min.js"></script>
+		<!-- jQuery gritter -->
+		<script src="js/jquery.gritter.min.js"></script>
+		<!-- Validate JS -->
+		<script src="js/jquery.validate.js"></script>
+		<!-- Form wizard steps  JS -->
+		<script src="js/jquery.steps.min.js"></script>
+		<!-- jQuery Knob -->
+		<script src="js/jquery.knob.js"></script>
+		<!-- jQuery slim scroll -->
+		<script src="js/jquery.slimscroll.min.js"></script>
+		<!-- Data Tables JS -->
+		<script src="js/jquery.dataTables.min.js"></script>	
+		<!-- Pretty Photo JS -->
+		<script src="js/jquery.prettyPhoto.js"></script>	
+		<!-- Rate It JS -->
+		<script src="js/jquery.rateit.min.js"></script>	
+	    <!-- jQuery full calendar -->
+	    <script src="js/moment.min.js"></script>
+	    <script src="js/fullcalendar.min.js"></script>
+		<!-- Respond JS for IE8 -->
+		<script src="js/respond.min.js"></script>
+		<!-- HTML5 Support for IE -->
+		<script src="js/html5shiv.js"></script>
+		<!-- Idle JS -->
+		<script src="js/idle.min.js"></script>
+		<!-- SHA256 Encryption -->
+		<script src="js/sha256.min.js"></script>
+		<!-- Custom JS -->
+		<script src="js/custom.js"></script>
+        <script src="js/custom_logincheck.js"></script>
+        <script src="js/custom_room_edit.js"></script>
+		<!-- Javascript for this page -->
+		<script>
+		$('#adatepicker').datepicker({
+			format: "d-M-yy",
+			autoclose: true
+		});
+		</script>
+
+	</body>	
+</html>

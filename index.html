@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Title here -->
+		<title>Login - GOKOST</title>
+		<!-- Description, Keywords and Author -->
+		<meta name="description" content="Your description">
+		<meta name="keywords" content="Your,Keywords">
+		<meta name="author" content="ResponsiveWebInc">
+        <script src="js/firebase.js"></script> <!-- version 5.3.1 -->
+    	<script src="js/firebase_config.js"></script>
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<!-- Styles -->
+		<!-- Bootstrap CSS -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<!-- jQuery gritter -->
+		<link href="css/jquery.gritter.css" rel="stylesheet">
+		<!-- Font awesome CSS -->
+		<link href="css/font-awesome.min.css" rel="stylesheet">	
+		<!-- Custom Color CSS -->
+		<link href="css/less-style.css" rel="stylesheet">	
+		<!-- Custom CSS -->
+		<link href="css/style.css" rel="stylesheet">
+		
+		<!-- Favicon -->
+		<link rel="shortcut icon" href="img/favicon-96x96.png">
+	</head>
+	
+	<body>
+		
+		<div id="cover-spin" style="background-color:rgba(0,0,0,0.85);"></div>
+		<div class="outer-page">
+			
+			 <!-- Login page -->
+			 <div class="login-page">
+
+					<!-- Nav tabs -->
+					<ul class="nav nav-tabs nav-justified">
+					  <li class="active"><a href="#login" data-toggle="tab" class="br-lblue"><i class="fa fa-sign-in"></i> Sign In</a></li>
+					</ul>
+
+					<!-- Tab panes -->
+					<div class="tab-content">
+						<div class="tab-pane fade active in" id="login">
+					  
+							<!-- Login form -->
+							<form id="loginForm" role="form" method="post" action="">
+								<div class="form-group">
+									<label for="email">Email</label>
+									<input type="email" class="form-control" id="email1" name="email1" placeholder="Email">
+								</div>
+								<div class="form-group">
+									<label for="password">Password</label>
+									<input type="password" class="form-control" id="password1" name="password1" placeholder="Password">
+								</div>
+								<div class="checkbox">
+									<label>
+										<input id="showpass" type="checkbox" onclick="showPass()">Show Password
+									</label>
+								</div>
+								<span id="buttonGrp">
+									<button type="submit" class="btn btn-danger btn-sm">Submit</button>
+									<button type="reset" class="btn btn-default">Reset</button>
+								</span>
+								<span id="loadingGrp" style="display: none;">
+									&nbsp;
+									<i class="fa fa-circle-o-notch fa-spin fa-fw red"></i>
+									<span class="sr-only">Loading...</span>
+								</span>
+							</form>
+						</div>
+					  
+					</div>
+					
+			 </div>	
+			
+		</div>
+		
+		<!-- Javascript files -->
+		<!-- jQuery -->
+		<script src="js/jquery.js"></script>
+		<!-- Bootstrap JS -->
+		<script src="js/bootstrap.min.js"></script>
+		<!-- jQuery gritter -->
+		<script src="js/jquery.gritter.min.js"></script>
+		<!-- Respond JS for IE8 -->
+		<script src="js/respond.min.js"></script>
+		<!-- HTML5 Support for IE -->
+		<script src="js/html5shiv.js"></script>
+		<!-- Validate JS -->
+		<script src="js/jquery.validate.js"></script>
+		<!-- Javascript for this page -->
+		<script src="js/sha256.min.js"></script>
+		<script src="js/custom_index.js"></script>
+		
+	</body>	
+</html>
