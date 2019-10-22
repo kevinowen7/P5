@@ -4,21 +4,53 @@ $("#loadingUserHead,#loadingSearchBlock").fadeIn(250, function() {
 })
 
 
-// NOTIFIKASI 
+// NOTIFIKASI FUNCTION
 function addNotif(){
 	$("#notifModal").modal();
+}
+
+function getToday(){
+	var today = new Date();
+	var dd = String(today.getDate()).padStart(2, '0');
+	var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+	var yyyy = today.getFullYear();
+
+	today = mm + '/' + dd + '/' + yyyy;
+	return today
+}
+
+function reformatDate(inputDate) {
+	
+	months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+	inputBroke=inputDate.split("/");
+	inputDay=parseInt(inputBroke[1]);
+	inputMonth=parseInt(inputBroke[0]);
+	inputYear=inputBroke[2];
+	outputDay=inputDay;
+	outputMonth=months[inputMonth-1];
+	outputYear=inputYear.split("")[2]+inputYear.split("")[3];
+	return (outputDay+"-"+outputMonth+"-"+outputYear);
+	
 }
 
 function addNotifButton(){
 	//validasi jika Message tidak kosong
 	if ($("#notifMessage").val()!="" && $("#notifTitleMessage").val()!=""){
 		
-		//write notif Message
-		var notifRef = firebase.database().ref().child("notification");
-		notifRef.push({
-			"title" : $("#notifTitleMessage").val(),
-			"message" : $('#notifMessage').val()
-		})
+		//notifikasi ref
+		var notifRef = firebase.database().ref().child("presence");
+		
+		//push notif ke smua admin
+		notifRef.on('child_added', function(snapshot) {
+			if (snapshot.key!="userCount"){
+				//push notif
+				notifRef.child(snapshot.key+"/notification").push({
+					"title" : $("#notifTitleMessage").val(),
+					"message" : $('#notifMessage').val(),
+					"date" : reformatDate(getToday())
+				})
+			}
+		});
 
 		//close
 		$("#notifTitleMessage").val('')
@@ -27,47 +59,14 @@ function addNotifButton(){
 	}
 }
 
-function delNotif(id){
+function delNotif(uid,id){
 	//write data
-	var notifRef = firebase.database().ref().child("notification/"+id);
+	var notifRef = firebase.database().ref().child("presence/"+uid+"/notification/"+id);
 	notifRef.set({
 		"title" : null
 	})
 }
-
-var notifRef = firebase.database().ref().child("notification");
-// Check if message is in database
-notifRef.on('child_added', function(snapshot) {
-	m =`<div id="`+snapshot.key+`" class="alert alert-warning">
-		<a href="#" class="close closeNotif" onClick="delNotif('`+snapshot.key+`')" aria-label="close" style="display:none">&times;</a>
-			<strong>`+snapshot.child("title").val()+` </strong> : <p> &nbsp`+snapshot.child("message").val()+`</p>
-		</div>`
-	$("#notifList").hide().delay(500).show('slow');
-	$("#notifList").prepend(m);
-	
-	
-	// Check if user is terminated
-	const dbRefPresence = firebase.database().ref("presence");
-	firebase.auth().onAuthStateChanged(function(user) {
-		var userID = user.uid;
-		if (user) { // User signed in
-			dbRefPresence.child(userID).on('value', function(snapshot) {
-				var userPrivilege = snapshot.child("privilege").val()
-				if (userPrivilege == "admin") {
-					var notifCloseB = document.getElementsByClassName("closeNotif");
-					for (var i = 0, len = notifCloseB.length; i < len; i++) {
-						notifCloseB[i].style.display = "";
-					}
-				}
-			});
-		}
-	});
-});
-
-notifRef.on('child_removed', function(snapshot) {
-	$("#"+snapshot.key).hide('slow');
-});
-// END NOTIFIKASI
+// END NOTIFIKASI FUNCTION
 
 
 
@@ -79,6 +78,36 @@ firebase.auth().onAuthStateChanged(function(user) {
 		const isOnline = firebase.database().ref(".info/connected");
 		const dbRefPresence = firebase.database().ref("presence");
 		const dbRefTempUser = firebase.database().ref("temp_user");
+		
+		//untuk jumlah notifikasi
+		var numNotif=0
+		//notifikasi ref
+		
+		var notifRef = firebase.database().ref().child("presence/"+userID+"/notification");
+		// LIST NOTIFIKASI
+		notifRef.on('child_added', function(snapshot) {
+			m =`<div id="`+snapshot.key+`" class="alert alert-warning">
+				<a href="#" class="close closeNotif" onClick="delNotif('`+userID+`','`+snapshot.key+`')" aria-label="close" >&times;</a>
+					<strong style="font-size:60%">`+snapshot.child("date").val()+`</strong>
+					</br>
+					<strong>`+snapshot.child("title").val()+` </strong> : <span>`+snapshot.child("message").val()+`</span>
+				</div>`
+			$("#notifList").hide().delay(500).show('slow');
+			$("#notifList").prepend(m);
+		
+			numNotif=numNotif+1
+			$("#numNotif").html(numNotif);
+		});
+
+		notifRef.on('child_removed', function(snapshot) {
+			$("#"+snapshot.key).hide('slow');
+			//mengurangi jumlah notif
+			numNotif=numNotif-1
+			$("#numNotif").html(numNotif);
+		});
+		// END LIST NOTIFIKASI
+		
+		
 		
 		// Check if user is in database
 		dbRefTempUser.child(sha256(userEmail)).once('value', function(snapshot) {
@@ -128,12 +157,6 @@ firebase.auth().onAuthStateChanged(function(user) {
 						//if User is Super Admin
 						if (userPrivilege == "admin") {
 							$("#admManage").removeClass("hidden");
-							$("#add_notif").removeClass("hidden");
-							//show close button for Notification List
-							var notifCloseB = document.getElementsByClassName("closeNotif");
-							for (var i = 0, len = notifCloseB.length; i < len; i++) {
-								notifCloseB[i].style.display = "";
-							}
 						}
 						
 						// Check if photo exist
