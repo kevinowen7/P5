@@ -186,11 +186,24 @@ function addInvoice() {
 			"refnumber":refNumberHtml,
 			"list":"ledgerList"
 		});
-
+		
+		var d = new Date();
+		var thisDay = d.getDate();
+		if (parseInt(thisDay) < 10) {
+			thisDay = "0"+thisDay;
+		}
+		var thisMonth = d.getMonth() + 1;
+		if (parseInt(thisMonth) < 10) {
+			thisMonth = "0"+thisMonth;
+		}
+		var thisYear = d.getFullYear();
+		var thisDate = thisMonth+"/"+thisDay+"/"+thisYear;
+		
 		reportRef.child(building_id).push({
 			"due":invoiceAmount,
 			"receive": 0,
-			"date":invoiceDate
+			"date":invoiceDate,
+			"inputDate": thisDate
 		})
 		
 		
@@ -318,10 +331,24 @@ function addPayment() {
 			
 			}
 		})
+		
+		var d = new Date();
+		var thisDay = d.getDate();
+		if (parseInt(thisDay) < 10) {
+			thisDay = "0"+thisDay;
+		}
+		var thisMonth = d.getMonth() + 1;
+		if (parseInt(thisMonth) < 10) {
+			thisMonth = "0"+thisMonth;
+		}
+		var thisYear = d.getFullYear();
+		var thisDate = thisMonth+"/"+thisDay+"/"+thisYear;
+		
 		reportRef.child(building_id).push({
 			"receive":paymentAmount,
 			"due": 0,
-			"date": paymentDate
+			"date": paymentDate,
+			"inputDate": thisDate
 		})
 	
 
@@ -725,9 +752,10 @@ function approveBooking(refNumber){
 }
 
 //delete booking in table
-function deleteBooking(refNumber){
+function deleteBooking(refNumber,tenantID){
 	$('#approveD').html("Are you sure delete "+refNumber+" ?");
 	$('#approveD').val(refNumber);
+	$('#approveD2').val(tenantID);
 	$("#rApproveModal").modal();
 }
 
@@ -1171,6 +1199,7 @@ $(document).ready(function() {
 
 	//function
 	function bookingTable(){
+		var paymentRef = firebase.database().ref("payment");
 		listApproveT=[];
 		setTimeout(() => {
 			table1.clear();
@@ -1182,41 +1211,81 @@ $(document).ready(function() {
 			console.log(overdue)
 			if (tenant!={} && tenantdata!={}){
 				for (i in tenant){
-					// jika status = approved
-					if (tenant[i].stat_occupy=="approved"){
-						refNumFormat=tenant[i].ref_number
-						refN=refNumFormat.split(" ")
-						refNumber=refN[0]+refN[1]+refN[2]
-						tenantName=shortenString(tenantdata[i].full_name,8)
-						statingDate=tenant[i].start_date
-						propAddr=shortenString(tenant[i].prop_addr,10)
-						
-						// untuk sort , datanya dimasukan ke list
-						newObj = {
-							"statOccupy":"approved",
-							"refNum":refNumber,
-							"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",statingDate,propAddr,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking"+refNumber+"') style='background-color:#c8bca6' disabled ><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking"+refNumber+"')><i class='fa fa-times'></i></button>"],
-							"tenant_id":i
-						}
-						listApproveT.push(newObj);
-					}
-					//jika status = booking
-					if(tenant[i].stat_occupy=="booking") {
-						// untuk sort , datanya dimasukan ke list
-						refNumFormat=tenant[i].ref_number
-						refN=refNumFormat.split(" ")
-						refNumber=refN[0]+refN[1]+refN[2]
-						tenantName=shortenString(tenantdata[i].full_name,8);
-						statingDate=tenant[i].start_date
-						propAddr=shortenString(tenant[i].prop_addr,10)
-						newObj = {
-							"statOccupy":"booking",
-							"refNum":refNumber,
-							"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",statingDate,propAddr,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking"+refNumber+"')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking"+refNumber+"')><i class='fa fa-times'></i></button>"],
-							"tenant_id":i
-						}
-						listApproveT.push(newObj);
-					}
+					paymentRef.child(i).once('value', function(snapshot) {
+						if (snapshot.val() != null) {  // Have payments
+							// jika status = approved
+							if (tenant[i].stat_occupy=="approved"){
+								refNumFormat=tenant[i].ref_number
+								refN=refNumFormat.split(" ")
+								refNumber=refN[0]+refN[1]+refN[2]
+								tenantName=shortenString(tenantdata[i].full_name,8)
+								statingDate=tenant[i].start_date
+								propAddr=shortenString(tenant[i].prop_addr,10)
+								
+								// untuk sort , datanya dimasukan ke list
+								newObj = {
+									"statOccupy":"approved",
+									"refNum":refNumber,
+									"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",statingDate,propAddr,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' style='background-color:#c8bca6' disabled><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' style='background-color:#c8bca6' disabled><i class='fa fa-times'></i></button>"],
+									"tenant_id":i
+								}
+								listApproveT.push(newObj);
+							}
+							//jika status = booking
+							if(tenant[i].stat_occupy=="booking") {
+								// untuk sort , datanya dimasukan ke list
+								refNumFormat=tenant[i].ref_number
+								refN=refNumFormat.split(" ")
+								refNumber=refN[0]+refN[1]+refN[2]
+								tenantName=shortenString(tenantdata[i].full_name,8);
+								statingDate=tenant[i].start_date
+								propAddr=shortenString(tenant[i].prop_addr,10)
+								newObj = {
+									"statOccupy":"booking",
+									"refNum":refNumber,
+									"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",statingDate,propAddr,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking"+refNumber+"')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' style='background-color:#c8bca6' disabled><i class='fa fa-times'></i></button>"],
+									"tenant_id":i
+								}
+								listApproveT.push(newObj);
+							}
+						} else {  // No payments
+							// jika status = approved
+							if (tenant[i].stat_occupy=="approved"){
+								refNumFormat=tenant[i].ref_number
+								refN=refNumFormat.split(" ")
+								refNumber=refN[0]+refN[1]+refN[2]
+								tenantName=shortenString(tenantdata[i].full_name,8)
+								statingDate=tenant[i].start_date
+								propAddr=shortenString(tenant[i].prop_addr,10)
+								
+								// untuk sort , datanya dimasukan ke list
+								newObj = {
+									"statOccupy":"approved",
+									"refNum":refNumber,
+									"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",statingDate,propAddr,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' style='background-color:#c8bca6' disabled><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking"+refNumber+"','"+i+"')><i class='fa fa-times'></i></button>"],
+									"tenant_id":i
+								}
+								listApproveT.push(newObj);
+							}
+							//jika status = booking
+							if(tenant[i].stat_occupy=="booking") {
+								// untuk sort , datanya dimasukan ke list
+								refNumFormat=tenant[i].ref_number
+								refN=refNumFormat.split(" ")
+								refNumber=refN[0]+refN[1]+refN[2]
+								tenantName=shortenString(tenantdata[i].full_name,8);
+								statingDate=tenant[i].start_date
+								propAddr=shortenString(tenant[i].prop_addr,10)
+								newObj = {
+									"statOccupy":"booking",
+									"refNum":refNumber,
+									"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",statingDate,propAddr,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking"+refNumber+"')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking"+refNumber+"','"+i+"')><i class='fa fa-times'></i></button>"],
+									"tenant_id":i
+								}
+								listApproveT.push(newObj);
+							}
+						}	
+					});
 				}
 				listApproveT = sortByStatOccupy(listApproveT);
 					//add hasil sort ke datatables
@@ -1233,49 +1302,89 @@ $(document).ready(function() {
 					console.log(paymentRec)
 					console.log(contractdata)
 					for (i in tenant){
-					// jika status = approved
-					if (tenant[i].stat_occupy=="approved"){
-						refNumFormat=tenant[i].ref_number
-						refN=refNumFormat.split(" ")
-						refNumber=refN[0]+refN[1]+refN[2]
-						tenantName=shortenString(tenantdata[i].full_name,8)
-						statingDate=tenant[i].start_date
-						propAddr=shortenString(tenant[i].prop_addr,10)
-						
-						// untuk sort , datanya dimasukan ke list
-						newObj = {
-							"statOccupy":"approved",
-							"refNum":refNumber,
-							"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",statingDate,propAddr,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking"+refNumber+"') style='background-color:#c8bca6' disabled ><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking"+refNumber+"')><i class='fa fa-times'></i></button>"],
-							"tenant_id":i
-						}
-						listApproveT.push(newObj);
+						paymentRef.child(i).once('value', function(snapshot) {
+							if (snapshot.val() != null) {  // Have payments
+								// jika status = approved
+								if (tenant[i].stat_occupy=="approved"){
+									refNumFormat=tenant[i].ref_number
+									refN=refNumFormat.split(" ")
+									refNumber=refN[0]+refN[1]+refN[2]
+									tenantName=shortenString(tenantdata[i].full_name,8)
+									statingDate=tenant[i].start_date
+									propAddr=shortenString(tenant[i].prop_addr,10)
+									
+									// untuk sort , datanya dimasukan ke list
+									newObj = {
+										"statOccupy":"approved",
+										"refNum":refNumber,
+										"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",statingDate,propAddr,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' style='background-color:#c8bca6' disabled><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' style='background-color:#c8bca6' disabled><i class='fa fa-times'></i></button>"],
+										"tenant_id":i
+									}
+									listApproveT.push(newObj);
+								}
+								//jika status = booking
+								if(tenant[i].stat_occupy=="booking") {
+									// untuk sort , datanya dimasukan ke list
+									refNumFormat=tenant[i].ref_number
+									refN=refNumFormat.split(" ")
+									refNumber=refN[0]+refN[1]+refN[2]
+									tenantName=shortenString(tenantdata[i].full_name,8);
+									statingDate=tenant[i].start_date
+									propAddr=shortenString(tenant[i].prop_addr,10)
+									newObj = {
+										"statOccupy":"booking",
+										"refNum":refNumber,
+										"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",statingDate,propAddr,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking"+refNumber+"')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' style='background-color:#c8bca6' disabled><i class='fa fa-times'></i></button>"],
+										"tenant_id":i
+									}
+									listApproveT.push(newObj);
+								}
+							} else {  // No payments
+								// jika status = approved
+								if (tenant[i].stat_occupy=="approved"){
+									refNumFormat=tenant[i].ref_number
+									refN=refNumFormat.split(" ")
+									refNumber=refN[0]+refN[1]+refN[2]
+									tenantName=shortenString(tenantdata[i].full_name,8)
+									statingDate=tenant[i].start_date
+									propAddr=shortenString(tenant[i].prop_addr,10)
+									
+									// untuk sort , datanya dimasukan ke list
+									newObj = {
+										"statOccupy":"approved",
+										"refNum":refNumber,
+										"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",statingDate,propAddr,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' style='background-color:#c8bca6' disabled><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('"+i+"')><i class='fa fa-times'></i></button>"],
+										"tenant_id":i
+									}
+									listApproveT.push(newObj);
+								}
+								//jika status = booking
+								if(tenant[i].stat_occupy=="booking") {
+									// untuk sort , datanya dimasukan ke list
+									refNumFormat=tenant[i].ref_number
+									refN=refNumFormat.split(" ")
+									refNumber=refN[0]+refN[1]+refN[2]
+									tenantName=shortenString(tenantdata[i].full_name,8);
+									statingDate=tenant[i].start_date
+									propAddr=shortenString(tenant[i].prop_addr,10)
+									newObj = {
+										"statOccupy":"booking",
+										"refNum":refNumber,
+										"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",statingDate,propAddr,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking"+refNumber+"')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('"+i+"')><i class='fa fa-times'></i></button>"],
+										"tenant_id":i
+									}
+									listApproveT.push(newObj);
+								}
+							}	
+						});
 					}
-					//jika status = booking
-					if(tenant[i].stat_occupy=="booking") {
-						// untuk sort , datanya dimasukan ke list
-						refNumFormat=tenant[i].ref_number
-						refN=refNumFormat.split(" ")
-						refNumber=refN[0]+refN[1]+refN[2]
-						tenantName=shortenString(tenantdata[i].full_name,8);
-						statingDate=tenant[i].start_date
-						propAddr=shortenString(tenant[i].prop_addr,10)
-						newObj = {
-							"statOccupy":"booking",
-							"refNum":refNumber,
-							"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",statingDate,propAddr,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking"+refNumber+"')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking"+refNumber+"')><i class='fa fa-times'></i></button>"],
-							"tenant_id":i
-						}
-						listApproveT.push(newObj);
+					listApproveT = sortByStatOccupy(listApproveT);
+						//add hasil sort ke datatables
+					for (i=0;i<listApproveT.length;i++) {
+						console.log("in table booking")
+						table1.row.add(listApproveT[i].content).node().id = 'booking'+listApproveT[i].refNum;
 					}
-				}
-				listApproveT = sortByStatOccupy(listApproveT);
-					//add hasil sort ke datatables
-				for (i=0;i<listApproveT.length;i++) {
-					console.log("in table booking")
-					table1.row.add(listApproveT[i].content).node().id = 'booking'+listApproveT[i].refNum;
-				}
-				table1.draw();
+					table1.draw();
 				}, 2000);
 			}
 		}, 4000);	
@@ -1652,11 +1761,37 @@ $(document).ready(function() {
 	
 	//remove approve modal add listener
 	$("#removeApprove").click(function() {
+		startPageLoad();
 		var refNumber = $("#approveD").val();
-		var row = table1.row('#'+refNumber);
-		row.remove();
-		table1.draw(false);
-	})
+		var tenantID = $("#approveD2").val();
+		
+		var tenantRef = firebase.database().ref("tenant");
+		var trRef = firebase.database().ref("tenant-room");
+		tenantRef.child(tenantID).remove(
+		).then(function onSuccess(res) {
+			trRef.child(tenantID).remove(
+			).then(function onSuccess(res) {
+				trRef.once("value", function() {
+					var tenantCount = parseInt(snapshot.child("total_tenant").val()) - 1;
+					trRef.update({
+						total_tenant : tenantCount
+					}).then(function onSuccess(res) {
+						var row = table1.row('#'+refNumber);
+						row.remove();
+						table1.draw(false);
+						addNotification("Booking removed","Booking successfully removed.");
+						stopPageLoad();
+					}).catch(function onError(err) {
+						addNotification("Error Remove Booking",err.code+" : "+err.message);
+					});
+				});
+			}).catch(function onError(err) {
+				addNotification("Error Remove Booking",err.code+" : "+err.message);
+			});
+		}).catch(function onError(err) {
+			addNotification("Error Remove Booking",err.code+" : "+err.message);
+		});
+	});
 	
 	//invoice add button listener
 	$("#invoiceb").on('click', function() {

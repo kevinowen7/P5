@@ -39,6 +39,39 @@ function shortenString(yourString,maxLength){
 	
 }
 
+function deleteBooking(tenantID) {
+	
+	$("#confirmYes").off();
+	$("#modalConfirm").modal();
+	$("#confirmYes").click(function () {
+		startPageLoad();
+		var tenantRef = firebase.database().ref("tenant");
+		var trRef = firebase.database().ref("tenant-room");
+		tenantRef.child(tenantID).remove(
+		).then(function onSuccess(res) {
+			trRef.child(tenantID).remove(
+			).then(function onSuccess(res) {
+				trRef.once("value", function() {
+					var tenantCount = parseInt(snapshot.child("total_tenant").val()) - 1;
+					trRef.update({
+						total_tenant : tenantCount
+					}).then(function onSuccess(res) {
+						addNotification("Booking removed","Booking successfully removed.");
+						stopPageLoad();
+					}).catch(function onError(err) {
+						addNotification("Error Remove Booking",err.code+" : "+err.message);
+					});
+				});
+			}).catch(function onError(err) {
+				addNotification("Error Remove Booking",err.code+" : "+err.message);
+			});
+		}).catch(function onError(err) {
+			addNotification("Error Remove Booking",err.code+" : "+err.message);
+		});
+	});
+	
+}
+
 $(document).ready(function() {
 	
 	//BOOKING LIST
@@ -100,8 +133,27 @@ $(document).ready(function() {
 	
 	//get data from database
 	var trRef = firebase.database().ref("tenant-room");
-	var a=1;
+	var paymentRef = firebase.database().ref("payment");
 	var listApproveT=[];
+	trRef.on('value', function(snapshot) {
+		var tenantCount = snapshot.child("total_tenant").val();
+		$("#amountData").off();
+		// table data listener
+		$("#amountData").change(function() {
+			if ($(this).val() == tenantCount) {
+				table1.clear();
+				//add hasil sort ke datatables
+				for (i=0;i<listApproveT.length;i++) {
+					table1.row.add(listApproveT[i].content).node().id = 'booking'+listApproveT[i].refNum;
+				}
+				table1.draw();
+				$("#amountData").off();
+				stopPageLoad();
+			} else {
+				startPageLoad();
+			}
+		});
+	});
 	trRef.on('child_added', function(snapshot) {
 		var tenantID = snapshot.key;
 		trRef.child(tenantID).on('child_added', function(snapshot) {
@@ -119,39 +171,61 @@ $(document).ready(function() {
 			var tenantRef = firebase.database().ref().child("tenant/"+tenantID);
 			var tenantName; var tenantContact;
 			tenantRef.once('value', function(snapshot) {
-				table1.clear();
 				// get name from database
 				tenantName=snapshot.child("full_name").val();
 				tenantContact = snapshot.child("cont_mobile").val();
-				// jika status = approved
-				if (statOccupy=="approved"){
-					// untuk sort , datanya dimasukan ke list
-					newObj = {
-						"statOccupy":"approved",
-						"refNum":refNumber,
-						"content":[refNumFormat,statingDate,propAddr,buildNo,floorNo,roomNo,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",tenantContact,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking"+refNumber+"') style='background-color:#c8bca6' disabled ><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking"+refNumber+"')><i class='fa fa-times'></i></button>"],
-						"tenant_id":tenantID
+				paymentRef.child(tenantID).once('value', function(snapshot) {
+					if (snapshot.val() != null) {  // Have payments
+						// jika status = approved
+						if (statOccupy=="approved"){
+							// untuk sort , datanya dimasukan ke list
+							newObj = {
+								"statOccupy":"approved",
+								"refNum":refNumber,
+								"content":[refNumFormat,statingDate,propAddr,buildNo,floorNo,roomNo,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",tenantContact,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' style='background-color:#c8bca6' disabled ><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' style='background-color:#c8bca6' disabled><i class='fa fa-times'></i></button>"],
+								"tenant_id":tenantID
+							}
+							listApproveT.push(newObj);
+						}
+						//jika status = booking
+						if(statOccupy=="booking") {
+							// untuk sort , datanya dimasukan ke list
+							newObj = {
+								"statOccupy":"booking",
+								"refNum":refNumber,
+								"content":[refNumFormat,statingDate,propAddr,buildNo,floorNo,roomNo,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",tenantContact,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking"+refNumber+"')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' style='background-color:#c8bca6' disabled><i class='fa fa-times'></i></button>"],
+								"tenant_id":tenantID
+							}
+							listApproveT.push(newObj);
+						}
+					} else {  // No payments
+						// jika status = approved
+						if (statOccupy=="approved"){
+							// untuk sort , datanya dimasukan ke list
+							newObj = {
+								"statOccupy":"approved",
+								"refNum":refNumber,
+								"content":[refNumFormat,statingDate,propAddr,buildNo,floorNo,roomNo,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",tenantContact,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' style='background-color:#c8bca6' disabled ><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('"+tenantID+"')><i class='fa fa-times'></i></button>"],
+								"tenant_id":tenantID
+							}
+							listApproveT.push(newObj);
+						}
+						//jika status = booking
+						if(statOccupy=="booking") {
+							// untuk sort , datanya dimasukan ke list
+							newObj = {
+								"statOccupy":"booking",
+								"refNum":refNumber,
+								"content":[refNumFormat,statingDate,propAddr,buildNo,floorNo,roomNo,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",tenantContact,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking"+refNumber+"')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('"+tenantID+"')><i class='fa fa-times'></i></button>"],
+								"tenant_id":tenantID
+							}
+							listApproveT.push(newObj);
+						}
 					}
-					listApproveT.push(newObj);
-				}
-				//jika status = booking
-				if(statOccupy=="booking") {
-					// untuk sort , datanya dimasukan ke list
-					newObj = {
-						"statOccupy":"booking",
-						"refNum":refNumber,
-						"content":[refNumFormat,statingDate,propAddr,buildNo,floorNo,roomNo,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",tenantContact,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking"+refNumber+"')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking"+refNumber+"')><i class='fa fa-times'></i></button>"],
-						"tenant_id":tenantID
-					}
-					listApproveT.push(newObj);
-				}
-				listApproveT = sortByStatOccupy(listApproveT);
-				//add hasil sort ke datatables
-				for (i=0;i<listApproveT.length;i++) {
-					table1.row.add(listApproveT[i].content).node().id = 'booking'+listApproveT[i].refNum;
-				}
-				table1.draw();
-				a++
+					listApproveT = sortByStatOccupy(listApproveT);
+					$("#amountData").val((parseInt($("#amountData").val()) + 1).toString());
+					$("#amountData").change();
+				});
 			});
 		});
 		trRef.child(tenantID).on('child_changed', function(snapshot) {
@@ -185,7 +259,7 @@ $(document).ready(function() {
 							newObj = {
 								"statOccupy":statOccupy,
 								"refNum":refNumber,
-								"content":[listApproveT[i].content[0],statingDate,propAddr,buildNo,floorNo,roomNo,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",tenantContact,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking"+refNumber+"') style='background-color:#c8bca6' disabled ><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking"+refNumber+"')><i class='fa fa-times'></i></button>"],
+								"content":[listApproveT[i].content[0],statingDate,propAddr,buildNo,floorNo,roomNo,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",tenantContact,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking"+refNumber+"') style='background-color:#c8bca6' disabled ><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('"+tenantID+"')><i class='fa fa-times'></i></button>"],
 								"tenant_id":tenantID
 							}
 							listApproveT[i]=newObj;
@@ -200,7 +274,7 @@ $(document).ready(function() {
 							newObj = {
 								"statOccupy":statOccupy,
 								"refNum":refNumber,
-								"content":[listApproveT[i].content[0],statingDate,propAddr,buildNo,floorNo,roomNo,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",tenantContact,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking"+refNumber+"')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking"+refNumber+"')><i class='fa fa-times'></i></button>"],
+								"content":[listApproveT[i].content[0],statingDate,propAddr,buildNo,floorNo,roomNo,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",tenantContact,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking"+refNumber+"')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('"+tenantID+"')><i class='fa fa-times'></i></button>"],
 								"tenant_id":tenantID
 							}
 							listApproveT[i]=newObj;
@@ -228,32 +302,6 @@ $(document).ready(function() {
 		});
 	});
 	
-	var table2 = $('#data-table2').DataTable({
-		"aLengthMenu": [[10, 20, -1], [10, 20, "All"]],
-        "iDisplayLength": 10,
-		"sPaginationType": "full_numbers",
-		"order": [[ 0, "asc" ]],
-		"columnDefs": [
-		{ 
-			targets: 0,
-			width: "30%"
-		},
-		{ 
-			targets: -1,
-			width: "20%",
-			orderable: false,
-			defaultContent:"<button id='editbutt' class='btn btn-xs btn-warning' title='Edit'><i class='fa fa-pencil'></i></button> <button id='extend' class='btn btn-xs btn-info' title='Extend'><i class='fa fa-user-plus'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Remove'><i class='fa fa-times'></i></button> <button id='terminatebutt' class='btn btn-xs btn-danger' title='Terminate'><i class='fa fa-sign-out'></i></button>"
-		}]
-	})
-	table2.row.add(["<a href='javaScript:void(0)'>Bea Curran</a>","101 010 100","9/20/2018",null]);
-	table2.row.add(["<a href='javaScript:void(0)'>Briana Holloway</a>","101 010 200","9/28/2018",null]);
-	table2.draw();
-	setTimeout(function(){
-		//stop loading icon
-		$("#cover-spin").fadeOut(250, function() {
-			$(this).hide();
-		})
-	}, 1000);
 	//add tenant button listener
 	$("#baddt").on('click', function() {
 		window.location = "tenant_add.html";

@@ -735,11 +735,24 @@ function addInvoice() {
 		"refnumber":refNumberHtml,
 		"list":"ledgerList"
 	});
-
+	
+	var d = new Date();
+	var thisDay = d.getDate();
+	if (parseInt(thisDay) < 10) {
+		thisDay = "0"+thisDay;
+	}
+	var thisMonth = d.getMonth() + 1;
+	if (parseInt(thisMonth) < 10) {
+		thisMonth = "0"+thisMonth;
+	}
+	var thisYear = d.getFullYear();
+	var thisDate = thisMonth+"/"+thisDay+"/"+thisYear;
+	
 	reportRef.child(building_id).push({
 		"due":invoiceAmount,
 		"receive": 0,
-		"date":invoiceDate
+		"date":invoiceDate,
+		"inputDate": thisDate
 	})
 
 	setTimeout(function(){
@@ -945,10 +958,23 @@ function addPayment() {
 	}
 	
 	function stage3() {
+		var d = new Date();
+		var thisDay = d.getDate();
+		if (parseInt(thisDay) < 10) {
+			thisDay = "0"+thisDay;
+		}
+		var thisMonth = d.getMonth() + 1;
+		if (parseInt(thisMonth) < 10) {
+			thisMonth = "0"+thisMonth;
+		}
+		var thisYear = d.getFullYear();
+		var thisDate = thisMonth+"/"+thisDay+"/"+thisYear;
+		
 		reportRef.child(building_id).push({
 			"receive":paymentAmount,
 			"due": 0,
-			"date": paymentDate
+			"date": paymentDate,
+			"inputDate": thisDate
 		}).then(function onSuccess(res) {
 			stage4();
 		}).catch(function onError(err) {

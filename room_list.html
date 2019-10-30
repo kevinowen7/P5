@@ -311,27 +311,19 @@
                                 <!-- isi tab summary -->
                                 <div class="tab-pane fade in" id="tenanti">
 									<div class="page-grid">
-										<div class="row">
-											<div style="margin-bottom:25px" class="col-lg-2 pull-left">
-												<label for="totalR" class="control-label" style="margin-top:15px">Total Room: </label>
-												<span id="totalR1" name="totalR1" /></span>
-											</div>
-											<div style="margin-bottom:10px" class="pull-left">
-												<label for="totalF1" class="control-label" style="margin-top:15px">Total Floor: </label>
-												<span id="totalF1" name="totalF1" /></span>
-											</div>
-											<div style="margin-bottom:25px;margin-left:50px" class="pull-left col-lg-3">
-												<label for="sdate" class="control-label"></label>
-												<div id="sdatepicker" class="input-group date">
-													<input id="sdate" name="sdate" type="text" class="form-control" placeholder="Pick Starting Date" readonly required>
-													<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+										<div id="content" class="container">
+											<div class="row text-center" style="margin-bottom:10px;">
+												<div class="col-lg-12">
+													<button id="showAllReport" class="btn btn-default" >All</button>
+													<button id="showLastReport" class="btn btn-default" >Last Month</button>
+													<button id="showNowReport" class="btn btn-default" >This Month</button>
+													<button id="showCustomReport" class="btn btn-default">Custom Filter</button>
+													<input id="tipe_filter" style="display:none" value="all"></button>
 												</div>
 											</div>
-											<div style="margin-bottom:25px" class="col-lg-3">
-												<label for="edate" class="control-label"></label>
-												<div id="edatepicker" class="input-group date">
-													<input id="edate" name="edate" type="text" class="form-control" placeholder="Pick End Date" readonly required>
-													<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+											<div class="row" style="margin-bottom:10px;">
+												<div class="col-lg-12" style="padding-left:0;">
+													<p>Showing reports from <span id="reportStartDate">...</span> to <span id="reportEndDate">...</span></p>
 												</div>
 											</div>
 										</div>
@@ -475,6 +467,43 @@
 				</div>
 			</div>
 		</div>
+		<!-- Modal Filter-->
+		<div id="filterModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<form id="filterForm" role="form" method="post" action="" autocomplete="off">
+						<div class="modal-header" style="background-color:#97427B;">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+							<h4 class="modal-title" style="color:#FFF"><b>Custom Filter</b></h4>
+						</div>
+						<div class="modal-body">
+							<div class="form-horizontal">
+								<div class="form-group">
+									<label for="filterStartDate" class="control-label col-lg-2">Date</label>
+									<div class="col-lg-5">
+										<div id="filterStartDatePicker" class="input-group date">
+											<input id="filterStartDate" name="filterStartDate" type="text" class="form-control" placeholder="Start Date" readonly required>
+											<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-lg-5">
+										<div id="filterEndDatePicker" class="input-group date">
+											<input id="filterEndDate" name="filterEndDate" type="text" class="form-control" placeholder="End Date" readonly required>
+											<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+							<button id="showFilteredReport" class="btn btn-info btn-sm" aria-hidden="true" data-dismiss="modal">Filter</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		
         <!-- modal payment-->
 		<div id="modalPayment" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
 			<div class="modal-dialog">
