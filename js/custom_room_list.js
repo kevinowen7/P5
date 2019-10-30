@@ -207,7 +207,7 @@ function countTotalDue() {
 	
 	var totalDue = 0;
 	for (i=0;i<table3.rows().count();i++) {
-		var ledgerDue = table3.row(i).data()[9];
+		var ledgerDue = table3.row(i).data()[8];
 		if (ledgerDue != null) {
 			totalDue = totalDue+ledgerDue;
 		}
@@ -220,9 +220,9 @@ function countTotalReceived() {
 	
 	var totalReceived = 0;
 	for (i=0;i<table3.rows().count();i++) {
-		var ledgerReceived = table3.row(i).data()[10];
+		var ledgerReceived = table3.row(i).data()[9];
 		if (ledgerReceived != null) {
-			totalReceived = totalReceived+parseInt(ledgerReceived)*(-1);
+			totalReceived = totalReceived+ledgerReceived;
 		}
 	}
 	$("#ReceivedTot").html(get_fmoney(totalReceived));
@@ -600,6 +600,13 @@ $(document).ready(function() {
 						var plan = snapshot.child("pay_plan").val()
 						var rent_price = snapshot.child("rent_price").val()
 						
+						if (plan=="monthly"){
+							plan="1"
+						} else if(plan=="annually") {
+							plan="12"
+						} else if(plan=="semiannually"){
+							plan="2"
+						}
 						tenantRef1 = firebase.database().ref().child("tenant/"+tenant_Id);
 						//memabaca nama dari tenant ref
 						tenantRef1.once('value', function(snapshot) {
@@ -619,7 +626,11 @@ $(document).ready(function() {
 								if(receive==null){
 									receive = 0
 								}
-								table3.row.add([floorN,"<a id='"+refN0+"' href='javaScript:void(0);' onclick='editRoom("+refN0+")'>"+roomN+"</a>",rent_price,"<a id='"+tenant_Id+"' href='tenant_details.html?id="+tenant_Id+"#ledger'>"+full_name+"</a>",start_date,"<p>"+end_date+"</p>",refNumberFormat,plan,due,receive,balance]);
+								
+								if (balance<0){
+									balance="("+get_fmoney(balance*(-1))+")"
+								}
+								table3.row.add([floorN,"<a id='"+refN0+"' href='javaScript:void(0);' onclick='editRoom("+refN0+")'>"+roomN+"</a>",rent_price,"<a id='"+tenant_Id+"' href='tenant_details.html?id="+tenant_Id+"#ledger'>"+full_name+"</a>",start_date,"<p>"+reformatDate(end_date)+"</p>",refNumberFormat,plan,due,receive,balance]);
 								table3.draw(false);
 								countTotalDue();
 								countTotalReceived();
