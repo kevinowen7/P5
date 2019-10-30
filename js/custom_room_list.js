@@ -630,8 +630,10 @@ $(document).ready(function() {
 								if (balance<0){
 									balance="("+get_fmoney(balance*(-1))+")"
 								}
-								table3.row.add([floorN,"<a id='"+refN0+"' href='javaScript:void(0);' onclick='editRoom("+refN0+")'>"+roomN+"</a>",rent_price,"<a id='"+tenant_Id+"' href='tenant_details.html?id="+tenant_Id+"#ledger'>"+full_name+"</a>",start_date,"<p>"+reformatDate(end_date)+"</p>",refNumberFormat,plan,due,receive,balance]);
+								
+								table3.row.add([floorN,"<a id='"+refN0+"' href='javaScript:void(0);' onclick='editRoom("+refN0+")'>"+roomN+"</a>",rent_price,"<a id='"+tenant_Id+"' href='tenant_details.html?id="+tenant_Id+"#ledger'>"+full_name+"</a>",start_date,"<p>"+reformatDate(end_date)+"</p>",refNumberFormat,plan,due,receive,balance]).node().id = 'row'+refN0;
 								table3.draw(false);
+								$("#row"+refN0).hide().delay(500).show('slow');
 								countTotalDue();
 								countTotalReceived();
 								countTotalBalance();
