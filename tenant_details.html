@@ -24,6 +24,7 @@
 		<link href="css/prettyPhoto.css" rel="stylesheet">
 		<!-- jQuery Datatables -->
 		<link href="css/jquery.dataTables.css" rel="stylesheet">
+		<link href="css/fixedHeader.dataTables.min.css" rel="stylesheet">
 		<!-- jQuery UI -->
 		<link href="css/jquery-ui.css" rel="stylesheet">
 		<!-- Font awesome CSS -->
@@ -160,6 +161,10 @@
 									<!-- Dropdown -->
 									<ul class="dropdown-menu pull-left" aria-labelledby="notifToggle">
 										<li>
+										<!-- Notifikasi Pin-->
+										<div id="notifListPin">
+											
+										</div>
 										<!-- Notifikasi -->
 										<div id="notifList">
 											
@@ -495,7 +500,7 @@
 		<div id="addInvoiceModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
-					<div class="modal-header" style="background-color:#528FE2">
+					<div class="modal-header" style="background-color:#8CE8FA">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
 						<h4 class="modal-title" style="color:#FFF"><b>Add Invoice Form</b></h4>
 					</div>
@@ -558,7 +563,7 @@
 		<div id="addPaymentModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
-					<div class="modal-header" style="background-color:#42C557">
+					<div class="modal-header" style="background-color:#9FFA5F">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
 						<h4 class="modal-title" style="color:#FFF"><b>Add Transaction Form</b></h4>
 					</div>
@@ -566,13 +571,13 @@
 						<form id="addPaymentForm" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
 							<div class="form-group">
 								<label for="paymentDate" class="control-label col-lg-3">Date</label>
-								<div class="col-lg-5">
+								<div class="col-lg-6">
 									<div id="paymentDatePicker" class="input-group date">
 										<input id="paymentDate" name="paymentDate" type="text" class="form-control" placeholder="Pick Date" readonly required>
 										<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
 									</div>
 								</div>
-								<div class="col-lg-4">
+								<div class="col-lg-3">
 									<div class="checkbox">
 										<label>
 											<input id="paymentBond" name="paymentBond" type="checkbox"> Bond 
@@ -582,26 +587,39 @@
 							</div>
 							<div class="form-group">
 								<label for="paymentAmount" class="control-label col-lg-3">Amount</label>
-								<div class="col-lg-5">
+								<div class="col-lg-2">
+									<select id="paymentAmountCond" name="paymentAmountCond" class="form-control">
+										<option value="pos">+</option>
+										<option value="neg">-</option>
+									</select>
+								</div>
+								<div class="col-lg-4">
 									<input id="paymentAmount" name="paymentAmount" class="form-control" type="text" maxlength="20" required/>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="paymentDetails" class="control-label col-lg-3">Details</label>
-								<div class="col-lg-5">
+								<div class="col-lg-6">
 									<select id="paymentDetails" name="paymentDetails" class="form-control" required>
 										<option value="">Select Details</option>
 										<option value="rentpay">Rental Payment</option>
 										<option value="finepay">Fine Payment</option>
 										<option value="bondpay">Bond Money Payment</option>
+										<option value="adjustpay">Adjustment</option>
 										<option value="otherpay">Other Payment</option>
 									</select>
 								</div>
 							</div>
 							<div id="paymentDetailsOtherBlock" class="form-group" style="display:none;">
 								<label for="paymentDetailsOther" class="control-label col-lg-3">Other</label>
-								<div class="col-lg-5">
+								<div class="col-lg-6">
 									<input id="paymentDetailsOther" name="paymentDetailsOther" class="form-control" type="text" required/>
+								</div>
+							</div>
+							<div id="paymentDetailsAdjustBlock" class="form-group" style="display:none;">
+								<label for="paymentDetailsAdjust" class="control-label col-lg-3">Adjustment</label>
+								<div class="col-lg-6">
+									<input id="paymentDetailsAdjust" name="paymentDetailsAdjust" class="form-control" type="text" required/>
 								</div>
 							</div>
 						</form>
@@ -845,6 +863,7 @@
 		<!-- Data Tables JS -->
 		<script src="js/jquery.dataTables.min.js"></script>	
 		<script src="js/dataTables.date-us.js"></script>
+		<script src="js/dataTables.fixedHeader.min.js"></script>
 		<!-- Pretty Photo JS -->
 		<script src="js/jquery.prettyPhoto.js"></script>	
 		<!-- Rate It JS -->

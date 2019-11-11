@@ -1463,7 +1463,6 @@ $(document).ready(function() {
 						tenantName = tenantdata[j].full_name
 						name = shortenString(tenantName,15);
 						table3.row.add(["<a href='tenant_details.html?id="+j+"' class='pull-left'>"+name+"</a>",refNumFormat,reformatDate(endDate)]).node().id = j;			
-						
 					}
 				}
 				table3.draw();
@@ -1767,23 +1766,29 @@ $(document).ready(function() {
 		
 		var tenantRef = firebase.database().ref("tenant");
 		var trRef = firebase.database().ref("tenant-room");
-		tenantRef.child(tenantID).remove(
+		var contractRef = firebase.database().ref("contract");
+		contractRef.child(tenantID).remove(
 		).then(function onSuccess(res) {
-			trRef.child(tenantID).remove(
+			tenantRef.child(tenantID).remove(
 			).then(function onSuccess(res) {
-				trRef.once("value", function() {
-					var tenantCount = parseInt(snapshot.child("total_tenant").val()) - 1;
-					trRef.update({
-						total_tenant : tenantCount
-					}).then(function onSuccess(res) {
-						var row = table1.row('#'+refNumber);
-						row.remove();
-						table1.draw(false);
-						addNotification("Booking removed","Booking successfully removed.");
-						stopPageLoad();
-					}).catch(function onError(err) {
-						addNotification("Error Remove Booking",err.code+" : "+err.message);
+				trRef.child(tenantID).remove(
+				).then(function onSuccess(res) {
+					trRef.once("value", function() {
+						var tenantCount = parseInt(snapshot.child("total_tenant").val()) - 1;
+						trRef.update({
+							total_tenant : tenantCount
+						}).then(function onSuccess(res) {
+							var row = table1.row('#'+refNumber);
+							row.remove();
+							table1.draw(false);
+							addNotification("Booking removed","Booking successfully removed.");
+							stopPageLoad();
+						}).catch(function onError(err) {
+							addNotification("Error Remove Booking",err.code+" : "+err.message);
+						});
 					});
+				}).catch(function onError(err) {
+					addNotification("Error Remove Booking",err.code+" : "+err.message);
 				});
 			}).catch(function onError(err) {
 				addNotification("Error Remove Booking",err.code+" : "+err.message);

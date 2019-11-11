@@ -2,6 +2,7 @@
 var table = $('#bledger').DataTable({
 	"aLengthMenu": [[10, 20, -1], [10, 20, "All"]],
 	"iDisplayLength": -1,
+	"fixedHeader": true,
 	"paging": false,
 	"ordering": false,
 	"columnDefs": [
@@ -11,13 +12,13 @@ var table = $('#bledger').DataTable({
 	},
 	{
 		targets: [2,3,4],
-		width: "22%",
-		render: $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ',',-' )
+		width: "22%"
 	}]
 });
 var table1 = $('#sledger').DataTable({
 	"aLengthMenu": [[10, 20, -1], [10, 20, "All"]],
 	"iDisplayLength": -1,
+	"fixedHeader": true,
 	"paging": false,
 	"ordering": false,
 	"columnDefs": [
@@ -27,8 +28,7 @@ var table1 = $('#sledger').DataTable({
 	},
 	{
 		targets: [2,3,4],
-		width: "22%",
-		render: $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ',',-' )
+		width: "22%"
 	}]
 });
 
@@ -48,21 +48,45 @@ function removeOptions(selectbox) {
 
 function get_fmoney(money) {
 	
-	var rev     = parseInt(money, 10).toString().split('').reverse().join('');
-	var rev2    = '';
-	for(var i = 0; i < rev.length; i++){
-		rev2  += rev[i];
-		if((i + 1) % 3 === 0 && i !== (rev.length - 1)){
-			rev2 += '.';
+	if (money != null) {
+		if (parseInt(money) < 0) {
+			var rev     = Math.abs(parseInt(money, 10)).toString().split('').reverse().join('');
+			var rev2    = '';
+			for(var i = 0; i < rev.length; i++){
+				rev2  += rev[i];
+				if((i + 1) % 3 === 0 && i !== (rev.length - 1)){
+					rev2 += '.';
+				}
+			}
+			return ("(Rp. "+rev2.split('').reverse().join('') + ',-)');
+		} else {
+			var rev     = parseInt(money, 10).toString().split('').reverse().join('');
+			var rev2    = '';
+			for(var i = 0; i < rev.length; i++){
+				rev2  += rev[i];
+				if((i + 1) % 3 === 0 && i !== (rev.length - 1)){
+					rev2 += '.';
+				}
+			}
+			return ("Rp. "+rev2.split('').reverse().join('') + ',-');
 		}
+	} else {
+		return null;
 	}
-	return ("Rp. "+rev2.split('').reverse().join('') + ',-')
 	
 }
 
 function rem_fmoney(money) {
 	
-	return parseInt(money.substring(4,money.length-2).split(".").join(""))
+	if (money != null) {
+		if (money.substring(0,1) == "(") {
+			return parseInt(money.substring(5,money.length-3).split(".").join(""))*-1;
+		} else {
+			return parseInt(money.substring(4,money.length-2).split(".").join(""));
+		}
+	} else {
+		return null;
+	}
 	
 }
 
@@ -201,7 +225,7 @@ function countTotalBondDue() {
 	
 	var totalBondDue = 0;
 	for (i=0;i<table.rows().count();i++) {
-		var bondDue = table.row(i).data()[2];
+		var bondDue = rem_fmoney(table.row(i).data()[2]);
 		if (bondDue != null) {
 			totalBondDue = totalBondDue+bondDue;
 		}
@@ -214,7 +238,7 @@ function countTotalBondReceived() {
 	
 	var totalBondReceived = 0;
 	for (i=0;i<table.rows().count();i++) {
-		var bondReceived = table.row(i).data()[3];
+		var bondReceived = rem_fmoney(table.row(i).data()[3]);
 		if (bondReceived != null) {
 			totalBondReceived = totalBondReceived+bondReceived;
 		}
@@ -236,18 +260,14 @@ function countBondBalance() {
 	
 	var balance = 0;
 	for (i=0;i<table.rows().count();i++) {
-		var bondDue = table.row(i).data()[2];
+		var bondDue = rem_fmoney(table.row(i).data()[2]);
 		if (bondDue != null) {
 			balance = balance - bondDue;
 		} else {
-			var bondReceived = table.row(i).data()[3];
+			var bondReceived = rem_fmoney(table.row(i).data()[3]);
 			balance = balance + bondReceived;
 		}
-		if (balance < 0) {
-			table.cell(i,4).data("("+get_fmoney(Math.abs(balance))+")");
-		} else {
-			table.cell(i,4).data(get_fmoney(balance));
-		}
+		table.cell(i,4).data(get_fmoney(balance));
 	}
 	
 }
@@ -257,11 +277,7 @@ function countTotalBondBalance() {
 	var totalBondDue = rem_fmoney($("#bDueTot").html());
 	var totalBondReceived = rem_fmoney($("#bReceivedTot").html());
 	var totalBondBalance = totalBondReceived - totalBondDue;
-	if (totalBondBalance < 0) {
-		$("#bBalanceTot").html("("+get_fmoney(Math.abs(totalBondBalance))+")");
-	} else {
-		$("#bBalanceTot").html(get_fmoney(totalBondBalance));
-	}
+	$("#bBalanceTot").html(get_fmoney(totalBondBalance));
 	
 }
 
@@ -269,7 +285,7 @@ function countTotalDue() {
 	
 	var totalDue = 0;
 	for (i=0;i<table1.rows().count();i++) {
-		var ledgerDue = table1.row(i).data()[2];
+		var ledgerDue = rem_fmoney(table1.row(i).data()[2]);
 		if (ledgerDue != null) {
 			totalDue = totalDue+ledgerDue;
 		}
@@ -282,7 +298,7 @@ function countTotalReceived() {
 	
 	var totalReceived = 0;
 	for (i=0;i<table1.rows().count();i++) {
-		var ledgerReceived = table1.row(i).data()[3];
+		var ledgerReceived = rem_fmoney(table1.row(i).data()[3]);
 		if (ledgerReceived != null) {
 			totalReceived = totalReceived+ledgerReceived;
 		}
@@ -295,18 +311,14 @@ function countBalance() {
 	
 	var balance = 0;
 	for (i=0;i<table1.rows().count();i++) {
-		var ledgerDue = table1.row(i).data()[2];
+		var ledgerDue = rem_fmoney(table1.row(i).data()[2]);
 		if (ledgerDue != null) {
 			balance = balance - ledgerDue;
 		} else {
-			var ledgerReceived = table1.row(i).data()[3];
+			var ledgerReceived = rem_fmoney(table1.row(i).data()[3]);
 			balance = balance + ledgerReceived;
 		}
-		if (balance < 0) {
-			table1.cell(i,4).data("("+get_fmoney(Math.abs(balance))+")");
-		} else {
-			table1.cell(i,4).data(get_fmoney(balance));
-		}
+		table1.cell(i,4).data(get_fmoney(balance));
 	}
 	
 }
@@ -796,23 +808,28 @@ function addPayment() {
 		//reset payment form
 		$('#addPaymentForm').trigger("reset");
 		$("#paymentDetailsOtherBlock").hide();
+		$("#paymentDetailsAdjustBlock").hide();
 		removeOptions(document.getElementById("paymentDetails"));
 		var optionElement1 = document.createElement("option");
 		var optionElement2 = document.createElement("option");
 		var optionElement3 = document.createElement("option");
 		var optionElement4 = document.createElement("option");
+		var optionElement5 = document.createElement("option");
 		optionElement1.value = "rentpay";
 		optionElement1.innerHTML = "Rental Payment";
 		optionElement2.value = "finepay";
 		optionElement2.innerHTML = "Fine Payment";
 		optionElement3.value = "bondpay";
 		optionElement3.innerHTML = "Bond Money Payment";
-		optionElement4.value = "otherpay";
-		optionElement4.innerHTML = "Other Payment";
+		optionElement4.value = "adjustpay";
+		optionElement4.innerHTML = "Adjustment";
+		optionElement5.value = "otherpay";
+		optionElement5.innerHTML = "Other Payment";
 		document.getElementById("paymentDetails").appendChild(optionElement1);
 		document.getElementById("paymentDetails").appendChild(optionElement2);
 		document.getElementById("paymentDetails").appendChild(optionElement3);
 		document.getElementById("paymentDetails").appendChild(optionElement4);
+		document.getElementById("paymentDetails").appendChild(optionElement5);
 	}
 	
 	// ref number
@@ -830,8 +847,12 @@ function addPayment() {
 	var paymentDate = reformatDate2($("#paymentDate").val());
 	var payDate = $("#paymentDate").val();
 	var paymentAmount = parseInt(rem_moneydot($("#paymentAmount").val()));
+	if ($("#paymentAmountCond").val() == "neg") {
+		paymentAmount = paymentAmount*-1;
+	}
 	var paymentDetails = $("#paymentDetails").val();
 	var paymentDetailsOther = $("#paymentDetailsOther").val();
+	var paymentDetailsAdjust = $("#paymentDetailsAdjust").val();
 	if (paymentDetails == "rentpay") {
 		var paymentDetailsFull = "Rental Payment";
 	} else if (paymentDetails == "finepay") {
@@ -842,6 +863,8 @@ function addPayment() {
 		var paymentDetailsFull = "Bond Money Transfer";
 	} else if (paymentDetails == "refund") {
 		var paymentDetailsFull = "Bond Money Refund";
+	} else if (paymentDetails == "adjustpay") {
+		var paymentDetailsFull = "Adjustment - "+paymentDetailsAdjust;
 	} else {
 		var paymentDetailsFull = "Other Payment - "+paymentDetailsOther;
 	}
@@ -2314,33 +2337,15 @@ $(document).ready(function() {
 	overdueRef = firebase.database().ref().child("overdue/"+id);
 	reportRef = firebase.database().ref().child("reportAccount");
 	setTimeout(() => {
-		var due = $("#lDueTot").text()
-		var receive = $("#lReceivedTot").text()
-		var balance = $("#lBalanceTot").text()
-		due = due.split("Rp. ")
-		due = due[1].split(".").join("")
-		due = due.split(",-")
-		due = parseInt(due[0])
-		receive = receive.split("Rp. ")
-		receive = receive[1].split(".").join("")
-		receive = receive.split(",-")
-		receive = parseInt(receive[0])
-		balance = balance.split("Rp. ")
-		balance = balance[1].split(".").join("")
-		balance = balance.split(",-")
-		if (balance[1]==")"){
-			balance = "-"+balance[0]
-		}else{
-			balance = balance[0]
-		}
+		var due = rem_fmoney($("#lDueTot").html());
+		var receive = rem_fmoney($("#lReceivedTot").html());
+		var balance = rem_fmoney($("#lBalanceTot").html());
 		
-		paymentRef.once('value', function(snapshot){
-			paymentRef.update({
-				"balance": balance,
-				"receive": receive,
-				"due": due
-			})	
-		})
+		paymentRef.update({
+			"balance": balance,
+			"receive": receive,
+			"due": due
+		});
 	}, 3000);
 	contract.on("child_added", function(snapshot){
 		room_id=snapshot.key
@@ -2519,12 +2524,12 @@ setTimeout(() => {
 			//sort bond
 			bondList = sortArrayByDate(bondList);
 			for (x in bondList) {
-				table.row.add([reformatDate(bondList[x].date),bondList[x].desc,bondList[x].invoice,bondList[x].payment,null]);	
+				table.row.add([reformatDate(bondList[x].date),bondList[x].desc,get_fmoney(bondList[x].invoice),get_fmoney(bondList[x].payment),null]);	
 			}
 			//sort ledger
 			ledgerList = sortArrayByDate(ledgerList);
 			for (x in ledgerList) {
-				table1.row.add([reformatDate(ledgerList[x].date),ledgerList[x].desc,ledgerList[x].invoice,ledgerList[x].payment,null]);	
+				table1.row.add([reformatDate(ledgerList[x].date),ledgerList[x].desc,get_fmoney(ledgerList[x].invoice),get_fmoney(ledgerList[x].payment),null]);	
 			}
 			table.draw();
 			table1.draw();
@@ -2714,6 +2719,9 @@ setTimeout(() => {
 			$("#paymentDetailsOtherBlock").fadeOut(250, function() {
 				$(this).hide();
 			})
+			$("#paymentDetailsAdjustBlock").fadeOut(250, function() {
+				$(this).hide();
+			})
 			removeOptions(document.getElementById("paymentDetails"));
 			var optionElement1 = document.createElement("option");
 			var optionElement2 = document.createElement("option");
@@ -2731,23 +2739,30 @@ setTimeout(() => {
 			$("#paymentDetailsOtherBlock").fadeOut(250, function() {
 				$(this).hide();
 			})
+			$("#paymentDetailsAdjustBlock").fadeOut(250, function() {
+				$(this).hide();
+			})
 			removeOptions(document.getElementById("paymentDetails"));
 			var optionElement1 = document.createElement("option");
 			var optionElement2 = document.createElement("option");
 			var optionElement3 = document.createElement("option");
 			var optionElement4 = document.createElement("option");
+			var optionElement5 = document.createElement("option");
 			optionElement1.value = "rentpay";
 			optionElement1.innerHTML = "Rental Payment";
 			optionElement2.value = "finepay";
 			optionElement2.innerHTML = "Fine Payment";
 			optionElement3.value = "bondpay";
 			optionElement3.innerHTML = "Bond Money Payment";
-			optionElement4.value = "otherpay";
-			optionElement4.innerHTML = "Other Payment";
+			optionElement4.value = "adjustpay";
+			optionElement4.innerHTML = "Adjustment";
+			optionElement5.value = "otherpay";
+			optionElement5.innerHTML = "Other Payment";
 			document.getElementById("paymentDetails").appendChild(optionElement1);
 			document.getElementById("paymentDetails").appendChild(optionElement2);
 			document.getElementById("paymentDetails").appendChild(optionElement3);
 			document.getElementById("paymentDetails").appendChild(optionElement4);
+			document.getElementById("paymentDetails").appendChild(optionElement5);
 		}
 	})
 	//payment amount listener
@@ -2757,13 +2772,23 @@ setTimeout(() => {
 	//payment modal details listener
 	$("#paymentDetails").on('change', function() {
 		if ($(this).find("option:selected").attr("value") == "otherpay") {
-			$("#paymentDetailsOtherBlock").fadeIn(250, function() {
-				$(this).show();
-			})
-		} else {
+			$("#paymentDetailsAdjustBlock").fadeOut(250, function() {
+				$(this).hide();
+				$("#paymentDetailsOtherBlock").fadeIn(250, function() {
+					$(this).show();
+				});
+			});
+		} else if ($(this).find("option:selected").attr("value") == "adjustpay") {
 			$("#paymentDetailsOtherBlock").fadeOut(250, function() {
 				$(this).hide();
-			})
+				$("#paymentDetailsAdjustBlock").fadeIn(250, function() {
+					$(this).show();
+				});
+			});
+		} else {
+			$("#paymentDetailsOtherBlock,#paymentDetailsAdjustBlock").fadeOut(250, function() {
+				$(this).hide();
+			});
 		}
 	})
 	//payment modal add listener
@@ -2780,6 +2805,10 @@ setTimeout(() => {
 			addPayment();
 		}
 	})
+	//payment modal draggable
+	$("#addPaymentModal").draggable({
+		handle: ".modal-header"
+	});
 	//extend button listener
 	$("#extender").on('click', function() {
 		$("#extendModal").modal();
@@ -2990,12 +3019,12 @@ setTimeout(() => {
 			//sort bond
 			bondList = sortArrayByDate(bondList);
 			for (x in bondList) {
-				table.row.add([reformatDate(bondList[x].date),bondList[x].desc,bondList[x].invoice,bondList[x].payment,null]);	
+				table.row.add([reformatDate(bondList[x].date),bondList[x].desc,get_fmoney(bondList[x].invoice),get_fmoney(bondList[x].payment),null]);	
 			}
 			//sort ledger
 			ledgerList = sortArrayByDate(ledgerList);
 			for (x in ledgerList) {
-				table1.row.add([reformatDate(ledgerList[x].date),ledgerList[x].desc,ledgerList[x].invoice,ledgerList[x].payment,null]);	
+				table1.row.add([reformatDate(ledgerList[x].date),ledgerList[x].desc,get_fmoney(ledgerList[x].invoice),get_fmoney(ledgerList[x].payment),null]);	
 			}
 			table.draw();
 			table1.draw();
@@ -3016,14 +3045,14 @@ setTimeout(() => {
 			bondList = sortArrayByDate(bondList);
 			for (x in bondList) {
 				if(bondList[x].invoice==null){
-					table.row.add([reformatDate(bondList[x].date),bondList[x].desc,bondList[x].invoice,bondList[x].payment,null]);	
+					table.row.add([reformatDate(bondList[x].date),bondList[x].desc,get_fmoney(bondList[x].invoice),get_fmoney(bondList[x].payment),null]);	
 				}
 			}
 			//sort ledger
 			ledgerList = sortArrayByDate(ledgerList);
 			for (x in ledgerList) {
 				if(ledgerList[x].invoice==null){
-					table1.row.add([reformatDate(ledgerList[x].date),ledgerList[x].desc,ledgerList[x].invoice,ledgerList[x].payment,null]);	
+					table1.row.add([reformatDate(ledgerList[x].date),ledgerList[x].desc,get_fmoney(ledgerList[x].invoice),get_fmoney(ledgerList[x].payment),null]);	
 				}
 			}
 			table.draw();
@@ -3045,14 +3074,14 @@ setTimeout(() => {
 			bondList = sortArrayByDate(bondList);
 			for (x in bondList) {
 				if(bondList[x].payment==null){
-					table.row.add([reformatDate(bondList[x].date),bondList[x].desc,bondList[x].invoice,bondList[x].payment,null]);	
+					table.row.add([reformatDate(bondList[x].date),bondList[x].desc,get_fmoney(bondList[x].invoice),get_fmoney(bondList[x].payment),null]);	
 				}
 			}
 			//sort ledger
 			ledgerList = sortArrayByDate(ledgerList);
 			for (x in ledgerList) {
 				if(ledgerList[x].payment==null){
-					table1.row.add([reformatDate(ledgerList[x].date),ledgerList[x].desc,ledgerList[x].invoice,ledgerList[x].payment,null]);	
+					table1.row.add([reformatDate(ledgerList[x].date),ledgerList[x].desc,get_fmoney(ledgerList[x].invoice),get_fmoney(ledgerList[x].payment),null]);	
 				}
 			}
 			table.draw();
@@ -3101,12 +3130,12 @@ setTimeout(() => {
 		//sort bond
 		bondList = sortArrayByDate(bondList);
 		for (x in bondList) {
-			table.row.add([reformatDate(bondList[x].date),bondList[x].desc,bondList[x].invoice,bondList[x].payment,null]);	
+			table.row.add([reformatDate(bondList[x].date),bondList[x].desc,get_fmoney(bondList[x].invoice),get_fmoney(bondList[x].payment),null]);	
 		}
 		//sort ledger
 		ledgerList = sortArrayByDate(ledgerList);
 		for (x in ledgerList) {
-			table1.row.add([reformatDate(ledgerList[x].date),ledgerList[x].desc,ledgerList[x].invoice,ledgerList[x].payment,null]);	
+			table1.row.add([reformatDate(ledgerList[x].date),ledgerList[x].desc,get_fmoney(ledgerList[x].invoice),get_fmoney(ledgerList[x].payment),null]);	
 		}
 		table.draw();
 		table1.draw();

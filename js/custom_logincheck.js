@@ -33,30 +33,72 @@ function reformatDate(inputDate) {
 	
 }
 
-function addNotifButton(){
-	//validasi jika Message tidak kosong
-	if ($("#notifMessage").val()!="" && $("#notifTitleMessage").val()!=""){
-		
-		//notifikasi ref
-		var notifRef = firebase.database().ref().child("presence");
-		
-		//push notif ke smua admin
-		notifRef.on('child_added', function(snapshot) {
-			if (snapshot.key!="userCount"){
-				//push notif
-				notifRef.child(snapshot.key+"/notification").push({
-					"title" : $("#notifTitleMessage").val(),
-					"message" : $('#notifMessage').val(),
-					"date" : reformatDate(getToday())
-				})
-			}
-		});
-
-		//close
-		$("#notifTitleMessage").val('')
-		$('#notifMessage').val('');
-		$('#notifModal').modal('hide');
+function reformatDate3(inputDate) {
+	
+	months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+	months2=["01","02","03","04","05","06","07","08","09","10","11","12"];
+	inputBroke=inputDate.split("-");
+	inputDay=inputBroke[0];
+	inputMonth=inputBroke[1];
+	inputYear=inputBroke[2];
+	if (parseInt(inputDay) < 10) {
+		outputDay = inputDay;
+	} else {
+		outputDay = inputDay;
 	}
+	for (var i=0;i<months.length;i++) {
+		if (inputMonth == months[i]) {
+			outputMonth = months2[i];
+			break
+		}
+	}
+	outputYear = "20"+inputYear;
+	return (outputMonth+"/"+outputDay+"/"+outputYear);
+	
+}
+
+function date_diff_indays(d1, d2) {
+	
+	var diff = Date.parse(d2) - Date.parse(d1);
+	return Math.floor(diff / 86400000);
+	
+}
+
+function addNotifButton(){
+	firebase.auth().onAuthStateChanged(function(user) {
+		var uid = user.uid;
+		//validasi jika Message tidak kosong
+		if ($("#notifMessage").val()!="" && $("#notifTitleMessage").val()!=""){
+			
+			//notifikasi ref
+			var notifRef = firebase.database().ref().child("presence");
+			//notifikasi ref user yang membuat notif
+			var notifThisRef = firebase.database().ref().child("presence/"+uid+"/notification");
+			//push notif
+			notifThisRef.push({
+				"title" : $("#notifTitleMessage").val(),
+				"message" : $('#notifMessage').val(),
+				"date" : reformatDate(getToday())
+			}).then((keyId) => {
+				//push notif ke smua admin dengan key push yang sama
+				notifRef.on('child_added', function(snapshot) {
+					if (snapshot.key!="userCount"){
+						//push notif
+						notifRef.child(snapshot.key+"/notification/"+keyId.key).update({
+							"title" : $("#notifTitleMessage").val(),
+							"message" : $('#notifMessage').val(),
+							"date" : reformatDate(getToday())
+						}).then((keyId) => {
+						//close
+						$("#notifTitleMessage").val('')
+						$('#notifMessage').val('');
+						});
+					}
+				});
+			});
+			$('#notifModal').modal('hide');
+		}
+	});
 }
 
 function delNotif(uid,id){
@@ -66,9 +108,61 @@ function delNotif(uid,id){
 		"title" : null
 	})
 }
+
+function onPin(uid,id,title,message){
+	var notifRef = firebase.database().ref().child("presence");
+	notifRef.on('child_added', function(snapshot) {
+		if (snapshot.key!="userCount"){
+			//push notif
+			notifRef.child(snapshot.key+"/notification/"+id).set({
+				"title" : null
+			})
+		}
+	});
+	var pin = firebase.database().ref().child("pin-notif");
+	//push notif
+	pin.child(id).set({
+		"title" : title,
+		"message" : message,
+		"date" : reformatDate(getToday()),
+		"add_by": uid
+	})
+}
+
+function delPinNotif(uid,id){
+	//write data
+	var notifRef = firebase.database().ref().child("pin-notif/"+id);
+	notifRef.set({
+		"title" : null
+	})
+}
+
+function offPin(uid,id,title,message){
+	//notifikasi ref
+	var notifRef = firebase.database().ref().child("presence");
+	//notifikasi ref user yang membuat notif
+	var notifThisRef = firebase.database().ref().child("presence/"+uid+"/notification");
+	//push notif
+	notifThisRef.push({
+		"title" : title,
+		"message" : message,
+		"date" : reformatDate(getToday())
+	}).then((keyId) => {
+		//push notif ke smua admin dengan key push yang sama
+		notifRef.on('child_added', function(snapshot) {
+			if (snapshot.key!="userCount"){
+				//push notif
+				notifRef.child(snapshot.key+"/notification/"+keyId.key).update({
+					"title" : title,
+					"message" : message,
+					"date" : reformatDate(getToday())
+				})
+			}
+		});
+	});
+	delPinNotif(uid,id);
+}
 // END NOTIFIKASI FUNCTION
-
-
 
 
 firebase.auth().onAuthStateChanged(function(user) {
@@ -86,20 +180,65 @@ firebase.auth().onAuthStateChanged(function(user) {
 		var notifRef = firebase.database().ref().child("presence/"+userID+"/notification");
 		// LIST NOTIFIKASI
 		notifRef.on('child_added', function(snapshot) {
-			m =`<div id="`+snapshot.key+`" class="alert alert-warning">
-				<a href="#" class="close closeNotif" onClick="delNotif('`+userID+`','`+snapshot.key+`')" aria-label="close" >&times;</a>
-					<strong style="font-size:60%">`+snapshot.child("date").val()+`</strong>
-					</br>
-					<strong>`+snapshot.child("title").val()+` </strong> : <span>`+snapshot.child("message").val()+`</span>
-				</div>`
-			$("#notifList").hide().delay(500).show('slow');
-			$("#notifList").prepend(m);
-		
-			numNotif=numNotif+1
-			$("#numNotif").html(numNotif);
+			if (date_diff_indays(reformatDate3(snapshot.child("date").val()),getToday())>1){
+				notifRef.child(snapshot.key).set({
+					"title":null
+				})
+			} else {
+				m =`<div id="`+snapshot.key+`" class="alert alert-warning">
+					<a href="#" class="close closeNotif" onClick="delNotif('`+userID+`','`+snapshot.key+`')" aria-label="close" >&times;</a>
+						<strong style="font-size:60%">`+snapshot.child("date").val()+`</strong>
+						</br>
+						<strong>`+snapshot.child("title").val()+` </strong> : <span>`+snapshot.child("message").val()+`</span>
+						<a href="javascript:void(0)" style="font-size:20px" onClick="onPin('`+userID+`','`+snapshot.key+`','`+snapshot.child("title").val()+`','`+snapshot.child("message").val()+`')"><i class="fa fa-thumb-tack pull-right" style="color:red"></i></a>
+					</div>`
+				$("#notifList").hide().delay(500).show('slow');
+				$("#notifList").prepend(m);
+			
+				numNotif=numNotif+1
+				$("#numNotif").html(numNotif);
+			}
 		});
 
 		notifRef.on('child_removed', function(snapshot) {
+			$("#"+snapshot.key).hide('slow');
+			//mengurangi jumlah notif
+			numNotif=numNotif-1
+			$("#numNotif").html(numNotif);
+		});
+		
+		var notifPinRef = firebase.database().ref().child("pin-notif");
+		notifPinRef.on('child_added', function(snapshot) {
+			if (snapshot.child("add_by").val()!=userID){
+				// menghilangkan fungsi delete jika user bukan pembuat notifnya
+				m =`<div id="`+snapshot.key+`" class="alert alert-success">
+						<strong style="font-size:60%">`+snapshot.child("date").val()+`</strong>
+						</br>
+						<strong>`+snapshot.child("title").val()+` </strong> : <span>`+snapshot.child("message").val()+`</span>
+					</div>`
+				$("#notifListPin").hide().delay(500).show('slow');
+				$("#notifListPin").prepend(m);
+				
+				numNotif=numNotif+1
+				$("#numNotif").html(numNotif);
+			} else {
+				// memabahkan delete pada notif pin yang ditambah oleh pembuat notifnya sendiri
+				m =`<div id="`+snapshot.key+`" class="alert alert-success">
+						<a href="#" class="close closeNotif" onClick="delPinNotif('`+userID+`','`+snapshot.key+`')" aria-label="close" >&times;</a>
+						<strong style="font-size:60%">`+snapshot.child("date").val()+`</strong>
+						</br>
+						<strong>`+snapshot.child("title").val()+` </strong> : <span>`+snapshot.child("message").val()+`</span>
+						<a href="javascript:void(0)" style="font-size:20px" onClick="offPin('`+userID+`','`+snapshot.key+`','`+snapshot.child("title").val()+`','`+snapshot.child("message").val()+`')"><i class="fa fa-thumb-tack pull-right" style="color:green"></i></a>
+					</div>`
+				$("#notifListPin").hide().delay(500).show('slow');
+				$("#notifListPin").prepend(m);
+				
+				numNotif=numNotif+1
+				$("#numNotif").html(numNotif);
+			}
+		});
+
+		notifPinRef.on('child_removed', function(snapshot) {
 			$("#"+snapshot.key).hide('slow');
 			//mengurangi jumlah notif
 			numNotif=numNotif-1
