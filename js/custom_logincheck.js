@@ -180,7 +180,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 		var notifRef = firebase.database().ref().child("presence/"+userID+"/notification");
 		// LIST NOTIFIKASI
 		notifRef.on('child_added', function(snapshot) {
-			if (date_diff_indays(reformatDate3(snapshot.child("date").val()),getToday())>1){
+			if (date_diff_indays(reformatDate3(snapshot.child("date").val()),getToday())>=1){
 				notifRef.child(snapshot.key).set({
 					"title":null
 				})

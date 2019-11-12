@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<!-- Title here -->
-		<title>Tenant - GOKOST</title>
+		<title>Overdue - GOKOST</title>
 		<!-- Description, Keywords and Author -->
 		<meta name="description" content="Your description">
 		<meta name="keywords" content="Your,Keywords">
@@ -10,7 +10,7 @@
 		<script src="js/firebase.js"></script> <!-- version 5.3.1 -->
 		<script src="js/firebase_config.js"></script>
 		<script type="text/javascript" src="js/date.js"></script>
-			<script type="text/javascript" src="js/date-en-US.js"></script>
+		<script type="text/javascript" src="js/date-en-US.js"></script>
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		
@@ -22,6 +22,7 @@
 		<link href="css/bootstrap.min.css" rel="stylesheet">
 		<!-- jQuery Datatables -->
 		<link href="css/jquery.dataTables.css" rel="stylesheet">
+		<link href="css/fixedHeader.dataTables.min.css" rel="stylesheet">
 		<!-- jQuery UI -->
 		<link href="css/jquery-ui.css" rel="stylesheet">
 		<!-- Font awesome CSS -->
@@ -201,7 +202,7 @@
                             <div class="page-tables">
 								<!-- Table -->
 								<div class="table-responsive">
-									<table cellpadding="0" cellspacing="0" class="row-border hover stripe" id="data-table" width="100%">
+									<table cellpadding="0" cellspacing="0" class="stripe" id="overdueTable" width="100%">
 										<thead>
 											<tr>
 												<th>Ref #</th>
@@ -297,7 +298,8 @@
 		<!-- jQuery slim scroll -->
 		<script src="js/jquery.slimscroll.min.js"></script>
 		<!-- Data Tables JS -->
-		<script src="js/jquery.dataTables.min.js"></script>	
+		<script src="js/jquery.dataTables.min.js"></script>
+		<script src="js/dataTables.fixedHeader.min.js"></script>
 		<!-- Pretty Photo JS -->
 		<script src="js/jquery.prettyPhoto.js"></script>	
 		<!-- Rate It JS -->

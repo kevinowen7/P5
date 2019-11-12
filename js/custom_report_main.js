@@ -39,7 +39,6 @@ function get_moneydot(money) {
 	
 }
 
-
 function date_diff_indays(d1, d2) {
 	
 	var diff = Date.parse(d2) - Date.parse(d1);
@@ -277,8 +276,14 @@ $(document).ready(function() {
 								$("#totalAllOverdue").html(get_moneydot($("#totalOverdueInt").val()));
 								$("#totalReceivedInt").val(parseInt($("#totalReceivedInt").val()) + reportReceive);
 								$("#totalAllReceived").html(get_moneydot($("#totalReceivedInt").val()));
+								$("#totalExpenseInt").val(parseInt($("#totalExpenseInt").val()) + buildObject.expense);
+								$("#totalAllExpense").html(get_moneydot($("#totalExpenseInt").val()));
 								$("#totalBalanceInt").val(parseInt($("#totalBalanceInt").val()) + (reportReceive - buildObject.expense));
 								$("#totalBalance").html(get_moneydot($("#totalBalanceInt").val()));
+								$("#summary-due").html($("#totalAllDue").html());
+								$("#summary-overdue").html($("#totalAllOverdue").html());
+								$("#summary-expense").html($("#totalAllExpense").html());
+								$("#summary-balance").html($("#totalBalance").html());
 								
 								table.cell('#build'+buildObject.no,4).data(get_moneydot(buildObject.due));
 								table.cell('#build'+buildObject.no,5).data(get_moneydot(buildObject.receive - buildObject.due));
@@ -293,6 +298,8 @@ $(document).ready(function() {
 							
 							$("#totalAllRoom").html(parseInt($("#totalAllRoom").html()) + parseInt(buildObject.roomCount));
 							$("#totalAllVacant").html(parseInt($("#totalAllVacant").html()) + buildVacantCount);
+							$("#summary-vacant").html(((parseInt($("#totalAllVacant").html()) / parseInt($("#totalAllRoom").html()))*100).toFixed(2)+"%");
+							$("#summary-empty").html($("#totalAllVacant").html());
 							
 							tableLoadOff();
 						});
@@ -404,8 +411,14 @@ $(document).ready(function() {
 									$("#totalAllOverdue").html(get_moneydot($("#totalOverdueInt").val()));
 									$("#totalReceivedInt").val(parseInt($("#totalReceivedInt").val()) + reportReceive);
 									$("#totalAllReceived").html(get_moneydot($("#totalReceivedInt").val()));
+									$("#totalExpenseInt").val(parseInt($("#totalExpenseInt").val()) + buildObject.expense);
+									$("#totalAllExpense").html(get_moneydot($("#totalExpenseInt").val()));
 									$("#totalBalanceInt").val(parseInt($("#totalBalanceInt").val()) + (reportReceive - buildObject.expense));
 									$("#totalBalance").html(get_moneydot($("#totalBalanceInt").val()));
+									$("#summary-due").html($("#totalAllDue").html());
+									$("#summary-overdue").html($("#totalAllOverdue").html());
+									$("#summary-expense").html($("#totalAllExpense").html());
+									$("#summary-balance").html($("#totalBalance").html());
 								}
 								
 								table.cell('#build'+buildObject.no,4).data(get_moneydot(buildObject.due));
@@ -421,6 +434,8 @@ $(document).ready(function() {
 							
 							$("#totalAllRoom").html(parseInt($("#totalAllRoom").html()) + parseInt(buildObject.roomCount));
 							$("#totalAllVacant").html(parseInt($("#totalAllVacant").html()) + buildVacantCount);
+							$("#summary-vacant").html(((parseInt($("#totalAllVacant").html()) / parseInt($("#totalAllRoom").html()))*100).toFixed(2)+"%");
+							$("#summary-empty").html($("#totalAllVacant").html());
 							
 							tableLoadOff();
 						});
@@ -524,8 +539,14 @@ $(document).ready(function() {
 									$("#totalAllOverdue").html(get_moneydot($("#totalOverdueInt").val()));
 									$("#totalReceivedInt").val(parseInt($("#totalReceivedInt").val()) + reportReceive);
 									$("#totalAllReceived").html(get_moneydot($("#totalReceivedInt").val()));
+									$("#totalExpenseInt").val(parseInt($("#totalExpenseInt").val()) + buildObject.expense);
+									$("#totalAllExpense").html(get_moneydot($("#totalExpenseInt").val()));
 									$("#totalBalanceInt").val(parseInt($("#totalBalanceInt").val()) + (reportReceive - buildObject.expense));
 									$("#totalBalance").html(get_moneydot($("#totalBalanceInt").val()));
+									$("#summary-due").html($("#totalAllDue").html());
+									$("#summary-overdue").html($("#totalAllOverdue").html());
+									$("#summary-expense").html($("#totalAllExpense").html());
+									$("#summary-balance").html($("#totalBalance").html());
 								}
 								
 								table.cell('#build'+buildObject.no,4).data(get_moneydot(buildObject.due));
@@ -541,6 +562,8 @@ $(document).ready(function() {
 							
 							$("#totalAllRoom").html(parseInt($("#totalAllRoom").html()) + parseInt(buildObject.roomCount));
 							$("#totalAllVacant").html(parseInt($("#totalAllVacant").html()) + buildVacantCount);
+							$("#summary-vacant").html(((parseInt($("#totalAllVacant").html()) / parseInt($("#totalAllRoom").html()))*100).toFixed(2)+"%");
+							$("#summary-empty").html($("#totalAllVacant").html());
 							
 							tableLoadOff();
 						});
@@ -652,8 +675,14 @@ $(document).ready(function() {
 										$("#totalAllOverdue").html(get_moneydot($("#totalOverdueInt").val()));
 										$("#totalReceivedInt").val(parseInt($("#totalReceivedInt").val()) + reportReceive);
 										$("#totalAllReceived").html(get_moneydot($("#totalReceivedInt").val()));
+										$("#totalExpenseInt").val(parseInt($("#totalExpenseInt").val()) + buildObject.expense);
+										$("#totalAllExpense").html(get_moneydot($("#totalExpenseInt").val()));
 										$("#totalBalanceInt").val(parseInt($("#totalBalanceInt").val()) + (reportReceive - buildObject.expense));
 										$("#totalBalance").html(get_moneydot($("#totalBalanceInt").val()));
+										$("#summary-due").html($("#totalAllDue").html());
+										$("#summary-overdue").html($("#totalAllOverdue").html());
+										$("#summary-expense").html($("#totalAllExpense").html());
+										$("#summary-balance").html($("#totalBalance").html());
 									}
 									
 									table.cell('#build'+buildObject.no,4).data(get_moneydot(buildObject.due));
@@ -669,6 +698,8 @@ $(document).ready(function() {
 								
 								$("#totalAllRoom").html(parseInt($("#totalAllRoom").html()) + parseInt(buildObject.roomCount));
 								$("#totalAllVacant").html(parseInt($("#totalAllVacant").html()) + buildVacantCount);
+								$("#summary-vacant").html(((parseInt($("#totalAllVacant").html()) / parseInt($("#totalAllRoom").html()))*100).toFixed(2)+"%");
+								$("#summary-empty").html($("#totalAllVacant").html());
 								
 								tableLoadOff();
 							});
