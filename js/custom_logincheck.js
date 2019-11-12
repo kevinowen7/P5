@@ -186,7 +186,6 @@ firebase.auth().onAuthStateChanged(function(user) {
 				})
 			} else {
 				m =`<div id="`+snapshot.key+`" class="alert alert-warning">
-					<a href="#" class="close closeNotif" onClick="delNotif('`+userID+`','`+snapshot.key+`')" aria-label="close" >&times;</a>
 						<strong style="font-size:60%">`+snapshot.child("date").val()+`</strong>
 						</br>
 						<strong>`+snapshot.child("title").val()+` </strong> : <span>`+snapshot.child("message").val()+`</span>
@@ -224,7 +223,6 @@ firebase.auth().onAuthStateChanged(function(user) {
 			} else {
 				// memabahkan delete pada notif pin yang ditambah oleh pembuat notifnya sendiri
 				m =`<div id="`+snapshot.key+`" class="alert alert-success">
-						<a href="#" class="close closeNotif" onClick="delPinNotif('`+userID+`','`+snapshot.key+`')" aria-label="close" >&times;</a>
 						<strong style="font-size:60%">`+snapshot.child("date").val()+`</strong>
 						</br>
 						<strong>`+snapshot.child("title").val()+` </strong> : <span>`+snapshot.child("message").val()+`</span>
