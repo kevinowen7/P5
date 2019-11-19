@@ -1472,7 +1472,6 @@ $(document).ready(function() {
 			}else{
 				setTimeout(() => {
 					for (j in contractdata){
-						var endDate = contractdata[j].end_date
 						if ((endDate != "Ongoing") && (date_diff_indays(todayDate,endDate) >= 0) ) {
 							console.log("in table expired")
 							refNumFormat = tenant[j].ref_number

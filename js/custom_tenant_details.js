@@ -2296,7 +2296,27 @@ function extendTenant() {
 }
 
 
-
+//re-format phone number
+function reformatList(listData,x){
+	var hasil="";
+	var hasil1="";
+	
+	listData  = listData.split("");
+	for (var i=0;i<x;i++){
+		hasil = hasil+listData[i];
+	}
+	for (var i=0;i<x;i++){
+		listData.shift();
+	}
+	for (var i=0;i<x;i++){
+		hasil1 = hasil1+listData[i];
+	}
+	for (var i=0;i<x;i++){
+		listData.shift();
+	}
+	hasil = hasil+"-"+hasil1+"-"+listData.join("");
+	return hasil
+}
 
 $(window).scroll(function(){
 	if ($(this).scrollTop() > 350) {
@@ -2632,14 +2652,31 @@ setTimeout(() => {
 				//jika data bukan dummy maka ini data dari firebase
 				if (full_name!=null){
 					$("#aphome").html(cont_home);
-					$("#apmobile").html(cont_mobile);
+					
+					$("#apmobile").html(reformatList(cont_mobile,4));
+					
 					$("#aadstreet").html(perm_addr.split(", ")[0]);
 					$("#aadcity").html(perm_addr.split(", ")[1]);
 					$("#aadprov").html(perm_addr.split(", ")[2]);
 					$("#aadzip").html(perm_addr.split(", ")[2].split(" ")[1]);
 					$("#bdate").html(birth_date);
-					$("#idtype1").html(id_type1+" #"+id_number1);
-					$("#idtype2").html(id_type2+" #"+id_number2);
+					
+					if (id_type1=="sim" && id_number1.length>9) {
+						$("#idtype1").html(id_type1+" #"+reformatList(id_number1,4));
+					} else if(id_type1=="ktp" && id_number1.length>13){
+						$("#idtype1").html(id_type1+" #"+reformatList(id_number1,6));
+					} else {
+						$("#idtype1").html(id_type1+" #"+id_number1);
+					}
+					
+					if (id_type2=="sim" && id_number2.length>9) {
+						$("#idtype2").html(id_type2+" #"+reformatList(id_number2,4));
+					} else if(id_type2=="ktp" && id_number2.length>13){
+						$("#idtype2").html(id_type2+" #"+reformatList(id_number2,6));
+					} else {
+						$("#idtype2").html(id_type2+" #"+id_number2);
+					}
+					
 					$("#occupy").html(occupation);
 					//reference 1
 					$("#r1fname").html(full_nameR1);

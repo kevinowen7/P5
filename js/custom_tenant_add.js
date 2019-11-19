@@ -301,7 +301,11 @@ function uploadDB() {
 		contract.update({
 			"historyperiod":1
 		})
-		
+		//update last ref
+		const updateLastRef = firebase.database().ref("property/residential/building_no:"+$("#propnumb").html().split(" ")[1].split(")")[0]+"/floor:"+$("#floornumb").val()+"/ID:"+$("#myRoomID").val());
+		updateLastRef.update({
+			"last_ref":$("#refnumb").val()
+		});
 		
 		dbRefTenant.child(tenantID).set({
 			full_name : $("#afname").val(),
@@ -791,12 +795,15 @@ $(document).ready(function() {
 								});
 								$("#adate").html(reformatDate(snapshot.child("availdate").val()));
 								$("#yearp").val(parseInt(snapshot.child("yearprice").val()));
+								$("#refnumb").val(parseInt(snapshot.child("last_ref").val())+1);
+								$("#refchg").click();
 								$("#myRoomID").val(roomID);
 								$('#edatepicker').datepicker({
 									format: "d-M-yy",
 									autoclose: true,
 									startDate: reformatDate4(reformatDate2($("#adate").html()))
 								});
+								
 								//stop loading icon
 								$("#cover-spin").fadeOut(250, function() {
 									$(this).hide();
@@ -814,6 +821,8 @@ $(document).ready(function() {
 									$(this).hide();
 									$("#roomid").html("");
 								});
+								$("#refnumb").val(parseInt(snapshot.child("last_ref").val())+1);
+								$("#refchg").click();
 								$("#roomnumb").val("");
 								$("#adate").html("");
 								$("#yearp").val("");
