@@ -989,7 +989,7 @@ $(document).ready(function() {
 	var contractRef = firebase.database().ref().child("contract");
 	var paymentRef =firebase.database().ref().child("payment");
 	var overdueRef = firebase.database().ref().child("overdue");
-
+	var getToday = Date.today().toString("MM/dd/yyyy");
 	contractRef.on('child_added', function(snapshot){
 		var id = snapshot.key
 		contractRef.child(id).once('child_added', function(snapshot){
@@ -1118,8 +1118,12 @@ $(document).ready(function() {
 		"columnDefs": [
 		{
 			targets: 0,
-			width: "30%"
+			width: "25%"
 		},
+		{
+			targets: 1,
+			width: "15%"
+		}
 		]
 	})
 
@@ -1457,12 +1461,12 @@ $(document).ready(function() {
 			if (contractdata!={} && tenant!={} && tenantdata!={}){
 				for (j in contractdata){
 					var endDate = contractdata[j].end_date
-					if ((endDate != "Ongoing") && (date_diff_indays(todayDate,endDate) >= 0) ) {
+					if ((endDate != "Ongoing") && (date_diff_indays(getToday,endDate) >= 0) && (date_diff_indays(getToday,endDate) <= 31) ) {
 						console.log("in table expired")
 						refNumFormat = tenant[j].ref_number
 						tenantName = tenantdata[j].full_name
 						name = shortenString(tenantName,15);
-						table3.row.add(["<a href='tenant_details.html?id="+j+"' class='pull-left'>"+name+"</a>",refNumFormat,reformatDate(endDate)]).node().id = j;			
+						table3.row.add(["<a href='tenant_details.html?id="+j+"' class='pull-left'>"+name+"</a>",refNumFormat,reformatDate(endDate),"<button class='btn btn-xs btn-primary' title='Send Email' ><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-success' title='Extend' onclick=window.location='tenant_details.html?id="+j+"#extend'><i class='fa fa-plus'></i></button> <button class='btn btn-xs btn-danger' title='End Contract' onclick=window.location='tenant_details.html?id="+j+"#end'><i class='fa fa-times'></i></button> <button class='btn btn-xs btn-warning' title='Non Active' onclick=window.location='tenant_details.html?id="+j+"#non-active'><i class='fa fa-minus'></i></button>"]).node().id = j;							
 					}
 				}
 				table3.draw();
@@ -1472,12 +1476,12 @@ $(document).ready(function() {
 			}else{
 				setTimeout(() => {
 					for (j in contractdata){
-						if ((endDate != "Ongoing") && (date_diff_indays(todayDate,endDate) >= 0) ) {
+						if ((endDate != "Ongoing") && (date_diff_indays(getToday,endDate) >= 0) && (date_diff_indays(getToday,endDate) <= 31) ) {
 							console.log("in table expired")
 							refNumFormat = tenant[j].ref_number
 							tenantName = tenantdata[j].full_name
 							name = shortenString(tenantName,15);
-							table3.row.add(["<a href='tenant_details.html?id="+j+"' class='pull-left'>"+name+"</a>",refNumFormat,reformatDate(endDate)]).node().id = j;			
+							table3.row.add(["<a href='tenant_details.html?id="+j+"' class='pull-left'>"+name+"</a>",refNumFormat,reformatDate(endDate),"<button class='btn btn-xs btn-primary' title='Send Email' ><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-success' title='Extend' onclick=window.location='tenant_details.html?id="+j+"#extend'><i class='fa fa-plus'></i></button> <button class='btn btn-xs btn-danger' title='End Contract' onclick=window.location='tenant_details.html?id="+j+"#end'><i class='fa fa-times'></i></button> <button class='btn btn-xs btn-warning' title='Non Active' onclick=window.location='tenant_details.html?id="+j+"#non-active'><i class='fa fa-minus'></i></button>"]).node().id = j;			
 							
 						}
 					}

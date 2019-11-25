@@ -2345,6 +2345,9 @@ $(document).ready(function() {
 	//start
 	id2 = window.location.href.split('=')[1];
 	id = id2.split("#")[0];
+	
+	
+	
 	refNumberHtml = $("#tenant_id").html();
 	var building_id = refNumberHtml.substring(1,3);
 	var tenantNames = [];
@@ -2441,6 +2444,20 @@ $("#tenanthistory").append(data)
 --historyperiod
 	})
 	
+	
+	//membuka modal extend / end contract / non active
+	openModal = id2.split("#")[1];
+	if (typeof(openModal) != "undefined"){
+		//membuka modal extend
+		if (openModal=="extend"){
+			$("#extendModal").modal();
+		} else if (openModal=="end") {
+			endContractModal();
+		} else if (openModal=="non-active"){
+			nonactiveModal();
+		}_
+	}
+	
 })
 
 setTimeout(() => {
@@ -2520,12 +2537,6 @@ setTimeout(() => {
 			
 			//untuk mengisi default payment
 			//default bond
-			bondList.push({
-				"date":statingDate,
-				"desc":"Bond Money Due",
-				"invoice":bondPrice,
-				"payment":null
-			});
 		
 			ledgerList.push({
 				"date":statingDate,

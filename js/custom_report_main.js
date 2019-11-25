@@ -106,18 +106,22 @@ $(document).ready(function() {
 			},
 			{
 				targets: 1,
+				visible: false
+			},
+			{
+				targets: 2,
 				render: function ( data, type, row ) {
 					return data.substr(0,70)+"...";
 				}
 			},
 			{
-				targets: [2,3],
+				targets: [3,4],
 				className: 'dt-body-center',
 				width: "10%",
 				orderable: false
 			},
 			{
-				targets: [4,5,6,7,8],
+				targets: [5,6,7,8,9],
 				className: 'dt-body-right',
 				width: "10%",
 				orderable: false
@@ -217,6 +221,7 @@ $(document).ready(function() {
 							
 							var buildObject = new Object();
 							buildObject.no = snapshot.key.split(":")[1];
+							buildObject.alias = snapshot.child("alias").val();
 							buildObject.address = snapshot.child("address_street").val();
 							buildObject.roomCount = snapshot.child("total_room").val();
 							buildObject.tenantCount = countTenantinBuilding(buildObject.no,tenantList);
@@ -225,7 +230,7 @@ $(document).ready(function() {
 							buildObject.due = 0;
 							buildObject.receive = 0;
 							buildObject.expense = 0;
-							table.row.add([buildObject.no,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
+							table.row.add([buildObject.no,buildObject.alias,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
 							
 							// Pull report data
 							reportRef.child(buildObject.no).on('child_added', function(snapshot) {
@@ -285,11 +290,11 @@ $(document).ready(function() {
 								$("#summary-expense").html($("#totalAllExpense").html());
 								$("#summary-balance").html($("#totalBalance").html());
 								
-								table.cell('#build'+buildObject.no,4).data(get_moneydot(buildObject.due));
-								table.cell('#build'+buildObject.no,5).data(get_moneydot(buildObject.receive - buildObject.due));
-								table.cell('#build'+buildObject.no,6).data(get_moneydot(buildObject.receive));
-								table.cell('#build'+buildObject.no,7).data(get_moneydot(buildObject.expense));
-								table.cell('#build'+buildObject.no,8).data(get_moneydot(buildObject.receive - buildObject.expense));
+								table.cell('#build'+buildObject.no,5).data(get_moneydot(buildObject.due));
+								table.cell('#build'+buildObject.no,6).data(get_moneydot(buildObject.receive - buildObject.due));
+								table.cell('#build'+buildObject.no,7).data(get_moneydot(buildObject.receive));
+								table.cell('#build'+buildObject.no,8).data(get_moneydot(buildObject.expense));
+								table.cell('#build'+buildObject.no,9).data(get_moneydot(buildObject.receive - buildObject.expense));
 								
 								tableLoadOff();
 							});
@@ -335,6 +340,7 @@ $(document).ready(function() {
 							
 							var buildObject = new Object();
 							buildObject.no = snapshot.key.split(":")[1];
+							buildObject.alias = snapshot.child("alias").val();
 							buildObject.address = snapshot.child("address_street").val();
 							buildObject.roomCount = snapshot.child("total_room").val();
 							buildObject.tenantCount = countTenantinBuilding(buildObject.no,tenantList);
@@ -343,7 +349,7 @@ $(document).ready(function() {
 							buildObject.due = 0;
 							buildObject.receive = 0;
 							buildObject.expense = 0;
-							table.row.add([buildObject.no,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
+							table.row.add([buildObject.no,buildObject.alias,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
 							
 							// Pull report data
 							reportRef.child(buildObject.no).on('child_added', function(snapshot) {
@@ -421,11 +427,11 @@ $(document).ready(function() {
 									$("#summary-balance").html($("#totalBalance").html());
 								}
 								
-								table.cell('#build'+buildObject.no,4).data(get_moneydot(buildObject.due));
-								table.cell('#build'+buildObject.no,5).data(get_moneydot(buildObject.receive - buildObject.due));
-								table.cell('#build'+buildObject.no,6).data(get_moneydot(buildObject.receive));
-								table.cell('#build'+buildObject.no,7).data(get_moneydot(buildObject.expense));
-								table.cell('#build'+buildObject.no,8).data(get_moneydot(buildObject.receive - buildObject.expense));
+								table.cell('#build'+buildObject.no,5).data(get_moneydot(buildObject.due));
+								table.cell('#build'+buildObject.no,6).data(get_moneydot(buildObject.receive - buildObject.due));
+								table.cell('#build'+buildObject.no,7).data(get_moneydot(buildObject.receive));
+								table.cell('#build'+buildObject.no,8).data(get_moneydot(buildObject.expense));
+								table.cell('#build'+buildObject.no,9).data(get_moneydot(buildObject.receive - buildObject.expense));
 								
 								tableLoadOff();
 							});
@@ -471,6 +477,7 @@ $(document).ready(function() {
 							
 							var buildObject = new Object();
 							buildObject.no = snapshot.key.split(":")[1];
+							buildObject.alias = snapshot.child("alias").val();
 							buildObject.address = snapshot.child("address_street").val();
 							buildObject.roomCount = snapshot.child("total_room").val();
 							buildObject.tenantCount = countTenantinBuilding(buildObject.no,tenantList);
@@ -479,7 +486,7 @@ $(document).ready(function() {
 							buildObject.due = 0;
 							buildObject.receive = 0;
 							buildObject.expense = 0;
-							table.row.add([buildObject.no,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
+							table.row.add([buildObject.no,buildObject.alias,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
 							
 							// Pull report data
 							reportRef.child(buildObject.no).on('child_added', function(snapshot) {
@@ -549,11 +556,11 @@ $(document).ready(function() {
 									$("#summary-balance").html($("#totalBalance").html());
 								}
 								
-								table.cell('#build'+buildObject.no,4).data(get_moneydot(buildObject.due));
-								table.cell('#build'+buildObject.no,5).data(get_moneydot(buildObject.receive - buildObject.due));
-								table.cell('#build'+buildObject.no,6).data(get_moneydot(buildObject.receive));
-								table.cell('#build'+buildObject.no,7).data(get_moneydot(buildObject.expense));
-								table.cell('#build'+buildObject.no,8).data(get_moneydot(buildObject.receive - buildObject.expense));
+								table.cell('#build'+buildObject.no,5).data(get_moneydot(buildObject.due));
+								table.cell('#build'+buildObject.no,6).data(get_moneydot(buildObject.receive - buildObject.due));
+								table.cell('#build'+buildObject.no,7).data(get_moneydot(buildObject.receive));
+								table.cell('#build'+buildObject.no,8).data(get_moneydot(buildObject.expense));
+								table.cell('#build'+buildObject.no,9).data(get_moneydot(buildObject.receive - buildObject.expense));
 								
 								tableLoadOff();
 							});
@@ -612,6 +619,7 @@ $(document).ready(function() {
 								
 								var buildObject = new Object();
 								buildObject.no = snapshot.key.split(":")[1];
+								buildObject.alias = snapshot.child("alias").val();
 								buildObject.address = snapshot.child("address_street").val();
 								buildObject.roomCount = snapshot.child("total_room").val();
 								buildObject.tenantCount = countTenantinBuilding(buildObject.no,tenantList);
@@ -620,7 +628,7 @@ $(document).ready(function() {
 								buildObject.due = 0;
 								buildObject.receive = 0;
 								buildObject.expense = 0;
-								table.row.add([buildObject.no,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
+								table.row.add([buildObject.no,buildObject.alias,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
 								
 								// Pull report data
 								reportRef.child(buildObject.no).on('child_added', function(snapshot) {
@@ -685,11 +693,11 @@ $(document).ready(function() {
 										$("#summary-balance").html($("#totalBalance").html());
 									}
 									
-									table.cell('#build'+buildObject.no,4).data(get_moneydot(buildObject.due));
-									table.cell('#build'+buildObject.no,5).data(get_moneydot(buildObject.receive - buildObject.due));
-									table.cell('#build'+buildObject.no,6).data(get_moneydot(buildObject.receive));
-									table.cell('#build'+buildObject.no,7).data(get_moneydot(buildObject.expense));
-									table.cell('#build'+buildObject.no,8).data(get_moneydot(buildObject.receive - buildObject.expense));
+									table.cell('#build'+buildObject.no,5).data(get_moneydot(buildObject.due));
+									table.cell('#build'+buildObject.no,6).data(get_moneydot(buildObject.receive - buildObject.due));
+									table.cell('#build'+buildObject.no,7).data(get_moneydot(buildObject.receive));
+									table.cell('#build'+buildObject.no,8).data(get_moneydot(buildObject.expense));
+									table.cell('#build'+buildObject.no,9).data(get_moneydot(buildObject.receive - buildObject.expense));
 									
 									tableLoadOff();
 								});
