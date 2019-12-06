@@ -94,29 +94,6 @@ function sendEmail(tenantID,roomID,total,propAddr1){
 	});
 	return false;
 }
-
-//re-format phone number
-function reformatList(listData,x){
-	var hasil="";
-	var hasil1="";
-	
-	listData  = listData.split("");
-	for (var i=0;i<x;i++){
-		hasil = hasil+listData[i];
-	}
-	for (var i=0;i<x;i++){
-		listData.shift();
-	}
-	for (var i=0;i<x;i++){
-		hasil1 = hasil1+listData[i];
-	}
-	for (var i=0;i<x;i++){
-		listData.shift();
-	}
-	hasil = hasil+"-"+hasil1+"-"+listData.join("");
-	return hasil
-}
-
 $(window).scroll(function(){
 	if ($(this).scrollTop() > 200) {
 		$('#approveButt').addClass('fixed');
@@ -207,35 +184,14 @@ $(document).ready(function() {
 						$("#afname").html(snapshot.child("full_name").val());
 						$("#bdate").html(reformatDate(snapshot.child("birth_date").val()));
 						$("#occupy").html(snapshot.child("occupation").val());
-						
-						var id_type1 = snapshot.child("id_type1").val();
-						var id_number1 = snapshot.child("id_number1").val();
-						
-						if (id_type1=="sim" && id_number1.length>9) {
-							$("#idno1").html(reformatList(id_number1,4));
-						} else if(id_type1=="ktp" && id_number1.length>13){
-							$("#idno1").html(reformatList(id_number1,6));
-						} else {
-							$("#idno1").html(id_number1);
-						}
-						
-						var id_type2 = snapshot.child("id_type2").val();
-						var id_number2 = snapshot.child("id_number2").val();
-						
-						if (id_type2=="sim" && id_number2.length>9) {
-							$("#idno2").html(reformatList(id_number2,4));
-						} else if(id_type2=="ktp" && id_number2.length>13){
-							$("#idno2").html(reformatList(id_number2,6));
-						} else {
-							$("#idno2").html(id_number2);
-						}
-					
-						
-						
+						$("#idtype1").html(snapshot.child("id_type1").val());
+						$("#idtype2").html(snapshot.child("id_type2").val());
+						$("#idno1").html(snapshot.child("id_number1").val());
+						$("#idno2").html(snapshot.child("id_number2").val());
 						$("#apermadd").html(snapshot.child("perm_addr").val());
 						$("#email").html(snapshot.child("email").val());
 						$("#aphome").html(snapshot.child("cont_home").val());
-						$("#apmobile").html(reformatList(snapshot.child("cont_mobile").val(),4));
+						$("#apmobile").html(snapshot.child("cont_mobile").val());
 						$("#r1fname").html(snapshot.child("references/reference_1/full_name").val());
 						$("#r1rel").html(snapshot.child("references/reference_1/relation").val());
 						$("#r1permadd").html(snapshot.child("references/reference_1/address").val());

@@ -1,15 +1,3 @@
-function split_ph(phoneNumb) {
-	
-	var reformat = phoneNumb.replace(/(\d{4})/g, function(match){
-        return match + "-";
-	});
-	if (reformat.charAt(reformat.length-1) === "-") {
-		reformat = reformat.slice(0, reformat.length-1);
-	}
-	return reformat;
-	
-}
-
 //sort list by status approve or booking
 function sortByStatOccupy(listApproveT){
 	newArray=[]
@@ -95,11 +83,10 @@ $(document).ready(function() {
 	
 	//BOOKING LIST
 	//select table to work with jquery datatables
-	var table1 = $('#overdueTable').DataTable({
+	var table1 = $('#data-table').DataTable({
 		"aLengthMenu": [[5, 10, -1], [5, 10, "All"]],
 		"iDisplayLength": 5,
 		"paging":false,
-		"fixedHeader": true,
 		"order": [],
 		"columnDefs": [
 			{
@@ -145,7 +132,7 @@ $(document).ready(function() {
 			},
 			{
 				targets: 7,
-				width: "15%",
+				width: "5%",
 				className: 'dt-head-center'
 			}
 			
@@ -298,7 +285,6 @@ $(document).ready(function() {
 			table1.clear()
 			if (tenant!={} && tenantdata!={} && overdue!={}){
 				for (i in overdue){
-					console.log(i);
 					var balance = overdue[i].balance;
 					//validasi jika balance balance !=0
 					if (balance<0){
@@ -315,7 +301,7 @@ $(document).ready(function() {
 							
 							// overdueRef2=firebase.database().ref().child("tenant/"+tenantID);
 							var name = shortenString(tenantdata[i].full_name,10) 
-							table1.row.add([refN,"<a href='tenant_details.html?id="+i+"'>"+name+"</a>",reformatDate(overdueDate),shortenString(tenant[i].prop_addr,20),buildNo,floorNo,roomNo,split_ph(tenantdata[i].cont_mobile)]).node().id = 'over'+i;
+							table1.row.add([refN,"<a href='tenant_details.html?id="+i+"'>"+name+"</a>",reformatDate(overdueDate),shortenString(tenant[i].prop_addr,20),buildNo,floorNo,roomNo,tenantdata[i].cont_mobile]).node().id = 'over'+i;
 							
 						}
 					}
@@ -341,7 +327,7 @@ $(document).ready(function() {
 									
 									// overdueRef2=firebase.database().ref().child("tenant/"+tenantID);
 									var name = shortenString(tenantdata[i].full_name,10) 
-									table1.row.add([refN,"<a href='tenant_details.html?id="+i+"'>"+name+"</a>",reformatDate(overdueDate),shortenString(tenant[i].prop_addr,20),buildNo,floorNo,roomNo,split_ph(tenantdata[i].cont_mobile)]).node().id = 'over'+i;
+									table1.row.add([refN,"<a href='tenant_details.html?id="+i+"'>"+name+"</a>",reformatDate(overdueDate),shortenString(tenant[i].prop_addr,20),buildNo,floorNo,roomNo,tenantdata[i].cont_mobile]).node().id = 'over'+i;
 									
 								}
 							}

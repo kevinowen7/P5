@@ -19,7 +19,6 @@
 		<link href="css/bootstrap.min.css" rel="stylesheet">
 		<!-- jQuery Datatables -->
 		<link href="css/jquery.dataTables.css" rel="stylesheet">
-		<link href="css/fixedHeader.dataTables.min.css" rel="stylesheet">
 		<!-- jQuery UI -->
 		<link href="css/jquery-ui.css" rel="stylesheet">
 		<!-- Font awesome CSS -->
@@ -126,10 +125,6 @@
 									<!-- Dropdown -->
 									<ul class="dropdown-menu pull-left" aria-labelledby="notifToggle">
 										<li>
-										<!-- Notifikasi Pin-->
-										<div id="notifListPin">
-											
-										</div>
 										<!-- Notifikasi -->
 										<div id="notifList">
 											
@@ -196,7 +191,7 @@
                             <div class="page-tables">
 								<!-- Table -->
 								<div class="table-responsive">
-									<table cellpadding="0" cellspacing="0" class="stripe" id="expiredTable" width="100%">
+									<table cellpadding="0" cellspacing="0" class="row-border hover stripe" id="data-table" width="100%">
 										<thead>
 											<tr>
 												<th>Ref #</th>
@@ -207,7 +202,6 @@
 												<th>FL #</th>
                                                 <th>RM #</th>
 												<th>Phone</th>
-												<th>Control</th>
 											</tr>
 										</thead>
                                         
@@ -246,178 +240,6 @@
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
 						<button id="confirmYes" type="button" class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Remove</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!--End contract Modal-->
-		<div id="endModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
-						<h4 class="modal-title">End Contract</h4>
-					</div>
-					<div class="modal-body">
-					<!-- body -->
-						<span id="endM"></span>
-						<span id="tenantM"></span>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
-						<button id="submitEnd" type="button" class="btn btn-danger btn-sm" data-dismiss="modal" aria-hidden="true">End Contract</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!--NonActive contract Modal-->
-		<div id="nonActiveModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
-						<h4 class="modal-title">Non-Active</h4>
-					</div>
-					<div class="modal-body">
-					<!-- body -->
-						<span id="nonactiveM"></span>
-						<span id="tenantM"></span>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
-						<button id="submitNonActive" type="button" class="btn btn-danger btn-sm" data-dismiss="modal" aria-hidden="true">Non Active</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- Extend Modal -->
-		<div id="extendModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header" style="background-color:#42C557">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
-						<h4 class="modal-title" style="color:#FFF"><b>Extend Form</b></h4>
-					</div>
-					<div class="modal-body">
-						<form id="extendForm" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
-							<div class="form-group" style="margin:0px -10px;">
-								<label for="extendPropAddr" class="control-label col-lg-3">Property Address</label>
-								<div class="col-lg-8">
-									<div class="checkbox">
-										<span id="extendPropAddr" name="extendPropAddr"></span>
-									</div>
-								</div>
-							</div>
-							<div class="form-group" style="margin:0px -10px;">
-								<label for="extendBuildNo" class="control-label col-lg-3">Building Number</label>
-								<div class="col-lg-2">
-									<div class="checkbox">
-										<span id="extendBuildNo" name="extendBuildNo">-</span>
-									</div>
-								</div>
-							</div>
-							<div class="form-group" style="margin:0px -10px;">
-								<label for="extendFloorNo" class="control-label col-lg-3">Floor Number</label>
-								<div class="col-lg-2">
-									<div class="checkbox">
-										<span id="extendFloorNo" name="extendFloorNo">-</span>
-									</div>
-								</div>
-								<label for="extendRoomNo" class="control-label col-lg-3">Room Number</label>
-								<div class="col-lg-2">
-									<div class="checkbox">
-										<span id="extendRoomNo" name="extendRoomNo">-</span>
-									</div>
-								</div>
-							</div>
-						
-							<div class="form-group" style="margin:0px -10px;">
-								<label for="extendIntend" class="control-label col-lg-3">Intended Length of Stay</label>
-								<div class="intendedLength">
-								<div class="col-md-2 angka" >
-									<input type="text" style="width: 100%" name="inputAngka" maxlength="2" type="number" id="ExtendIntendAngka">
-								</div>
-								<div class="col-md-4 jenis">
-									<select id="extendIntend" name="extendIntend" class="form-control" required>
-										<option value="">Select Contract Option</option>
-										<option value="Days">Days</option>
-										<option value="Months">Months</option>
-										<option value="Years">Years</option>
-										
-									</select>
-								</div>
-								<div class="col-md-2 checklist">
-									<input id="ongoing" name="ongoing" type="checkbox"> Ongoing
-								</div>
-							</div>
-							</div>
-							<div class="form-group" style="margin:0px -10px;" >
-								<label for="startDate" class="control-label col-lg-3">Starting Date</label>
-								<div class="col-lg-2">
-									<div class="checkbox">
-										<span id="ExtendstartDate" name="period"></span>
-									</div>
-								</div>
-								<label for="endDate" class="control-label col-lg-3">End Date</label>
-								<div class="col-lg-2">
-									<div class="checkbox">
-										<span id="ExtendendDate" name="period">-</span>
-									</div>
-								</div>
-							</div>
-							<div class="form-group" style="margin:0px -10px;">
-								<label for="extendPayPlan" class="control-label col-lg-3">Payment Plan</label>
-								<div class="col-lg-5">
-									<select id="extendPayPlan" name="extendPayPlan" class="form-control" required>
-										<option value="">Select Payment Plan</option>
-										<option value="annually">Annually</option>
-										<option value="semiannually">Semiannually</option>
-										<option value="monthly">Monthly</option>
-									</select>
-								</div>
-							</div>
-							<div id="roompricing" style="display:none;">
-								<div class="form-group" style="margin:0px -10px;">
-									<label for="rprice" class="control-label col-lg-3">Price</label>
-									<div class="col-lg-3">
-										<div class="checkbox">
-											<span id="rprice" name="rprice">-</span>
-											<input id="yearp" name="yearp" type="hidden" value="" readonly>
-											<input id="cprice" name="cprice" type="hidden" value="" readonly>
-										</div>
-										<button id="padj" type="button" class="btn btn-xs btn-primary" style="display:none;"><img src="img/icons/plusminus.svg" width="12px"></button>
-									</div>
-									<label for="bmoney" class="control-label col-lg-3">Bond Money</label>
-									<div class="col-lg-3">
-										<div class="checkbox">
-											<span id="bmoney" name="bmoney">-</span>
-											<input id="cbond" name="cbond" type="hidden" value="" readonly>
-										</div>
-										<button id="badj" type="button" class="btn btn-xs btn-primary" style="display:none;"><img src="img/icons/plusminus.svg" width="12px"></button>
-									</div>
-								</div>
-								<div class="form-group" style="margin:0px -10px;">
-									<label for="fprice" class="control-label col-lg-3">Final Price</label>
-									<div class="col-lg-3">
-										<div class="checkbox">
-											<span id="fprice" name="fprice">-</span>
-											<input id="cfprice" name="cfprice" type="hidden" value="" readonly>
-										</div>
-									</div>
-									<label for="fbond" class="control-label col-lg-3">Final Bond Money</label>
-									<div class="col-lg-3">
-										<div class="checkbox">
-											<span id="fbond" name="fbond">-</span>
-											<input id="cfbond" name="cfbond" type="hidden" value="" readonly>
-										</div>
-									</div>
-								</div>
-							</div>
-						</form>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
-						<button id="extendButton" type="button" class="btn btn-success btn-sm">Extend</button>
 					</div>
 				</div>
 			</div>
@@ -478,8 +300,7 @@
 		<!-- jQuery slim scroll -->
 		<script src="js/jquery.slimscroll.min.js"></script>
 		<!-- Data Tables JS -->
-		<script src="js/jquery.dataTables.min.js"></script>
-		<script src="js/dataTables.fixedHeader.min.js"></script>
+		<script src="js/jquery.dataTables.min.js"></script>	
 		<!-- Pretty Photo JS -->
 		<script src="js/jquery.prettyPhoto.js"></script>	
 		<!-- Rate It JS -->

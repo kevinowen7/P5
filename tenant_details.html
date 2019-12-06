@@ -24,7 +24,6 @@
 		<link href="css/prettyPhoto.css" rel="stylesheet">
 		<!-- jQuery Datatables -->
 		<link href="css/jquery.dataTables.css" rel="stylesheet">
-		<link href="css/fixedHeader.dataTables.min.css" rel="stylesheet">
 		<!-- jQuery UI -->
 		<link href="css/jquery-ui.css" rel="stylesheet">
 		<!-- Font awesome CSS -->
@@ -161,10 +160,6 @@
 									<!-- Dropdown -->
 									<ul class="dropdown-menu pull-left" aria-labelledby="notifToggle">
 										<li>
-										<!-- Notifikasi Pin-->
-										<div id="notifListPin">
-											
-										</div>
 										<!-- Notifikasi -->
 										<div id="notifList">
 											
@@ -247,7 +242,7 @@
 													<!-- <a href="javascript:void(0)"><h4 class="edtt"><u>Edit Tenant</u></h4></a> -->
 													<div class="form-group" style="margin:0px -15px;">
 														<div class="col-lg-offset-3 col-lg-9">
-															<button type="button" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i> Edit</button>
+															<button type="button" class="btn btn-xs btn-warning" onclick="startEdit()"><i class="fa fa-pencil"></i> Edit</button>
 														</div>
 													</div>
 													<div class="form-group" style="margin:0px -15px;">
@@ -266,6 +261,14 @@
 															</div>
 															<div class="checkbox">
 																<span id="apmobile" name="apmobile">0823-7529-9894</span>
+															</div>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="email" class="control-label col-lg-3">Email</label>
+														<div class="col-lg-9">
+															<div class="checkbox">
+																<span id="email" name="email"></span>
 															</div>
 														</div>
 													</div>
@@ -379,6 +382,148 @@
 														<div class="col-lg-9">
 															<div class="checkbox">
 																<span id="r2p" name="r2p">08231 - 27392023</span>
+															</div>
+														</div>
+													</div>
+											   </div>
+											   <!-- EDIT FORM -->
+											   <div id="historyTenantEdt" class="form-horizontal" role="form" method="get" action="" autocomplete="off" style="display:none">
+													<!-- <a href="javascript:void(0)"><h4 class="edtt"><u>Edit Tenant</u></h4></a> -->
+													<div class="form-group" style="margin:0px -15px;">
+														<div class="col-lg-offset-3 col-lg-9">
+															<button type="button" class="btn btn-xs btn-success" onclick="doneEdit()"><i class="fa fa-check"></i> Done</button>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="afname" class="control-label col-lg-3">Name</label>
+														<div class="col-lg-4">
+															<div class="checkbox">
+																<input id="afname_edt" name="afname_edt" type="text" class="form-control"/>
+															</div>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="aphome" class="control-label col-lg-3">Phone</label>
+														<div class="col-lg-4">
+															<div class="checkbox">
+																<input id="aphome_edt" name="aphome_edt" type="text" class="form-control"/>
+															</div>
+															<div class="checkbox">
+																<input id="apmobile_edt" name="apmobile_edt" type="text" class="form-control"/>
+															</div>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="email_edt" class="control-label col-lg-3">Email</label>
+														<div class="col-lg-4">
+															<div class="checkbox">
+																<input id="email_edt" name="email_edt" type="text" class="form-control"/>
+															</div>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="address" class="control-label col-lg-3">Address</label>
+														<div class="col-lg-7">
+															<div class="checkbox">
+																<input id="aadstreet_edt" name="aadstreet_edt" class="form-control"/>
+															</div>
+															<div class="checkbox">
+																<input id="aadcity_edt" name="address_edt" type="text" class="form-control"/>
+																<input id="aadprov_edt" name="address_edt" type="text" class="form-control"/>
+																<input id="aadzip_edt" name="aadzip_edt" type="text" class="form-control"/>
+															</div>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="bdate_edt" class="control-label col-lg-3">Birth date</label>
+														<div class="col-lg-4">
+															<div id="bdatePicker" class="input-group date">
+																<input id="bdate_edt" name="bdate_edt" type="text" class="form-control" placeholder="Pick Date" readonly >
+																<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+															</div>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="occupy" class="control-label col-lg-3">Occupation</label>
+														<div class="col-lg-4">
+															<select id="occupy_edt" name="occupy_edt" class="form-control" >
+																<option value="">Select Occupation</option>
+																<option value="pelajar-mahasiswa">Student</option>
+																<option value="dosen-guru">Lecturer</option>
+																<option value="pns">Government Employees</option>
+																<option value="wiraswasta">Businessman</option>
+																<option value="pegawai-swasta">Pegawai Swasta</option>
+															</select>
+														</div>
+													</div>
+
+													<h4 style="margin-top:15px;margin-bottom:0px;">REFERENCES</h4>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="r1fname" class="control-label col-lg-3">Name</label>
+														<div class="col-lg-4">
+															<div class="checkbox">
+																<input id="r1fname_edt" name="r1fname_edt" type="text" class="form-control" />
+															</div>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="r1rel" class="control-label col-lg-3">Relation</label>
+														<div class="col-lg-4">
+															<select id="r1rel_edt" name="r1rel_edt" class="form-control">
+																<option value="">Select Relation</option>
+																<option value="parent">Parent</option>
+																<option value="guardian">Guardian</option>
+																<option value="relative">Relative</option>
+															</select>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="r1adstreet" class="control-label col-lg-3">Address</label>
+														<div class="col-lg-7">
+															<div class="checkbox">
+																<input id="r1adstreet_edt" name="r1adstreet_edt" type="text" class="form-control" />
+															</div>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="r1p" class="control-label col-lg-3">Contact Number</label>
+														<div class="col-lg-4">
+															<div class="checkbox">
+																<input id="r1p_edt" name="r1p_edt" type="text" class="form-control" />
+															</div>
+														</div>
+													</div>
+													
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="r2fname" class="control-label col-lg-3">Name</label>
+														<div class="col-lg-4">
+															<div class="checkbox">
+																<input id="r2fname_edt" name="r2fname_edt" type="text" class="form-control"/>
+															</div>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="r2rel" class="control-label col-lg-3">Relation</label>
+														<div class="col-lg-4">
+															<div class="checkbox">
+																<input id="r2rel_edt" name="r2rel_edt" type="text" class="form-control"/>
+															</div>
+														</div>
+													</div>
+													
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="r2adstreet" class="control-label col-lg-3">Address</label>
+														<div class="col-lg-7">
+															<div class="checkbox">
+																<input id="r2adstreet_edt" name="r2adstreet_edt" type="text" class="form-control"/>
+															</div>
+														</div>
+													</div>
+													<div class="form-group" style="margin:0px -15px;">
+														<label for="r2p" class="control-label col-lg-3">Contact Number</label>
+														<div class="col-lg-4">
+															<div class="checkbox">
+																<input id="r2p_edt" name="r2p_edt" type="text" class="form-control"/>
 															</div>
 														</div>
 													</div>
@@ -500,7 +645,7 @@
 		<div id="addInvoiceModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
-					<div class="modal-header" style="background-color:#8CE8FA">
+					<div class="modal-header" style="background-color:#528FE2">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
 						<h4 class="modal-title" style="color:#FFF"><b>Add Invoice Form</b></h4>
 					</div>
@@ -563,7 +708,7 @@
 		<div id="addPaymentModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
-					<div class="modal-header" style="background-color:#9FFA5F">
+					<div class="modal-header" style="background-color:#42C557">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
 						<h4 class="modal-title" style="color:#FFF"><b>Add Transaction Form</b></h4>
 					</div>
@@ -571,13 +716,13 @@
 						<form id="addPaymentForm" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
 							<div class="form-group">
 								<label for="paymentDate" class="control-label col-lg-3">Date</label>
-								<div class="col-lg-6">
+								<div class="col-lg-5">
 									<div id="paymentDatePicker" class="input-group date">
 										<input id="paymentDate" name="paymentDate" type="text" class="form-control" placeholder="Pick Date" readonly required>
 										<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
 									</div>
 								</div>
-								<div class="col-lg-3">
+								<div class="col-lg-4">
 									<div class="checkbox">
 										<label>
 											<input id="paymentBond" name="paymentBond" type="checkbox"> Bond 
@@ -587,39 +732,26 @@
 							</div>
 							<div class="form-group">
 								<label for="paymentAmount" class="control-label col-lg-3">Amount</label>
-								<div class="col-lg-2">
-									<select id="paymentAmountCond" name="paymentAmountCond" class="form-control">
-										<option value="pos">+</option>
-										<option value="neg">-</option>
-									</select>
-								</div>
-								<div class="col-lg-4">
+								<div class="col-lg-5">
 									<input id="paymentAmount" name="paymentAmount" class="form-control" type="text" maxlength="20" required/>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="paymentDetails" class="control-label col-lg-3">Details</label>
-								<div class="col-lg-6">
+								<div class="col-lg-5">
 									<select id="paymentDetails" name="paymentDetails" class="form-control" required>
 										<option value="">Select Details</option>
 										<option value="rentpay">Rental Payment</option>
 										<option value="finepay">Fine Payment</option>
 										<option value="bondpay">Bond Money Payment</option>
-										<option value="adjustpay">Adjustment</option>
 										<option value="otherpay">Other Payment</option>
 									</select>
 								</div>
 							</div>
 							<div id="paymentDetailsOtherBlock" class="form-group" style="display:none;">
 								<label for="paymentDetailsOther" class="control-label col-lg-3">Other</label>
-								<div class="col-lg-6">
+								<div class="col-lg-5">
 									<input id="paymentDetailsOther" name="paymentDetailsOther" class="form-control" type="text" required/>
-								</div>
-							</div>
-							<div id="paymentDetailsAdjustBlock" class="form-group" style="display:none;">
-								<label for="paymentDetailsAdjust" class="control-label col-lg-3">Adjustment</label>
-								<div class="col-lg-6">
-									<input id="paymentDetailsAdjust" name="paymentDetailsAdjust" class="form-control" type="text" required/>
 								</div>
 							</div>
 						</form>
@@ -863,7 +995,6 @@
 		<!-- Data Tables JS -->
 		<script src="js/jquery.dataTables.min.js"></script>	
 		<script src="js/dataTables.date-us.js"></script>
-		<script src="js/dataTables.fixedHeader.min.js"></script>
 		<!-- Pretty Photo JS -->
 		<script src="js/jquery.prettyPhoto.js"></script>	
 		<!-- Rate It JS -->
@@ -886,13 +1017,19 @@
 		<script src="js/get_data_overdue.js"></script>
 		<script>
 		$('#invoiceDatePicker').datepicker({
-			format: "dd-M-yy",
+			format: "d-M-yy",
 			autoclose: true
 		});
 		$('#paymentDatePicker').datepicker({
-			format: "dd-M-yy",
+			format: "d-M-yy",
 			autoclose: true
 		})
+		$('#bdatePicker').datepicker({
+			format: "d-M-yyyy",
+			autoclose: true
+		})
+		$("#invoiceDate").val(reformatDate(getTodayDate()));
+		$("#paymentDate").val(reformatDate(getTodayDate()));
 		</script>
 		<!-- Javascript for this page -->        
     </body>	

@@ -297,6 +297,24 @@ function addNotification(customTitle,customText) {
 	
 }
 
+function getTodayDate() {
+	
+	var d = new Date();
+	var thisDay = d.getDate();
+	var thisMonth = d.getMonth() + 1;
+	var thisYear = d.getFullYear();
+	if (parseInt(thisDay) < 10) {
+		thisDay = "0"+thisDay;
+	}
+	
+	if (parseInt(thisMonth) < 10) {
+		thisMonth = "0"+thisMonth;
+	}
+	
+	return thisMonth+"/"+thisDay+"/"+thisYear;
+	
+}
+
 function logout(){
 	
 	firebase.auth().signOut();

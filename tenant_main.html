@@ -17,7 +17,6 @@
 		<link href="css/bootstrap.min.css" rel="stylesheet">
 		<!-- jQuery Datatables -->
 		<link href="css/jquery.dataTables.css" rel="stylesheet">
-		<link href="css/fixedHeader.dataTables.min.css" rel="stylesheet">
 		<!-- jQuery UI -->
 		<link href="css/jquery-ui.css" rel="stylesheet">
 		<!-- Font awesome CSS -->
@@ -124,10 +123,6 @@
 									<!-- Dropdown -->
 									<ul class="dropdown-menu pull-left" aria-labelledby="notifToggle">
 										<li>
-										<!-- Notifikasi Pin-->
-										<div id="notifListPin">
-											
-										</div>
 										<!-- Notifikasi -->
 										<div id="notifList">
 											
@@ -185,52 +180,47 @@
 								</div>
 								<div class="clearfix"></div>
 							</div>
-		
-                            <div class="page-grid">
-								<div id="content" class="container">
-									<div class="row" style="margin-bottom:10px;">
-										<div class="col-lg-offset-9 col-lg-3">
-											<button id="baddt" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Booking</button>
-											<input type="hidden" id="amountData" name="amountData" value="0">
-										</div>
-									</div>
-									
-									<div class="row" style="margin-bottom:10px;">
-										<div class="col-lg-12" style="padding-left:0;">
-											<h2>Booking List</h2>
-										</div>
-									</div>
-									
-									<div class="row" style="margin-bottom:10px;">
-										<div class="page-tables">
-											<!-- Table -->
-											<div class="table-responsive">
-												<table cellpadding="0" cellspacing="0" class="stripe" id="bookingTable" width="100%">
-													<thead>
-														<tr>
-															<th>Ref #</th>
-															<th>Starting Date</th>
-															<th>Building Address</th>
-															<th>BNO</th>
-															<th>FNO</th>
-															<th>RNO</th>
-															<th>Name</th>
-															<th>Phone</th>
-															<th>Control</th>
-														</tr>
-													</thead>
-													
-													<tbody>
-														
-													</tbody>
-												</table>
-												<div class="clearfix"></div>
-											</div>
-										</div>
-									</div>
+							<!-- Table Page -->
+                            <div class="row">
+								<div class="col-lg-offset-9 col-lg-3">
+									<button id="baddt" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Booking</button>
+									<input type="hidden" id="amountData" name="amountData" value="0">
 								</div>
-								
 							</div>
+							
+                            <div class="row">
+								<div class="col-lg-3">
+									<h2>Booking List</h2>
+								</div>
+							</div> 
+                            <div class="page-tables">
+								<!-- Table -->
+								<div class="table-responsive">
+									<table cellpadding="0" cellspacing="0" class="row-border hover stripe" id="data-table" width="100%">
+										<thead>
+											<tr>
+												<th>Ref #</th>
+												<th>Starting Date</th>
+												<th>Building Address</th>
+												<th>BNO</th>
+												<th>FNO</th>
+												<th>RNO</th>
+                                                <th>Name</th>
+												<th>Phone</th>
+												<th>Control</th>
+											</tr>
+										</thead>
+                                        
+										<tbody>
+											
+										</tbody>
+									</table>
+                                    </a>
+									<div class="clearfix"></div>
+								</div>
+							</div>
+							
+							
 							
 						</div>
 						
@@ -316,8 +306,7 @@
 		<!-- jQuery slim scroll -->
 		<script src="js/jquery.slimscroll.min.js"></script>
 		<!-- Data Tables JS -->
-		<script src="js/jquery.dataTables.min.js"></script>
-		<script src="js/dataTables.fixedHeader.min.js"></script>
+		<script src="js/jquery.dataTables.min.js"></script>	
 		<!-- Pretty Photo JS -->
 		<script src="js/jquery.prettyPhoto.js"></script>	
 		<!-- Rate It JS -->

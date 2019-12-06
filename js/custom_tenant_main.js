@@ -1,15 +1,3 @@
-function split_ph(phoneNumb) {
-	
-	var reformat = phoneNumb.replace(/(\d{4})/g, function(match){
-        return match + "-";
-	});
-	if (reformat.charAt(reformat.length-1) === "-") {
-		reformat = reformat.slice(0, reformat.length-1);
-	}
-	return reformat;
-	
-}
-
 //sort list by status approve or booking
 function sortByStatOccupy(listApproveT){
 	newArray=[]
@@ -88,11 +76,10 @@ $(document).ready(function() {
 	
 	//BOOKING LIST
 	//select table to work with jquery datatables
-	var table1 = $('#bookingTable').DataTable({
+	var table1 = $('#data-table').DataTable({
 		"aLengthMenu": [[5, 10, -1], [5, 10, "All"]],
 		"iDisplayLength": 5,
 		"paging":false,
-		"fixedHeader": true,
 		"order": [],
 		"columnDefs": [
 			{
@@ -138,7 +125,6 @@ $(document).ready(function() {
 			},
 			{
 				targets: 7,
-				width: "12%",
 				className: 'dt-head-center'
 			}
 			
@@ -187,7 +173,7 @@ $(document).ready(function() {
 			tenantRef.once('value', function(snapshot) {
 				// get name from database
 				tenantName=snapshot.child("full_name").val();
-				tenantContact = split_ph(snapshot.child("cont_mobile").val());
+				tenantContact = snapshot.child("cont_mobile").val();
 				paymentRef.child(tenantID).once('value', function(snapshot) {
 					if (snapshot.val() != null) {  // Have payments
 						// jika status = approved
@@ -260,7 +246,7 @@ $(document).ready(function() {
 				table1.clear();
 				// get name from database
 				tenantName=snapshot.child("full_name").val();
-				tenantContact = split_ph(snapshot.child("cont_mobile").val());
+				tenantContact = snapshot.child("cont_mobile").val();
 				// remove row changed
 				var row = table1.row('#booking'+refNumber);
 				row.remove();

@@ -109,6 +109,7 @@ function sumMonth(date,month) {
   var endYear = newDate[3];
   return reformatDate2(endDay+"-"+endMonth+"-"+endYear);
 }
+
 function addInvoice() {
 	var invoiceAmount = parseInt(rem_moneydot($("#invoiceAmount").val()))
 		console.log($("#invoiceAmount").val())
@@ -958,6 +959,13 @@ function editKeyCollectDateModal(keyDate,tenantID,tenantRef,notes) {
 
 	$("#editKeyDateModal").modal();
 	$("#keyDate").val(keyDate);
+	var year = keyDate.split("/")[2]
+	var month = keyDate.split("/")[0]
+	var day = keyDate.split("/")[1]
+	
+	var ddd = new Date(year,month,day);
+	$('#keyDatePicker').datepicker('setStartDate', ddd);
+	$('#keyDatePicker').datepicker('setDate', ddd);
 	$("#notes").val(notes);
 	$("#keyTenantID").val(tenantID);
 	$("#keyTenantRef").val(tenantRef);
@@ -989,7 +997,7 @@ $(document).ready(function() {
 	var contractRef = firebase.database().ref().child("contract");
 	var paymentRef =firebase.database().ref().child("payment");
 	var overdueRef = firebase.database().ref().child("overdue");
-	var getToday = Date.today().toString("MM/dd/yyyy");
+
 	contractRef.on('child_added', function(snapshot){
 		var id = snapshot.key
 		contractRef.child(id).once('child_added', function(snapshot){
@@ -1118,12 +1126,8 @@ $(document).ready(function() {
 		"columnDefs": [
 		{
 			targets: 0,
-			width: "25%"
+			width: "30%"
 		},
-		{
-			targets: 1,
-			width: "15%"
-		}
 		]
 	})
 
@@ -1461,12 +1465,13 @@ $(document).ready(function() {
 			if (contractdata!={} && tenant!={} && tenantdata!={}){
 				for (j in contractdata){
 					var endDate = contractdata[j].end_date
-					if ((endDate != "Ongoing") && (date_diff_indays(getToday,endDate) >= 0) && (date_diff_indays(getToday,endDate) <= 31) ) {
+					if ((endDate != "Ongoing") && (date_diff_indays(todayDate,endDate) >= 0) ) {
 						console.log("in table expired")
 						refNumFormat = tenant[j].ref_number
 						tenantName = tenantdata[j].full_name
 						name = shortenString(tenantName,15);
-						table3.row.add(["<a href='tenant_details.html?id="+j+"' class='pull-left'>"+name+"</a>",refNumFormat,reformatDate(endDate),"<button class='btn btn-xs btn-primary' title='Send Email' ><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-success' title='Extend' onclick=window.location='tenant_details.html?id="+j+"#extend'><i class='fa fa-plus'></i></button> <button class='btn btn-xs btn-danger' title='End Contract' onclick=window.location='tenant_details.html?id="+j+"#end'><i class='fa fa-times'></i></button> <button class='btn btn-xs btn-warning' title='Non Active' onclick=window.location='tenant_details.html?id="+j+"#non-active'><i class='fa fa-minus'></i></button>"]).node().id = j;							
+						table3.row.add(["<a href='tenant_details.html?id="+j+"' class='pull-left'>"+name+"</a>",refNumFormat,reformatDate(endDate)]).node().id = j;			
+						
 					}
 				}
 				table3.draw();
@@ -1476,12 +1481,13 @@ $(document).ready(function() {
 			}else{
 				setTimeout(() => {
 					for (j in contractdata){
-						if ((endDate != "Ongoing") && (date_diff_indays(getToday,endDate) >= 0) && (date_diff_indays(getToday,endDate) <= 31) ) {
+						var endDate = contractdata[j].end_date
+						if ((endDate != "Ongoing") && (date_diff_indays(todayDate,endDate) >= 0) ) {
 							console.log("in table expired")
 							refNumFormat = tenant[j].ref_number
 							tenantName = tenantdata[j].full_name
 							name = shortenString(tenantName,15);
-							table3.row.add(["<a href='tenant_details.html?id="+j+"' class='pull-left'>"+name+"</a>",refNumFormat,reformatDate(endDate),"<button class='btn btn-xs btn-primary' title='Send Email' ><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-success' title='Extend' onclick=window.location='tenant_details.html?id="+j+"#extend'><i class='fa fa-plus'></i></button> <button class='btn btn-xs btn-danger' title='End Contract' onclick=window.location='tenant_details.html?id="+j+"#end'><i class='fa fa-times'></i></button> <button class='btn btn-xs btn-warning' title='Non Active' onclick=window.location='tenant_details.html?id="+j+"#non-active'><i class='fa fa-minus'></i></button>"]).node().id = j;			
+							table3.row.add(["<a href='tenant_details.html?id="+j+"' class='pull-left'>"+name+"</a>",refNumFormat,reformatDate(endDate)]).node().id = j;			
 							
 						}
 					}
@@ -1714,17 +1720,26 @@ $(document).ready(function() {
 			return false;
 		}
 	});
-
+	
+	//start key datepicker
+	$('#keyDatePicker').datepicker({
+		autoclose: true,
+		minDate: 0,
+	})
+	
 	//start invoice datepicker
 	$('#invoiceDatePicker').datepicker({
-		format: "dd-M-yy",
+		format: "d-M-yy",
 		autoclose: true
 	})
 	//start payment datepicker
 	$('#paymentDatePicker').datepicker({
-		format: "dd-M-yy",
+		format: "d-M-yy",
 		autoclose: true
 	})
+	
+	$("#invoiceDate").val(reformatDate(getTodayDate()));
+	$("#paymentDate").val(reformatDate(getTodayDate()));
 	
 	//approve modal add listener
 	$("#confirmApprove").click(function() {
@@ -1769,29 +1784,23 @@ $(document).ready(function() {
 		
 		var tenantRef = firebase.database().ref("tenant");
 		var trRef = firebase.database().ref("tenant-room");
-		var contractRef = firebase.database().ref("contract");
-		contractRef.child(tenantID).remove(
+		tenantRef.child(tenantID).remove(
 		).then(function onSuccess(res) {
-			tenantRef.child(tenantID).remove(
+			trRef.child(tenantID).remove(
 			).then(function onSuccess(res) {
-				trRef.child(tenantID).remove(
-				).then(function onSuccess(res) {
-					trRef.once("value", function() {
-						var tenantCount = parseInt(snapshot.child("total_tenant").val()) - 1;
-						trRef.update({
-							total_tenant : tenantCount
-						}).then(function onSuccess(res) {
-							var row = table1.row('#'+refNumber);
-							row.remove();
-							table1.draw(false);
-							addNotification("Booking removed","Booking successfully removed.");
-							stopPageLoad();
-						}).catch(function onError(err) {
-							addNotification("Error Remove Booking",err.code+" : "+err.message);
-						});
+				trRef.once("value", function() {
+					var tenantCount = parseInt(snapshot.child("total_tenant").val()) - 1;
+					trRef.update({
+						total_tenant : tenantCount
+					}).then(function onSuccess(res) {
+						var row = table1.row('#'+refNumber);
+						row.remove();
+						table1.draw(false);
+						addNotification("Booking removed","Booking successfully removed.");
+						stopPageLoad();
+					}).catch(function onError(err) {
+						addNotification("Error Remove Booking",err.code+" : "+err.message);
 					});
-				}).catch(function onError(err) {
-					addNotification("Error Remove Booking",err.code+" : "+err.message);
 				});
 			}).catch(function onError(err) {
 				addNotification("Error Remove Booking",err.code+" : "+err.message);
@@ -1933,10 +1942,7 @@ $(document).ready(function() {
 		}
 	})
 	
-	//start key datepicker
-	$('#keyDatePicker').datepicker({
-		autoclose: true
-	})
+	
 	//key date modal edit listener
 	$("#editKeyDateButton").click(function() {
 		$("#editKeyDateForm").submit();

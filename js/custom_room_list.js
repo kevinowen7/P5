@@ -1,3 +1,11 @@
+function printContent(el) {
+	var restorepage = document.body.innerHTML;
+	var printcontent = document.getElementById(el).innerHTML;
+	document.body.innerHTML = printcontent;
+	window.print();
+	location.reload();
+}
+
 //define table to work with jquery datatables
 var table = $('#data-table1').DataTable({
 	"aLengthMenu": [[10, 20, -1], [10, 20, "All"]],
@@ -207,7 +215,7 @@ function countTotalDue() {
 	
 	var totalDue = 0;
 	for (i=0;i<table3.rows().count();i++) {
-		var ledgerDue = table3.row(i).data()[8];
+		var ledgerDue = table3.row(i).data()[9];
 		if (ledgerDue != null) {
 			totalDue = totalDue+ledgerDue;
 		}
@@ -220,7 +228,7 @@ function countTotalReceived() {
 	
 	var totalReceived = 0;
 	for (i=0;i<table3.rows().count();i++) {
-		var ledgerReceived = table3.row(i).data()[9];
+		var ledgerReceived = table3.row(i).data()[10];
 		if (ledgerReceived != null) {
 			totalReceived = totalReceived+ledgerReceived;
 		}
@@ -308,7 +316,7 @@ function reformatDate2(inputDate) {
 			break
 		}
 	}
-	outputYear = inputYear;
+	outputYear = "20"+inputYear;
 	return (outputMonth+"/"+outputDay+"/"+outputYear);
 	
 }
@@ -318,16 +326,6 @@ function date_diff_indays(d1, d2) {
 	var diff = Date.parse(d2) - Date.parse(d1);
 	return Math.floor(diff / 86400000);
 	
-}
-
-function sumMonth(date,month) {
-  var d = new Date(date);
-  d.setMonth(d.getMonth()+month);
-  newDate = String(d).split(" ")
-  var endMonth = newDate[1];
-  var endDay = newDate[2];
-  var endYear = newDate[3];
-  return reformatDate2(endDay+"-"+endMonth+"-"+endYear);
 }
 
 function sortArrayByDate(oldArray) {
@@ -492,22 +490,6 @@ $(document).ready(function() {
 		$("#tabtenanti").removeClass("active")
 	}
 	
-	//filter start date
-	$('#filterStartDatePicker').datepicker({
-		format: "d-M-yy",
-		autoclose: true
-	});
-	//filter end date
-	$('#filterEndDatePicker').datepicker({
-		format: "d-M-yy",
-		autoclose: true
-	});
-	//filter report modal 
-	$("#showCustomReport").click(function() {
-		$("#filterModal").modal();
-	});
-	
-	
 	//expense add button listener
 	$("#expenseButton").on('click', function() {
 		$("#modalExpense").modal();
@@ -577,72 +559,58 @@ $(document).ready(function() {
 				.clear()
 				.draw();
 			var Ref = parseInt($("#buildNo").val());
+			//define table to work with jquery datatables
+			if (Ref == 1){
+				// change address and total room
+				$("#propaddr_s").html("Jl. Skipper No. 15 RT 12 RW 23, Nigga, What");
+				$("#buildNo").html($("#buildNo").val())
+				//input data from database to table
+				table3.row.add(["01","<a id='1010101' href='javaScript:void(0);' onclick='editRoom(1010101)'>01</a>",3000000,"","","","","",0,0,0]);
+				table3.row.add(["01","<a id='1010102' href='javaScript:void(0);' onclick='editRoom(1010102)'>02</a>",3000000,"","","","","",0,0,0]);
+				table3.row.add(["01","<a id='1010103' href='javaScript:void(0);' onclick='editRoom(1010103)'>03</a>",3000000,"<a id='t_5 ' href='tenant_details.html?id=t_5#ledger'>Aleksandra Hyde</a>","1-May-08","31-Oct-08","101 010 500","monthly",275000,0,"(Rp. 275.000,-)"]);
+				table3.row.add(["02","<a id='1010201' href='javaScript:void(0);' onclick='editRoom(1010201)'>01</a>",3000000,"<a id='t_6 ' href='tenant_details.html?id=t_6#ledger'>Amari O'Reilly</a>","1-Apr-08","30-Sep-08","101 020 100","monthly",225000,0,"(Rp. 225.000,-)"]);
+				table3.row.add(["02","<a id='1010202' href='javaScript:void(0);' onclick='editRoom(1010202)'>02</a>",3000000,"<a id='t_7 ' href='tenant_details.html?id=t_7#ledger'>Jan Garrison</a>","1-May-08","30-Oct-08","101 020 200","monthly",215000,215000,0]);
+				table3.row.add(["02","<a id='1010203' href='javaScript:void(0);' onclick='editRoom(1010203)'>03</a>",2700000,"<a id='t_3 ' href='tenant_details.html?id=t_3#ledger'>Briana Holloway</a>","1-May-08","<p>30-Oct-08</p>","101 020 300","monthly",150000,275000,125000]);
+				table3.row.add(["03","<a id='1010301' href='javaScript:void(0);' onclick='editRoom(1010301)'>01</a>",2700000,"<a id='t_4 ' href='tenant_details.html?id=t_4#ledger'>Zakary Neville</a>","27-May-08","<p>26-Oct-08</p>","101 030 100","monthly",225000,275000,50000]);
+				table3.row.add(["03","<a id='1010302' href='javaScript:void(0);' onclick='editRoom(1010302)'>02</a>",2700000,"<a id='t_2 ' href='tenant_details.html?id=t_2#ledger'>Kevin Owen</a>","8-May-08","<p>7-Nov-08</p>","101 030 200","six month",225000,225000,0]);
+				table3.row.add(["03","<a id='1010303' href='javaScript:void(0);' onclick='editRoom(1010303)'>03</a>",3000000,"<a id='t_8 ' href='tenant_details.html?id=t_8#ledger'>Pamela Daugherty</a>","1-May-08","<p>31-Oct-08</p>","101 030 300","six month",215000,300000,85000]);
+				table3.draw(false);
+			}
+			if (Ref == 3){
+				// change address and total room
+				$("#propaddr_s").html("GG. H. SIROD NO 16, CIHAMPELAS")
+				$("#buildNo").html($("#buildNo").val())
+				//input data from database to table
+				table3.row.add(["01","<a id='1030101' href='javaScript:void(0);' onclick='editRoom(1030101)'>01</a>",3000000,"","","","","",0,0,0]);
+				table3.row.add(["01","<a id='1030102' href='javaScript:void(0);' onclick='editRoom(1030102)'>02</a>",3000000,"","","","","",0,0,0]);
+				table3.row.add(["01","<a id='1030103' href='javaScript:void(0);' onclick='editRoom(1030103)'>03</a>",3000000,"<a id='t_5' href='javaScript:void(0);'>M.Gaha Wendy</a>","1-May-08","31-Oct-08","101 010 300","monthly",275000,0,"Rp (275.000,-)"]);
+				table3.row.add(["01","<a id='1030104' href='javaScript:void(0);' onclick='editRoom(1030104)'>04</a>",3000000,"<a id='t_6' href='javaScript:void(0);'>Christian FT</a>","1-Apr-08","30-Sep-08","101 010 400","monthly",225000,0,"Rp (225.000,-)"]);
+				table3.row.add(["01","<a id='1030105' href='javaScript:void(0);' onclick='editRoom(1030105)'>05</a>",3000000,"","","","","",0,0,0]);
+				table3.row.add(["01","<a id='1030106' href='javaScript:void(0);' onclick='editRoom(1030106)'>06</a>",3000000,"","","","","",0,0,0]);
+				table3.row.add(["01","<a id='1030107' href='javaScript:void(0);' onclick='editRoom(1030107)'>07</a>",3000000,"<a id='t_7' href='javaScript:void(0);'>Inu Wisnu</a>","1-May-08","30-Oct-08","101 010 700","monthly",215000,215000,0]);
+				table3.row.add(["02","<a id='1030201' href='javaScript:void(0);' onclick='editRoom(1030201)'>01</a>",2700000,"","","","","",0,0,0]);
+				table3.row.add(["02","<a id='1030202' href='javaScript:void(0);' onclick='editRoom(1030202)'>02</a>",2700000,"<a id='t_3' href='javaScript:void(0);'>Lidha Lismanawati</a>","1-May-08","<p>30-Oct-08</p>","101 020 200","monthly",150000,125000,"Rp (25.000,-)"]);
+				table3.row.add(["02","<a id='1030203' href='javaScript:void(0);' onclick='editRoom(1030203)'>03</a>",2700000,"<a id='t_4' href='javaScript:void(0);'>Ai Tuti Sulastri</a>","27-May-08","<p>26-Oct-08</p>","101 020 300","monthly",225000,275000,50000]);
+				table3.row.add(["02","<a id='1030204' href='javaScript:void(0);' onclick='editRoom(1030204)'>04</a>",2700000,"<a id='t_2' href='javaScript:void(0);'>Rahmawati Shaumah</a>","8-May-08","<p>7-Nov-08</p>","101 020 400","6 month",225000,225000,0]);
+				table3.row.add(["02","<a id='1030205' href='javaScript:void(0);' onclick='editRoom(1030205)'>05</a>",3000000,"<a id='t_8' href='javaScript:void(0);'>Fanny Astriani</a>","1-May-08","<p>31-Oct-08</p>","101 020 500","six month",215000,300000,85000]);
+				table3.row.add(["02","<a id='1030206' href='javaScript:void(0);' onclick='editRoom(1030206)'>06</a>",2700000,"<a id='t_9' href='javaScript:void(0);'>Nina Tanuatmadja</a>","1-May-08","<p>31-Oct-08</p>","101 020 600","six month",200000,200000,0]);
+				table3.row.add(["02","<a id='1030207' href='javaScript:void(0);' onclick='editRoom(1030207)'>07</a>",3500000,"<a id='t_10' href='javaScript:void(0);'>Yulmedianti K</a>","1-May-08","<p>31-Oct-08</p>","101 020 700","six month",350000,350000,0]);
+				table3.draw(false);
+			}
+			if (Ref == 7){
+				// change address and total room
+				$("#propaddr_s").html("Jl. Private No. 2 RT 3 RW 4, Yes, No")
+				$("#buildNo").html($("#buildNo").val())
+			}
+			// else
+			if (Ref != 1 && Ref != 3 && Ref != 7){
+				$("#propaddr_s").html("NOT FOUND")
+				$("#buildNo").html($("#buildNo").val())
+			}
 			
-			
-			//membaca data untuk tab summary
-			var summaryRef= firebase.database().ref().child("tenant-room");
-			summaryRef.on('child_added', function(snapshot) {
-				var tenant_Id = snapshot.key
-				summaryRef1 = summaryRef.child(tenant_Id)
-				//memabaca data per refNumber
-				summaryRef1.once('child_added', function(snapshot) {
-					var refN0 = String(snapshot.key)
-					var refN = String(refN0).split("")
-					var buildN = refN[1]+refN[2]
-					var floorN = refN[3]+refN[4]
-					var roomN = refN[5]+refN[6]
-					//validasi building number harus sama dengan yang akan di tampilkan di table
-					if (parseInt(Ref)==parseInt(buildN)){
-						var start_date = snapshot.child("start_date").val()
-						var end_date = sumMonth(start_date,snapshot.child("ctrt_opt").val())
-						var start_date = reformatDate(start_date)
-						var refNumberFormat = snapshot.child("ref_number").val()
-						var plan = snapshot.child("pay_plan").val()
-						var rent_price = snapshot.child("rent_price").val()
-						
-						if (plan=="monthly"){
-							plan="1"
-						} else if(plan=="annually") {
-							plan="12"
-						} else if(plan=="semiannually"){
-							plan="2"
-						}
-						tenantRef1 = firebase.database().ref().child("tenant/"+tenant_Id);
-						//memabaca nama dari tenant ref
-						tenantRef1.once('value', function(snapshot) {
-							var full_name = snapshot.child("full_name").val()
-							tenantPayRef1 = firebase.database().ref().child("payment/"+tenant_Id);
-							//memabaca data payment tenant dari payment ref
-							tenantPayRef1.once('value', function(snapshot) {
-								var balance = snapshot.child("balance").val()
-								if(balance==null){
-									balance = 0
-								}
-								var due = snapshot.child("due").val()
-								if(due==null){
-									due = 0
-								}
-								var receive = snapshot.child("receive").val()
-								if(receive==null){
-									receive = 0
-								}
-								
-								if (balance<0){
-									balance="("+get_fmoney(balance*(-1))+")"
-								}
-								
-								table3.row.add([floorN,"<a id='"+refN0+"' href='javaScript:void(0);' onclick='editRoom("+refN0+")'>"+roomN+"</a>",rent_price,"<a id='"+tenant_Id+"' href='tenant_details.html?id="+tenant_Id+"#ledger'>"+full_name+"</a>",start_date,"<p>"+reformatDate(end_date)+"</p>",refNumberFormat,plan,due,receive,balance]).node().id = 'row'+refN0;
-								table3.draw(false);
-								$("#row"+refN0).hide().delay(500).show('slow');
-								countTotalDue();
-								countTotalReceived();
-								countTotalBalance();
-							})
-						})
-					}
-				});
-			});
-			
+			countTotalDue();
+			countTotalReceived();
+			countTotalBalance();
 			
 			// end tab tenant
 			
